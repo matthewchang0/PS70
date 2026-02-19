@@ -1,61 +1,488 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<title>PS70: Intro to Digital Fabrication </title>
+<head>
+<title>Matthew's PS70 Website</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="../style.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bark: #3d2b1f;
+    --pine: #2d4a2d;
+    --sage: #6b8c5e;
+    --stone: #8c7b6b;
+    --cream: #f5efe6;
+    --gold: #c8a84b;
+    --moss: #4a5e3a;
+  }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
 
-<nav class="navbar navbar-expand-sm navbar-dark" style=" color: #EEE7E8;">
-  <div style="align-items: center; justify-content: center;" class="container-fluid">
-    <div class="flexrow">
-      <h2 class="nav-title">PS70 Fall 2024</h2>
+  body {
+    font-family: 'Libre Baskerville', Georgia, serif;
+    background-color: var(--cream);
+    color: var(--bark);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: linear-gradient(to right, var(--bark), #5a3e2b, var(--bark));
+    border-bottom: 4px solid var(--gold);
+    position: relative;
+    overflow: hidden;
+  }
+
+  nav::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0; height: 28px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 28'%3E%3Cpolygon points='0,28 8,28 8,16 11,16 11,10 14,10 14,6 17,6 17,10 20,10 20,16 23,16 23,28' fill='%232d4a2d' opacity='0.5'/%3E%3Cpolygon points='28,28 36,28 36,18 39,18 39,12 43,12 43,6 45,6 47,6 47,12 51,12 51,18 55,18 55,28' fill='%232d4a2d' opacity='0.45'/%3E%3Cpolygon points='60,28 68,28 68,14 71,14 72,8 73,3 74,8 75,14 78,14 78,28' fill='%232d4a2d' opacity='0.5'/%3E%3Cpolygon points='86,28 96,28 96,20 99,20 99,13 102,13 102,7 105,7 105,13 108,13 108,20 112,20 112,28' fill='%232d4a2d' opacity='0.4'/%3E%3Cpolygon points='118,28 126,28 126,16 129,16 129,9 131,4 133,9 133,16 136,16 136,28' fill='%232d4a2d' opacity='0.5'/%3E%3Cpolygon points='142,28 152,28 152,18 155,18 155,12 158,12 158,6 160,6 162,6 162,12 165,12 165,18 168,18 168,28' fill='%232d4a2d' opacity='0.45'/%3E%3Cpolygon points='173,28 181,28 181,17 184,17 184,11 186,6 188,11 188,17 191,17 191,28' fill='%232d4a2d' opacity='0.4'/%3E%3C/svg%3E");
+    background-size: 500px 28px;
+    background-repeat: repeat-x;
+    pointer-events: none;
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px 30px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav-badge { display: flex; align-items: center; gap: 14px; }
+
+  .nav-badge-star {
+    width: 48px; height: 48px;
+    background: var(--gold);
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+
+  .nav-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 1.45rem;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+
+  .nav-subtitle {
+    font-size: 0.68rem;
+    color: var(--gold);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-style: italic;
+  }
+
+  .navbar-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    list-style: none;
+  }
+
+  .nav-link {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cream) !important;
+    padding: 8px 18px;
+    border: 1.5px solid rgba(200,168,75,0.45);
+    border-radius: 2px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    background: rgba(255,255,255,0.04);
+    font-family: 'Libre Baskerville', serif;
+  }
+
+  .nav-link:hover {
+    background: var(--gold);
+    color: var(--bark) !important;
+    border-color: var(--gold);
+    transform: translateY(-1px);
+  }
+
+  /* HERO */
+  .hero-banner {
+    background: linear-gradient(160deg, var(--pine) 0%, var(--moss) 55%, var(--sage) 100%);
+    padding: 56px 40px 48px;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  .hero-stamp {
+    width: 170px; height: 170px;
+    border: 3px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    background: rgba(0,0,0,0.2);
+    box-shadow: 0 0 0 6px rgba(200,168,75,0.12), inset 0 0 30px rgba(0,0,0,0.2);
+  }
+
+  .hero-year {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--cream);
+    line-height: 1;
+  }
+
+  .hero-season {
+    font-size: 0.68rem;
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .hero-tagline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: rgba(245,239,230,0.75);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* DIVIDER */
+  .trail-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 32px 40px 16px;
+  }
+
+  .trail-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--stone), transparent);
+  }
+
+  .trail-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--stone);
+    font-style: italic;
+    white-space: nowrap;
+  }
+
+  /* GRID */
+  .weeks-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    padding: 0 40px 60px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+
+  .week-card {
+    background: white;
+    border-radius: 3px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(61,43,31,0.09), 0 0 0 1px rgba(140,123,107,0.14);
+    transition: all 0.28s ease;
+    text-decoration: none;
+    display: block;
+    position: relative;
+  }
+
+  .week-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: left;
+    z-index: 2;
+  }
+
+  .week-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(61,43,31,0.16), 0 0 0 1px rgba(200,168,75,0.28);
+  }
+
+  .week-card:hover::before { transform: scaleX(1); }
+
+  .card-img-wrap {
+    position: relative;
+    overflow: hidden;
+    height: 150px;
+    background: var(--pine);
+  }
+
+  .card-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .week-card:hover .card-img-wrap img { transform: scale(1.07); }
+
+  .card-img-placeholder {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--pine), var(--moss));
+    font-size: 2.8rem;
+  }
+
+  .week-num-badge {
+    position: absolute;
+    top: 10px; left: 10px;
+    background: var(--bark);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 2px;
+    z-index: 1;
+  }
+
+  .card-body {
+    padding: 14px 18px 16px;
+    border-top: 1px solid rgba(140,123,107,0.13);
+  }
+
+  .card-week-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--bark);
+    margin-bottom: 5px;
+  }
+
+  .card-explore {
+    font-size: 0.68rem;
+    color: var(--sage);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .card-explore::after {
+    content: '→';
+    transition: transform 0.2s;
+  }
+
+  .week-card:hover .card-explore::after { transform: translateX(4px); }
+
+  .final-card { grid-column: span 2; }
+  .final-card .card-img-wrap { height: 180px; }
+  .final-card .card-body { background: linear-gradient(to right, rgba(200,168,75,0.06), white); }
+  .final-card .card-week-title { font-size: 1.2rem; }
+  .final-badge { background: var(--gold) !important; color: var(--bark) !important; }
+
+  /* FOOTER */
+  .site-footer {
+    background: var(--bark);
+    color: rgba(245,239,230,0.55);
+    text-align: center;
+    padding: 22px 40px;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    border-top: 3px solid var(--gold);
+  }
+
+  .site-footer span { color: var(--gold); }
+
+  @media (max-width: 768px) {
+    .weeks-grid { grid-template-columns: repeat(2, 1fr); padding: 0 20px 40px; }
+    .nav-inner { padding: 16px 20px 26px; flex-direction: column; gap: 16px; }
+    .final-card { grid-column: span 2; }
+  }
+
+  @media (max-width: 480px) {
+    .weeks-grid { grid-template-columns: 1fr; }
+    .final-card { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-badge">
+      <div class="nav-badge-star"></div>
+      <div>
+        <div class="nav-title">Matthew's PS70</div>
+        <div class="nav-subtitle">Spring 2026 Field Notes</div>
+      </div>
     </div>
-    <div class="navbar-nav">
-      <h4><a class="nav-link" href="../index.html">Home</a></h4>
-      <h4><a class="nav-link" href="../about.html">About</a></h4>
-    </div>
+    <ul class="navbar-nav">
+      <li><a class="nav-link" href="./index.html">Home</a></li>
+      <li><a class="nav-link" href="./about.html">About</a></li>
+      <li><a class="nav-link" href="./13_finalproject/index.html">Final Project</a></li>
+    </ul>
   </div>
 </nav>
 
-<body>
-<xmp style="display:none;">
-<div class="textcontainer">
-<br></br>
+<div class="hero-banner">
+  <div class="hero-stamp">
+    <div class="hero-year">PS70</div>
+    <div class="hero-season">Spring 2026</div>
+  </div>
+  <div class="hero-tagline">Intro to Digital Fabrication</div>
+</div>
 
-<h3>Week 1: Final Project Proposal</h3>
+<div class="trail-divider">
+  <div class="trail-line"></div>
+  <div class="trail-label">Trail Log — Weekly Expeditions</div>
+  <div class="trail-line"></div>
+</div>
 
-<p class = "margin"></p>
-Here are at most 3 ideas for my final project
-<p class = "margin"></p>
+<div class="weeks-grid">
 
-<h4>Idea 1 : [INSERT IDEA 1]</h4>
-<p class = "margin"></p>
+  <a class="week-card" href="./01_intro/index.html">
+    <div class="card-img-wrap">
+      <img src="./01_intro/tennis-770x513.jpg" alt="Week 1" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">🌲</div>
+      <div class="week-num-badge">Week 1</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">Introduction</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
-Idea 1 description
+  <a class="week-card" href="./02_2Ddesign/index.html">
+    <div class="card-img-wrap">
+      <img src="./02_2Ddesign/download.jpeg" alt="Week 2" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">🗺️</div>
+      <div class="week-num-badge">Week 2</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">2D Design</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
-<p class = "margin"></p>
+  <a class="week-card" href="./03_fabrication/index.html">
+    <div class="card-img-wrap">
+      <img src="./03_fabrication/week3-placeholder-image.jpg" alt="Week 3" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">🪵</div>
+      <div class="week-num-badge">Week 3</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">Fabrication</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
+  <a class="week-card" href="./04_microcontroller/index.html">
+    <div class="card-img-wrap">
+      <img src="./04_microcontroller/week4-placeholder-image.jpg" alt="Week 4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">⚡</div>
+      <div class="week-num-badge">Week 4</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">Microcontroller Programming</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
-<h4>Idea 2: [INSERT IDEA 2]</h4>
-<p class = "margin"></p>
+  <a class="week-card" href="./05_3Ddesign/index.html">
+    <div class="card-img-wrap">
+      <img src="./05_3Ddesign/week5-placeholder-image.jpg" alt="Week 5" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">⛰️</div>
+      <div class="week-num-badge">Week 5</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">3D Design</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
-Idea 2 Description
+  <a class="week-card" href="./06_inputs/index.html">
+    <div class="card-img-wrap">
+      <img src="./06_inputs/week6-placeholder-image.jpg" alt="Week 6" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">🔭</div>
+      <div class="week-num-badge">Week 6</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">Inputs & Sensors</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
-<p class = "margin"></p>
+  <a class="week-card" href="./07_outputs/index.html">
+    <div class="card-img-wrap">
+      <img src="./07_outputs/week7-placeholder-image.jpg" alt="Week 7" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">💡</div>
+      <div class="week-num-badge">Week 7</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">Outputs & Actuators</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
-<h4>Idea 3: [INSERT IDEA 3]</h4>
-<p class = "margin"></p>
+  <a class="week-card" href="./08_cnc/index.html">
+    <div class="card-img-wrap">
+      <img src="./08_cnc/week8-placeholder-image.jpg" alt="Week 8" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">🪨</div>
+      <div class="week-num-badge">Week 8</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">CNC Machining</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
-Idea 3 Description
+  <a class="week-card" href="./09_networking/index.html">
+    <div class="card-img-wrap">
+      <img src="./09_networking/week9-placeholder-image.jpg" alt="Week 9" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">🌐</div>
+      <div class="week-num-badge">Week 9</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">Networking & IoT</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
+  <a class="week-card" href="./10_machine/index.html">
+    <div class="card-img-wrap">
+      <img src="./10_machine/machine-placeholder-image.jpg" alt="Machine" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none">⚙️</div>
+      <div class="week-num-badge">Week 10</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">Machine Building</div>
+      <div class="card-explore">Explore</div>
+    </div>
+  </a>
 
+  <a class="week-card final-card" href="./13_finalproject/index.html">
+    <div class="card-img-wrap">
+      <img src="./13_finalproject/final-project-placeholder-image.jpg" alt="Final Project" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="card-img-placeholder" style="display:none; background: linear-gradient(135deg, #3d2b1f, #6b8c5e);">🏕️</div>
+      <div class="week-num-badge final-badge">Final</div>
+    </div>
+    <div class="card-body">
+      <div class="card-week-title">Final Project</div>
+      <div class="card-explore">Explore the full expedition</div>
+    </div>
+  </a>
 
 </div>
-</xmp>
+
+<footer class="site-footer">
+  <span>PS70</span> · Matthew · Spring 2026 · Harvard SEAS
+</footer>
+
 </body>
-
-<script src="../strapdown.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
-
 </html>
