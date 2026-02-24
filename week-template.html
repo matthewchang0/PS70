@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Week N — Matthew's PS70</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Georgia, serif;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 40px 24px 100px;
+      background: #fff;
+      color: #111;
+      line-height: 1.7;
+    }
+
+    /* ── back link ── */
+    .back {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #999;
+      text-decoration: none;
+      margin-bottom: 36px;
+    }
+    .back:hover { color: #111; }
+
+    /* ── page header ── */
+    .page-header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 24px;
+    }
+
+    .week-label {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: normal;
+      margin: 0 0 10px 0;
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #666;
+      font-style: italic;
+    }
+
+    /* ── body content ── */
+    h2 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 40px 0 10px;
+    }
+
+    p {
+      margin: 0 0 16px;
+    }
+
+    a { color: #111; }
+
+    /* ── images ── */
+    .img-block {
+      margin: 28px 0;
+    }
+
+    .img-block img {
+      width: 100%;
+      display: block;
+      background: #f5f5f5;
+    }
+
+    .img-block figcaption {
+      font-size: 0.82rem;
+      color: #888;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    /* two images side by side */
+    .img-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 28px 0;
+    }
+
+    .img-row figure {
+      margin: 0;
+    }
+
+    .img-row img {
+      width: 100%;
+      display: block;
+      background: #f5f5f5;
+    }
+
+    .img-row figcaption {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 5px;
+      font-family: monospace;
+    }
+
+    /* ── code ── */
+    pre {
+      background: #f7f7f7;
+      border-left: 3px solid #ddd;
+      padding: 16px 18px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      margin: 24px 0;
+    }
+
+    code {
+      font-family: monospace;
+      font-size: 0.88em;
+      background: #f3f3f3;
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+    }
+
+    /* ── video embed ── */
+    .video-wrap {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      height: 0;
+      margin: 28px 0;
+    }
+
+    .video-wrap iframe,
+    .video-wrap video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* inline video (mp4) */
+    .video-block {
+      margin: 28px 0;
+    }
+
+    .video-block video {
+      width: 100%;
+      display: block;
+    }
+
+    .video-block figcaption {
+      font-size: 0.82rem;
+      color: #888;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    /* ── download / file link ── */
+    .file-link {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #555;
+      text-decoration: none;
+      border: 1px solid #ddd;
+      padding: 4px 12px;
+      border-radius: 3px;
+      margin: 4px 0;
+    }
+
+    .file-link:hover {
+      border-color: #111;
+      color: #111;
+    }
+
+    /* ── reflections / callout box ── */
+    .callout {
+      border-left: 3px solid #FFD43B;
+      padding: 12px 18px;
+      background: #fffde7;
+      margin: 28px 0;
+      font-size: 0.95rem;
+    }
+
+    /* ── footer ── */
+    footer {
+      margin-top: 72px;
+      border-top: 1px solid #eee;
+      padding-top: 24px;
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #aaa;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer a { color: #aaa; }
+    footer a:hover { color: #111; }
+
+    @media (max-width: 500px) {
+      .img-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ① back link -->
+<a class="back" href="../index.html">← back to home</a>
+
+<!-- ② page header -->
+<div class="page-header">
+  <div class="week-label">week 00 · topic name</div>
+  <h1>Your Week Title Here</h1>
+  <p class="subtitle">One sentence that sets the vibe for the week.</p>
+</div>
+
+<!-- ════════════════════════════════════
+     YOUR CONTENT GOES BELOW THIS LINE
+     ════════════════════════════════════ -->
+
+<!-- ── section heading ── -->
+<h2>What I was trying to do</h2>
+
+<p>
+  Write whatever you want here. A sentence or ten.
+  Link to <a href="https://example.com">things</a> freely.
+  Ramble. Document the chaos.
+</p>
+
+<!-- ── single image ── -->
+<figure class="img-block">
+  <img src="your-image.jpg" alt="describe the image">
+  <figcaption>caption goes here — what is this, why does it matter</figcaption>
+</figure>
+
+<!-- ── section heading ── -->
+<h2>What I actually did</h2>
+
+<p>
+  More text. Explain your process, what went wrong, what surprised you.
+</p>
+
+<!-- ── two images side by side ── -->
+<div class="img-row">
+  <figure>
+    <img src="image-left.jpg" alt="">
+    <figcaption>left image caption</figcaption>
+  </figure>
+  <figure>
+    <img src="image-right.jpg" alt="">
+    <figcaption>right image caption</figcaption>
+  </figure>
+</div>
+
+<p>
+  Keep going. More explanation here.
+</p>
+
+<!-- ── code block ── -->
+<h2>The code</h2>
+
+<p>Brief explanation of what this code does.</p>
+
+<pre><code>// paste your code here
+void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(1000);
+}</code></pre>
+
+<!-- ── inline video ── -->
+<h2>It working (sort of)</h2>
+
+<figure class="video-block">
+  <video controls>
+    <source src="your-video.mp4" type="video/mp4">
+  </video>
+  <figcaption>video caption — what are we looking at</figcaption>
+</figure>
+
+<!-- ── file download link ── -->
+<h2>Files</h2>
+
+<p>
+  <a class="file-link" href="your-file.zip">📦 source files (.zip)</a><br>
+  <a class="file-link" href="your-design.svg">🗂 design file (.svg)</a>
+</p>
+
+<!-- ── callout / reflection ── -->
+<h2>Reflections</h2>
+
+<div class="callout">
+  What worked, what didn't, what you'd do differently.
+  This is a good place for honest thoughts.
+</div>
+
+<!-- ════════════════════════════════════
+     END OF YOUR CONTENT
+     ════════════════════════════════════ -->
+
+<footer>
+  <a href="../index.html">← matthew's ps70</a>
+  <span>Harvard SEAS · PS70 · Spring 2026</span>
+</footer>
+
+</body>
+</html>

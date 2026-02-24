@@ -1,59 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <title>About — PS70</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Georgia, serif;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 40px 24px 100px;
+      background: #fff;
+      color: #111;
+      line-height: 1.7;
+    }
 
-<title>Matthew's PS70 Website </title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="./style.css" rel="stylesheet">
+    .back {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #999;
+      text-decoration: none;
+      margin-bottom: 36px;
+    }
+    .back:hover { color: #111; }
 
+    .page-header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 24px;
+    }
 
-<nav class="navbar navbar-expand-sm navbar-dark">
-  <div style="align-items: center; justify-content: center;" class="container-fluid">
-    <div class="flexrow">
-      <h2 class="nav-title">PS70 Spring 2026</h2>
-    </div>
-    <div class="navbar-nav">
-      <h4><a class="nav-link" href="./index.html">Home</a></h4>
-      <h4><a class="nav-link" href="./about.html">About</a></h4>
-    </div>
-  </div>
-</nav>
+    .page-label {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
 
+    h1 {
+      font-size: 1.9rem;
+      font-weight: normal;
+      margin: 0 0 10px 0;
+      line-height: 1.25;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 40px 0 10px;
+    }
+
+    p { margin: 0 0 16px; }
+
+    a { color: #111; }
+
+    /* intro: photo + blurb side by side */
+    .intro-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 28px;
+      align-items: start;
+      margin: 28px 0 32px;
+    }
+
+    .intro-row img {
+      width: 200px;
+      display: block;
+      background: #f5f5f5;
+    }
+
+    .img-block {
+      margin: 28px 0;
+    }
+
+    .img-block img {
+      width: 100%;
+      display: block;
+      background: #f5f5f5;
+    }
+
+    .img-block figcaption {
+      font-size: 0.82rem;
+      color: #888;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    .img-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 28px 0;
+    }
+
+    .img-row figure { margin: 0; }
+
+    .img-row img {
+      width: 100%;
+      display: block;
+      background: #f5f5f5;
+    }
+
+    .img-row figcaption {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 5px;
+      font-family: monospace;
+    }
+
+    .video-block { margin: 28px 0; }
+    .video-block video { width: 100%; display: block; }
+    .video-block figcaption {
+      font-size: 0.82rem;
+      color: #888;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    footer {
+      margin-top: 72px;
+      border-top: 1px solid #eee;
+      padding-top: 24px;
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #aaa;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer a { color: #aaa; }
+    footer a:hover { color: #111; }
+
+    @media (max-width: 520px) {
+      .intro-row { grid-template-columns: 1fr; }
+      .intro-row img { width: 100%; }
+      .img-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
 <body>
-<xmp style="display:none;">
-<div class="textcontainer">
 
+<a class="back" href="./index.html">← back to home</a>
 
+<div class="page-header">
+  <div class="page-label">about</div>
+  <h1>Hi, I'm Matthew!</h1>
+</div>
 
-<h3>About Me</h3>
-
-<p class="margin">   </p>
-<div class="center-row">
-  <img src="./me.jpeg" alt="placeholder for you about me image" style="width:300px">
-  <p id="aboutme">
-    Hi! My name is Matthew Chang and I am interested in building cool things! I'm originally from Irvine, California.
+<div class="intro-row">
+  <img src="seven.png" alt="The Seven Sisters">
+  <p>
+    Hi! My name is Matthew Chang and I am interested in building cool things!
+    I'm originally from Irvine, California and I plan to concentrate in physics and EE, or maybe philosophy.
+    I have no experience with fabrication but I do have some experience with software. I decided to take PS70 because I thought it would be a great introduction to learn how to build physical stuff. I'm so excited to meet you all and have a fun semester!
   </p>
 </div>
-<br></br>
+<p style="font-family: monospace; font-size: 0.82rem; color: #888; margin-top: -20px; width: 200px;">The Seven Sisters in England, one of my favorite places I've ever hiked!</p>
+<footer>
+  <a href="./index.html">← matthew's ps70</a>
+  <span>PS70 · Spring 2026</span>
+</footer>
 
-Hello there is more text here, feel free to go into more detail about stuff you are interested in as well. As well as place more
-images if you are interested in those things
-<br></br>
-<img src="./generic-placeholder-image.jpg" alt="generic placeholder image">
-
-<br></br>
-Maybe even add a video?
-<br></br>
-
-<video width="640" height="480" controls>
-  <source src="temp-video.mp4" type="video/mp4">
-</video>
-
-
-</div>
-</xmp>
 </body>
-
-<script src="./strapdown.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
-
 </html>

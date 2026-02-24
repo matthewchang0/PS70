@@ -1,61 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <title>Week 1 - PS70</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Georgia, serif;
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 40px 24px 100px;
+      background: #fff;
+      color: #111;
+      line-height: 1.7;
+    }
 
-<title>PS70: Intro to Digital Fabrication </title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="../style.css" rel="stylesheet">
+    .back {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #999;
+      text-decoration: none;
+      margin-bottom: 36px;
+    }
+    .back:hover { color: #111; }
 
+    .page-header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 24px;
+    }
 
-<nav class="navbar navbar-expand-sm navbar-dark" style=" color: #EEE7E8;">
-  <div style="align-items: center; justify-content: center;" class="container-fluid">
-    <div class="flexrow">
-      <h2 class="nav-title">PS70 Fall 2024</h2>
-    </div>
-    <div class="navbar-nav">
-      <h4><a class="nav-link" href="../index.html">Home</a></h4>
-      <h4><a class="nav-link" href="../about.html">About</a></h4>
-    </div>
-  </div>
-</nav>
+    .week-label {
+      font-family: monospace;
+      font-size: 0.8rem;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
 
+    h1 {
+      font-size: 1.9rem;
+      font-weight: normal;
+      margin: 0 0 10px 0;
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: #666;
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin: 40px 0 10px;
+    }
+
+    p {
+      margin: 0 0 16px;
+    }
+
+    a { color: #111; }
+
+    .img-block {
+      margin: 28px 0;
+    }
+
+    .img-block img {
+      width: 100%;
+      display: block;
+      background: #f5f5f5;
+    }
+
+    .img-block figcaption {
+      font-size: 0.82rem;
+      color: #888;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    .img-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin: 28px 0;
+    }
+
+    .img-row figure { margin: 0; }
+
+    .img-row img {
+      width: 100%;
+      display: block;
+      background: #f5f5f5;
+    }
+
+    .img-row figcaption {
+      font-size: 0.8rem;
+      color: #888;
+      margin-top: 5px;
+      font-family: monospace;
+    }
+
+    pre {
+      background: #f7f7f7;
+      border-left: 3px solid #ddd;
+      padding: 16px 18px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      margin: 24px 0;
+    }
+
+    code {
+      font-family: monospace;
+      font-size: 0.88em;
+      background: #f3f3f3;
+      padding: 1px 4px;
+      border-radius: 2px;
+    }
+
+    pre code { background: none; padding: 0; }
+
+    .video-block { margin: 28px 0; }
+    .video-block video { width: 100%; display: block; }
+    .video-block figcaption {
+      font-size: 0.82rem;
+      color: #888;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    .file-link {
+      display: inline-block;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #555;
+      text-decoration: none;
+      border: 1px solid #ddd;
+      padding: 4px 12px;
+      border-radius: 3px;
+      margin: 4px 0;
+    }
+    .file-link:hover { border-color: #111; color: #111; }
+
+    .callout {
+      border-left: 3px solid #FFD43B;
+      padding: 12px 18px;
+      background: #fffde7;
+      margin: 28px 0;
+      font-size: 0.95rem;
+    }
+
+    /* idea cards */
+    .idea {
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 20px 22px;
+      margin: 20px 0;
+    }
+
+    .idea h3 {
+      font-size: 1rem;
+      font-weight: bold;
+      margin: 0 0 10px;
+    }
+
+    .idea p { margin: 0; color: #444; }
+
+    footer {
+      margin-top: 72px;
+      border-top: 1px solid #eee;
+      padding-top: 24px;
+      font-family: monospace;
+      font-size: 0.82rem;
+      color: #aaa;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer a { color: #aaa; }
+    footer a:hover { color: #111; }
+
+    @media (max-width: 500px) {
+      .img-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
 <body>
-<xmp style="display:none;">
-<div class="textcontainer">
-<br></br>
 
-<h3>Week 1: Final Project Proposal</h3>
+<a class="back" href="../index.html">← back to home</a>
 
-<p class = "margin"></p>
-Here are at most 3 ideas for my final project
-<p class = "margin"></p>
-
-<h4>Idea 1 : [INSERT IDEA 1]</h4>
-<p class = "margin"></p>
-
-Idea 1 description
-
-<p class = "margin"></p>
-
-
-<h4>Idea 2: [INSERT IDEA 2]</h4>
-<p class = "margin"></p>
-
-Idea 2 Description
-
-<p class = "margin"></p>
-
-<h4>Idea 3: [INSERT IDEA 3]</h4>
-<p class = "margin"></p>
-
-Idea 3 Description
-
-
-
+<div class="page-header">
+  <div class="week-label">week 01</div>
+  <h1>Final Project Proposal</h1>
 </div>
-</xmp>
+
+<p>Here are my (at most) three ideas for the final project. Still figuring out which direction feels most exciting — and most feasible.</p>
+
+<div class="idea">
+  <h3>Idea 1 · Drone</h3>
+  <figure class="img-block">
+    <img src="3d-printed-drone-goengineer.jpg" alt="project sketch">
+  </figure> 
+  <p>I'm really inspired by builds that can move and fly! I would love to make a small drone, equipped with a camera, that can do some function, e.g. it can recognize my face in a sea of other faces and land in my hand, or can autonomously adjust itself based on wind conditions and altitude.
+
+    I would need to design and probably 3D print the drone frame, the mount for the camera, the propeller guards, and the landing gear. I am interested in outsourcing the camera and the Raspberry Pi, which may be needed to run any software I want to execute on the drone.
+
+    I imagine the drone could be connected via a normal radio transmitter and perhaps there could be a function in my code that can execute the "return to home" or "facial recognition" idea.
+  </p>
+</div>
+
+<div class="idea">
+  <h3>Idea 2 · Go-Kart</h3>
+  <figure class="img-block">
+    <img src="maxresdefault.jpg" alt="project sketch">
+  </figure> 
+  <p>In the same vein of building functional objects that can move, my second idea is building a go-cart. When I was a kid, there was this small Lightning McQueen toy car that I would drive and it was my favorite thing to do. I think we take a lot of our tools and devices, cars included, for granted these days, and I would love to learn how to build a small car from scratch.
+
+    I would need to design and build a frame for the car, install axles, a steering system, and find a chair or seat for the driver to sit on. I could use a gas or electric engine, but I think assembling a small gas engine is the most doable option.
+
+    Both idea 1 and 2 are a bit out of my wheelhouse, but I think they are awesome and would love to learn more about how flight in drones and motion through engines work.
+  </p>
+</div>
+
+<div class="idea">
+  <h3>Idea 3 · Radio</h3>
+  <figure class="img-block">
+    <img src="radio.webp" alt="project sketch">
+  </figure>
+  <p>Lastly, I am very interested in the idea of building a radio! I have heard that building a DIY radio is often a lab exercise in high school classes, but I've never built one and I would really like to learn how the electronics and the science behind radio transmission works. I was thinking that there could be a speaker and an electric screen that shows what radio channel you are on.
+
+    After a quick Google Search, it seems that I will need a radio module, a microcontroller, a display, and a speaker/amplifier. I think it would be awesome to build the structure for the radio with 3D printing or in wood.
+  </p>
+</div>
+
+<footer>
+  <a href="../index.html">← matthew's ps70</a>
+  <span>PS70 · Spring 2026</span>
+</footer>
+
 </body>
-
-<script src="../strapdown.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
-
 </html>

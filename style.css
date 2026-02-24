@@ -104,3 +104,11 @@ code {
 #aboutme {
   padding: 20px;
 }
+
+.intro-row {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 28px;
+  align-items: center;  /* ← change this from start to center */
+  margin: 28px 0 32px;
+}
