@@ -53,7 +53,7 @@
 <p>The most delicate mechanical step was tuning the eccentric nuts on the cart wheels. Each one had to be tight enough that the cart stayed seated on the extrusion, but loose enough that the 3D-printed carriage did not bow outward. Once the carts rolled smoothly, we mounted the carbon-fiber rods and pen holder so the machine could move the pen across the bed.</p>
 
 <div class="callout">
-  <strong>Mechanical materials:</strong> plywood base, aluminum extrusion rails, steel rods, linear bearings, timing belts, pulleys, eccentric nuts, lock nuts, M3 and M5 hardware, two NEMA 17 stepper motors, and 3D-printed carriage and pen-holder parts.
+  <strong>Materials we used for mechnical part:</strong> plywood base, aluminum extrusion rails, steel rods, linear bearings, timing belts, pulleys, eccentric nuts, lock nuts, M3 and M5 hardware, two NEMA 17 stepper motors, and 3D-printed carriage and pen-holder parts.
 </div>
 
 <h2>2. Circuit</h2>
@@ -80,7 +80,7 @@
 <p>One non-electrical detail worth flagging: the four-wire ribbon cable that connects each stepper to its driver does not have a standard color order. With four leads there are 24 possible orderings, and only two drive the motor correctly. That is roughly a 1-in-12 chance per random arrangement. The way through it is to pick a starting arrangement, and if the motor does not turn, or turns the wrong way, swap pairs systematically: A to B, then C to D, then B to C, and so on, until something works. Once the motors finally move smoothly, leave the cables alone.</p>
 
 <div class="callout">
-  <strong>Electronics materials:</strong> Seeed Xiao ESP32-C3, two stepper drivers plus the casualties from earlier attempts, two limit switches, one servo for the pen lift, 100 &micro;F decoupling capacitors, jumper wires, and a solderless breadboard.
+  <strong>Materials we used for electrical part:</strong> Seeed Xiao ESP32-C3, two stepper drivers plus the casualties from earlier attempts, two limit switches, one servo for the pen lift, 100 &micro;F decoupling capacitors, jumper wires, and a solderless breadboard.
 </div>
 
 <h2>3. Early Web Controls</h2>
