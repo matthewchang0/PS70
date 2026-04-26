@@ -1,38 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<title>PS70: Intro to Digital Fabrication </title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="../style.css" rel="stylesheet">
-
-
-<nav class="navbar navbar-expand-sm navbar-dark" style=" color: #EEE7E8;">
-  <div style="align-items: center; justify-content: center;" class="container-fluid">
-    <div class="flexrow">
-      <h2 class="nav-title">PS70 Fall 2024</h2>
-    </div>
-    <div class="navbar-nav">
-      <h4><a class="nav-link" href="../index.html">Home</a></h4>
-      <h4><a class="nav-link" href="../about.html">About</a></h4>
-    </div>
-  </div>
-</nav>
-
+<head>
+  <title>Weeks 10-12 - PS70</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="../week-style.css" rel="stylesheet">
+</head>
 <body>
-<xmp style="display:none;">
-<div class="textcontainer">
-<p class="margin">   </p>
 
-<h3>Weeks 10-12: Machine Building</h3>
+<a class="back" href="../index.html">&larr; back to home</a>
 
-<h4>Assignment: Build a Drawing Robot</h4>
-
-
+<div class="page-header">
+  <div class="week-label">week 10 &middot; April 26, 2026</div>
+  <h1>Machine Building and End Effectors</h1>
 </div>
-</xmp>
+
+
+<figure class="img-block">
+  <img src="machine-cover.png" alt="Drawing machine tracing the clock face">
+</figure>
+
+<p><strong>Team:</strong> Matthew, Marc, Avery, and Jolana.</p>
+
+<h2>Project Concept</h2>
+<p>For our drawing machine, our idea was to build a clock that draws the time but the drawing disappears every minute, as time progresses. Instead of using LEDs, ink, or a screen, the machine draws the hour marks and hands with a water-filled pen. This special buddha paper becomes dark when wet, but it fades as the water quickly evaporates, so the machine has to keep redrawing the time.</p>
+
+<h2>Build Plan</h2>
+<p>We broke the project into a few main jobs:</p>
+
+<ol>
+  <li>Assemble the drawing-machine frame and XY motion system.</li>
+  <li>Mount the plywood base and buddha paper surface.</li>
+  <li>Wire the microcontroller, stepper drivers, motors, limit switches, and pen lift.</li>
+  <li>Use simple move and rotate commands to verify that the motors responded.</li>
+  <li>Write firmware that converts the current time into clock-face drawing instructions.</li>
+  <li>Debug motor direction, cable order, and circle geometry until the plotter drew correctly.</li>
+  <li>Test the water pen on buddha paper and record the final demo.</li>
+</ol>
+
+<h2>1. Frame and Plotter</h2>
+<p>A roughly 3 ft by 2.5 ft plywood board, cut from a larger sheet, served as the base for the whole machine. The XY plotter itself came from the PS70 drawing-machine kit. Within the kit, we used aluminum extrusion rails for both axes, 3D-printed carts riding on roller wheels, timing belts and pulleys, two stepper motors, and a servo-driven pen end effector.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="avery-sawing.png" alt="Avery cutting the plywood base">
+  </figure>
+  <figure>
+    <img src="jolana-building.png" alt="Jolana assembling the plotter axis">
+  </figure>
+</div>
+
+<p>The most delicate mechanical step was tuning the eccentric nuts on the cart wheels. Each one had to be tight enough that the cart stayed seated on the extrusion, but loose enough that the 3D-printed carriage did not bow outward. Once the carts rolled smoothly, we mounted the carbon-fiber rods and pen holder so the machine could move the pen across the bed.</p>
+
+<div class="callout">
+  <strong>Mechanical materials:</strong> plywood base, aluminum extrusion rails, steel rods, linear bearings, timing belts, pulleys, eccentric nuts, lock nuts, M3 and M5 hardware, two NEMA 17 stepper motors, and 3D-printed carriage and pen-holder parts.
+</div>
+
+<h2>2. Circuit</h2>
+<p>The control electronics went through three iterations before we had a stable build.</p>
+
+<h3>Attempt 1: Soldered Protoboard and ESP32-S3</h3>
+<p>Our first build was assembled on a solderable protoboard around an ESP32-S3 dev board. On power-up the ESP32 short-circuited and started smoking. The most likely culprit was a stepper driver installed in the wrong orientation, which would have shorted the driver's logic supply directly across the rails. We did not catch it until after the smoke.</p>
+
+<h3>Attempt 2: Solderless Breadboard and the Same ESP32</h3>
+<p>We rebuilt from scratch on a solderless breadboard, which made it much easier to verify each connection before powering up. Several fixes from this round are worth recording so we do not repeat them:</p>
+
+<ul>
+  <li>Replaced the 1000 &micro;F driver-rail capacitors with 100 &micro;F capacitors; the larger value was overkill for these drivers and caused problems on power-up.</li>
+  <li>Switched all stepper-driver logic signals from 5 V to 3.3 V; only the servo stayed on the 5 V rail.</li>
+  <li>Removed a couple of stray solder bridges.</li>
+  <li>Tightened a handful of intermittent connections.</li>
+</ul>
+
+<p>By the end of attempt 2, the ESP32 was talking to a host laptop over Wi-Fi and confirming receipt of move commands on the serial monitor, but the motors still would not actually move. A second driver eventually gave out as well.</p>
+
+<h3>Attempt 3: Seeed Xiao ESP32-C3</h3>
+<p>We swapped the dev board for a Seeed Xiao ESP32-C3, picked up a fresh driver, and rewired everything to the Xiao's much smaller pinout on a clean solderless breadboard. This is the configuration that actually runs the clock.</p>
+
+<p>One non-electrical detail worth flagging: the four-wire ribbon cable that connects each stepper to its driver does not have a standard color order. With four leads there are 24 possible orderings, and only two drive the motor correctly. That is roughly a 1-in-12 chance per random arrangement. The way through it is to pick a starting arrangement, and if the motor does not turn, or turns the wrong way, swap pairs systematically: A to B, then C to D, then B to C, and so on, until something works. Once the motors finally move smoothly, leave the cables alone.</p>
+
+<div class="callout">
+  <strong>Electronics materials:</strong> Seeed Xiao ESP32-C3, two stepper drivers plus the casualties from earlier attempts, two limit switches, one servo for the pen lift, 100 &micro;F decoupling capacitors, jumper wires, and a solderless breadboard.
+</div>
+
+<h2>3. Early Web Controls</h2>
+<p>Before writing the clock-specific firmware, we used a simple web interface to send move and rotate commands to the ESP32. This let us test the communication path separately from the full clock drawing logic. If the browser sent a command and the serial monitor printed it, we knew the board was reachable and parsing messages.</p>
+
+<figure class="img-block">
+  <img src="web-interface-debug.png" alt="Instruction generator web interface and Arduino serial monitor">
+  <figcaption>early web-control interface sending move and rotate commands while the serial monitor confirmed messages</figcaption>
+</figure>
+
+<p>This stage was useful because it separated the problems we were having. With this application, Wi-Fi communication, command parsing, stepper driver wiring, motor direction, and physical motion could each be checked one at a time.</p>
+
+<h2>4. Clock Firmware</h2>
+<p>The attached firmware is a single Arduino sketch, <code>clockdrawing.ino</code>. It keeps the earlier Wi-Fi and WebSocket structure for compatibility, but generates its own clock-drawing instructions instead of relying on manual browser commands.</p>
+
+<p>The sketch stores drawing commands in an instruction buffer. A command type of <code>0</code> means move forward, and a command type of <code>1</code> means rotate. The main loop executes one instruction at a time whenever the robot reports that the previous motion is complete.</p>
+
+<pre><code>const int MAX_NUM_INSTRUCTIONS = 200;
+int instructions[MAX_NUM_INSTRUCTIONS][2];
+int numInstructions = 0;
+int currInstruction = 0;
+
+void addMoveInstruction(int distMm) {
+  if (numInstructions >= MAX_NUM_INSTRUCTIONS) return;
+  instructions[numInstructions][0] = 0;
+  instructions[numInstructions][1] = distMm;
+  numInstructions++;
+}
+
+void addRotateInstruction(int angleDeg) {
+  if (numInstructions >= MAX_NUM_INSTRUCTIONS) return;
+  instructions[numInstructions][0] = 1;
+  instructions[numInstructions][1] = angleDeg;
+  numInstructions++;
+}</code></pre>
+
+<p>The clock face is built from helper functions. The circle is approximated as many short line segments, and the hour ticks and hands are generated from angle and length values.</p>
+
+<pre><code>const int CLOCK_RADIUS_MM = 80;
+const int TICK_LENGTH_MM = 8;
+const int HAND_LENGTH_H_MM = 45;
+const int HAND_LENGTH_M_MM = 70;
+
+float minuteAngle = minute * 6.0;
+float hourAngle = (h12 * 30.0) + (minute * 0.5);</code></pre>
+
+<p>The minute hand moves 6 degrees per minute. The hour hand moves 30 degrees per hour, plus half a degree per minute, so it sits between hour marks instead of snapping from one number to the next. The sketch gets time from NTP, generates a new clock path when the minute changes, and then lets the robot work through the queued motion commands. </p>
+
+<h2>5. Motion Debugging</h2>
+<p>Once the machine could move, the hard part became making the motion match the drawing we expected. The first satisfying milestone was simply seeing the axes move after assembly.</p>
+
+<figure class="video-embed">
+  <iframe src="https://www.youtube.com/embed/2cAmZg1jFdc" title="Machine axes moving after initial build" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+  <figcaption>first successful axis motion after the initial machine build</figcaption>
+</figure>
+
+<p>The most memorable bug happened when the machine tried to draw a circle but produced a sinusoidal path instead. The axis directions were not mapped correctly, so the firmware traced part of the clock face in the wrong direction instead of closing the shape. Fixing the sign and direction behavior finally gave us the expected circular motion.</p>
+
+<figure class="video-embed">
+  <iframe src="https://www.youtube.com/embed/TUyJaZZtKXQ" title="Machine drawing sinusoidal shape instead of circle" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+  <figcaption>incorrect XY direction behavior creating a sinusoidal path instead of a circle</figcaption>
+</figure>
+
+<h2>6. Final Result</h2>
+<p>After finally bringing together the base, plotter, circuit, firmware, water pen, and buddha paper, the machine began to come together. We oriented the clock so that 12 o'clock points toward the zero of the Y-axis, with the hour and minute hands sweeping around a configurable center on the bed. With water in the pen, the machine draws the face, lets the image fade, and redraws the current time.</p>
+
+<figure class="video-embed">
+  <iframe src="https://www.youtube.com/embed/hG7eKGpRel8" title="Drawing machine demo video 1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+  <figcaption>demo of the drawing machine in motion</figcaption>
+</figure>
+
+<figure class="video-embed">
+  <iframe src="https://www.youtube.com/embed/BhEyNbb-uLM" title="Drawing machine demo video 2" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
+  <figcaption>second demo showing the machine drawing the clock</figcaption>
+</figure>
+
+<h2>7. Files and Setup</h2>
+<p><a class="file-link" href="clockdrawing.ino" download>Download clockdrawing.ino</a></p>
+
+<p>To use the sketch, open it in the Arduino IDE with the drawing-machine support files from the starter code, select the Xiao ESP32-C3 or matching ESP32 board, install the needed ESP32 networking libraries, and upload. The serial monitor prints the Wi-Fi connection status and can be used to confirm that the board is receiving or generating instructions.</p>
+
+<footer>
+  <a href="../index.html">&larr; matthew's ps70</a>
+  <span>PS70 &middot; Spring 2026</span>
+</footer>
+
 </body>
-
-<script src="../strapdown.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" ></script>
-
 </html>
