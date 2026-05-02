@@ -11,39 +11,144 @@
 <a class="back" href="../index.html">&larr; back to home</a>
 
 <div class="page-header">
-  <div class="week-label">week 02 &middot; 2D design and cutting</div>
+  <div class="week-label">week 02</div>
   <h1>2D Design &amp; Laser Cutting</h1>
-  <p class="subtitle">Making flat files that can become physical objects.</p>
 </div>
 
 <h2>Assignment</h2>
-<p>This week focused on 2D design workflows: designing a press-fit box, getting more comfortable in Fusion 360, and preparing files for laser cutting.</p>
+<p>This week focused on 2D design, laser cutting, and CAD. I learned how to make finger joints, how to use the laser cutter, and build up some confidence and knowledge in Fusion 360!</p>
 
 <figure class="img-block">
-  <img src="week2-placeholder-image.jpg" alt="Week 2 project placeholder">
-  <figcaption>placeholder image for the Week 2 build documentation</figcaption>
+  <img src="week2-cover-treasure-chest.jpeg" alt="Finished laser cut treasure chest box with engraved Pirate's Booty logo">
+  <figcaption>My finished box with the living hinge lid</figcaption>
 </figure>
 
-<h2>Make a Box</h2>
-<p>The first assignment was to design and fabricate a box. The important constraints were kerf, material thickness, and making sure the finger joints fit tightly enough to hold the box together.</p>
+<h2>Assignment 1: Create a Box</h2>
+<p>I started by making the standard finger joint box from the demo video on the PS70 website. I learned how finger joints work and how to operate the laser cutter. This was my first practice piece for getting comfortable with Fusion and how to account for kerf and various laser cutting softwares.</p>
+<figure class="img-block">
+  <img src="finger-joint-practice-box.png" alt="Laser cut cardboard finger joint practice box">
+  <figcaption>My practice finger joint box</figcaption>
+</figure>
 
-<div class="callout">
-  Add measurements, screenshots from the design file, and photos of the assembled box here.
+<p>Once I had the basics down, I wanted to push myself to build something more unique. I was inspired by pirate treasure chests and decided to make one myself.</p>
+
+<figure class="img-block img-small">
+  <img src="treasure-chest-inspiration.webp" alt="Pirate treasure chest inspiration">
+  <figcaption>The treasure chest shape that inspired my box design</figcaption>
+</figure>
+
+<p>The defining feature of a treasure chest is the curved lid, so I implemented a living hinge using straight cuts to bend the cardboard into shape. <strong>Attempt 1:</strong> I cut the living hinge but forgot that the cuts need to extend all the way to the edges on both sides. Because they did not, the hinge could not flex properly.</p>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="living-hinge-laser-cutting.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>Laser cutting the living hinge for the treasure chest lid</figcaption>
+</figure>
+
+<div class="img-row">
+  <figure>
+    <img src="living-hinge-attempt-1-cuts.png" alt="First living hinge attempt with cuts stopping before the edges">
+    <figcaption>Attempt 1: the hinge cuts stopped short instead of reaching both edges</figcaption>
+  </figure>
+  <figure>
+    <img src="living-hinge-attempt-1-bending.png" alt="First living hinge attempt failing to bend smoothly">
+    <figcaption>Because of that, the lid did not bend smoothly or correctly</figcaption>
+  </figure>
 </div>
 
-<h2>Fusion 360 Tutorial</h2>
-<p>I used the Fusion workflow to practice sketch constraints, dimensions, extrudes, and export steps. The goal was to make the model parametric enough that changes in material thickness or slot size could be adjusted cleanly.</p>
+<p><strong>Attempt 2:</strong> I re-cut the hinge with the edges done correctly, but I entered the wrong dimensions. If I had actually used that lid, the whole box would have been too big for the laser cutter. I learned this way that our laser cutter in SC 102 only prints up to 18 by 32 inches.</p>
 
-<h2>Fusion Modeling</h2>
-<p>For the modeling assignment, I focused on translating a design idea into a fabrication-ready file. The next version of this page should include the original sketch, CAD screenshots, exported files, and notes on what changed after cutting.</p>
+<p><strong>Attempt 3:</strong> I scaled everything down by 0.8 so it would fit on the bed. I also wanted to engrave the Pirate's Booty logo, one of my roommates' favorite chips, on the side of the box. I first tried an online PNG-to-SVG converter and imported the file into Fusion, but that did not work. So I started tracing the logo line by line in Fusion, which took about an hour. Bobby eventually came and saved me by showing me Inkscape's Image to Bitmap feature, which got me to the same result in a fraction of the time.</p>
+
+<figure class="img-block">
+  <img src="pirates-booty-logo-engraving.png" alt="Pirate's Booty logo engraved on the front panel of the cardboard box">
+  <figcaption>Engraving the Pirate's Booty logo from an SVG onto the front of the box</figcaption>
+</figure>
+
+<figure class="img-block">
+  <img src="gluing-living-hinge-lid.png" alt="Hot gluing the living hinge lid onto the treasure chest">
+  <figcaption>Gluing the living hinge lid into place on the treasure chest</figcaption>
+</figure>
+
+<p>With the correct dimensions, the engraved logo, and a working living hinge, I finished the build by hot gluing two plastic hinges to attach the lid so it could open and close freely.</p>
+
+<h3>Final Box</h3>
+<figure class="img-block">
+  <img src="final-treasure-chest-front.png" alt="Final treasure chest box with engraved Pirate's Booty logo on the front">
+  <figcaption>The finished treasure chest from the front, with the engraved Pirate's Booty logo</figcaption>
+</figure>
+
+<div class="img-row">
+  <figure>
+    <img src="final-treasure-chest-open.png" alt="Final treasure chest box opened to show the living hinge lid">
+    <figcaption>The finished box opening on its plastic hinges</figcaption>
+  </figure>
+  <figure>
+    <img src="final-treasure-chest-back.png" alt="Back view of the final treasure chest box showing the plastic hinges">
+    <figcaption>Back view showing the two plastic hinges holding the lid</figcaption>
+  </figure>
+</div>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="final-treasure-chest-opening-closing.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>Opening and closing the final treasure chest lid</figcaption>
+</figure>
+
+<h2>Assignment 2: Fusion 360 Tutorials</h2>
+<p>Motivated to learn as much CAD as I could, I worked through the first 10 videos of the <a href="https://www.youtube.com/watch?v=d3qGQ2utl2A&amp;t=38s">&quot;Teach Me Fusion 360 in 30 Days&quot;</a> tutorial playlist and followed along with every demo. The three most exciting files I made were a glass bottle, a hex nut, and an ice cube tray.</p>
+
+<figure class="img-block">
+  <img src="fusion-bottle-model.png" alt="Fusion 360 glass bottle model">
+  <figcaption>Loft bottle</figcaption>
+</figure>
+
+<div class="img-row">
+  <figure>
+    <img src="fusion-hex-nut-model.png" alt="Fusion 360 hex nut model">
+    <figcaption>Hex nut</figcaption>
+  </figure>
+  <figure>
+    <img src="fusion-ice-cube-tray-model.png" alt="Fusion 360 ice cube tray model">
+    <figcaption>Ice cube tray</figcaption>
+  </figure>
+</div>
+
+<h2>Assignment 3: Create My Own CAD Models</h2>
+<p>I decided to CAD up the two devices I use most every day: my iPhone and my AirPods case. This turned out to be a fun challenge because it forced me to use my calipers carefully to capture the exact spacing between features on each device. For the AirPods case, I included the charging port, speaker holes, the lines where the case opens, and the small dimples on the case. For the iPhone, I modeled the power button, ringer switch, volume buttons, triple camera layout, flash, speaker holes, and charging port, all placed to match my caliper measurements exactly. I leaned heavily on the fillet and extrude tools to reproduce the geometry accurately in 3D, and I came away with a much better understanding of how both devices are dimensioned and laid out.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="airpods-cad-model-overview.png" alt="Fusion 360 AirPods case CAD model overview">
+    <figcaption>AirPods case model with the rounded body</figcaption>
+  </figure>
+  <figure>
+    <img src="airpods-cad-model-details.png" alt="Fusion 360 AirPods case CAD model detail view">
+    <figcaption>Detail view showing an engraving I did to write "Designed by Apple in California"</figcaption>
+  </figure>
+</div>
+
+<div class="img-row">
+  <figure>
+    <img src="iphone-cad-model-buttons-cameras.png" alt="Fusion 360 iPhone CAD model showing buttons, cameras, speaker holes, and charging port">
+    <figcaption>iPhone model with the side buttons and camera</figcaption>
+  </figure>
+  <figure>
+    <img src="iphone-cad-model-camera-port.png" alt="Fusion 360 iPhone CAD model showing triple camera, flash, speaker holes, and charging port">
+    <figcaption>Another view of the iPhone, on-off button, port</figcaption>
+  </figure>
+</div>
+
+<div class="callout">
+Apple really likes filleting their features to make everything look smooth!
+</div>
 
 <h2>Files</h2>
-<p><a class="file-link" href="./temp.zip" download>Download Week 2 files (.zip)</a></p>
-
-<h2>Reflection</h2>
-<div class="callout">
-  The key thing to document here is the relationship between digital measurements and the real fit of the cut parts: what fit on the first try, what needed adjustment, and what I would change next time.
-</div>
+<p><a class="file-link" href="./week-2-ps70-fusion-files.zip" download>Download Week 2 Fusion 360 files (.zip)</a></p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>
