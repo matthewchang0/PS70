@@ -2,7 +2,7 @@ body {
   font-family: Georgia, serif;
   max-width: 740px;
   margin: 0 auto;
-  padding: 40px 24px 100px;
+  padding: 40px 24px 16px;
   background: #fff;
   color: #111;
   line-height: 1.7;
@@ -146,6 +146,12 @@ pre code {
   display: block;
 }
 
+.video-small {
+  max-width: 360px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .video-embed {
   margin: 28px 0;
 }
@@ -203,7 +209,7 @@ pre code {
 }
 
 footer {
-  margin-top: 72px;
+  margin-top: 32px;
   border-top: 1px solid #eee;
   padding-top: 24px;
   font-family: monospace;

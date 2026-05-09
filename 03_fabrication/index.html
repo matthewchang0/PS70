@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Week 3 - PS70</title>
+  <title>Week 3 - Fabrication</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../week-style.css" rel="stylesheet">
@@ -11,29 +11,172 @@
 <a class="back" href="../index.html">&larr; back to home</a>
 
 <div class="page-header">
-  <div class="week-label">week 03 &middot; fabrication</div>
+  <div class="week-label">week 03</div>
   <h1>Hand Tools and Fabrication</h1>
-  <p class="subtitle">Building a kinetic sculpture and learning how the physical parts behave.</p>
 </div>
 
 <h2>Assignment</h2>
-<p>The Week 3 assignment was to make a kinetic sculpture using hand tools and fabrication techniques. The project was about motion, mechanism, and the small tolerances that make a moving object feel smooth instead of stuck.</p>
+<p>This week's assignment was to build a kinetic sculpture with a motor and power source. I decided to make a merry-go-round where objects move both rotationally and up and down at the same time. Merry-go-rounds were one of my favorite things to ride at the mall as a kid.</p>
 
 <figure class="img-block">
-  <img src="week3-placeholder-image.jpg" alt="Week 3 fabrication placeholder">
-  <figcaption>placeholder image for the kinetic sculpture documentation</figcaption>
+  <img src="finished-carousel-cats-front.jpg" alt="Finished kinetic sculpture with cats riding up and down as the platform rotates">
+  <figcaption>The finished kinetic sculpture with calibration cats!</figcaption>
 </figure>
 
-<h2>Kinetic Sculpture</h2>
-<p>This page is set up for the full build log: concept sketch, materials, fabrication process, mechanism photos, and a video of the sculpture moving.</p>
+<h2>Planning</h2>
+<p>I started by sketching out diagrams on the blackboard and on scratch paper, and consulted Bobby on the best approach. The challenge was that I wanted two motions happening at once (rotation plus vertical movement).</p>
+<p>I considered using a cam to drive the up-and-down motion, but cams are really designed for a single motion, and bringing one into a system that was already rotating would have been a headache. Instead, I landed on a simpler idea which was a 3D printed wavy base that the rods would ride on. As the base rotates, the rods would naturally rise and fall along the wave pattern.</p>
 
-<h2>Process Notes</h2>
-<p>When documenting this week, the most useful details will be where the motion came from, how the parts were joined, where friction showed up, and what changed between the first test and the final sculpture.</p>
-
-<h2>Reflection</h2>
-<div class="callout">
-  Add notes on what worked mechanically, what felt too loose or too tight, and what you would redesign if you rebuilt it.
+<div class="img-row">
+  <figure>
+    <img src="mechanism-sketch-blackboard.jpg" alt="Blackboard sketch of the merry-go-round mechanism">
+    <figcaption>The blackboard sketch where I started thinking through the stacked platform and wavy track</figcaption>
+  </figure>
+  <figure>
+    <img src="mechanism-sketch-paper.jpg" alt="Hand-drawn paper diagram of the wavy base mechanism">
+    <figcaption>My scratch paper sketch of how the wavy base would make rotation into up-and-down motion</figcaption>
+  </figure>
 </div>
+
+<h2>3D Printing the Wavy Base</h2>
+<p><strong>Attempt 1:</strong> I made the base in Fusion by extruding a ring and using a spline curve to cut waves out of it. I had a problem with this, however, because the surface that I got after extrusion was not flat. The design I initially made had curves along the z-axis that increased friction and prevented the rods from sliding up and down smoothly. In addition, the rods were drifting diagonally instead of moving straight up and down, which broke the whole mechanism.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="fusion-wavy-track-spline.jpg" alt="Fusion 360 spline used to shape the wavy track">
+    <figcaption>First Fusion model of the wavy base, with the spline curve for the up-and-down track</figcaption>
+  </figure>
+
+  <figure>
+    <img src="fusion-wavy-base-model.jpg" alt="Fusion 360 model of the wavy base">
+    <figcaption>The final Fusion model of the wavy base, which flattened curves to reduce friction</figcaption>
+  </figure>
+</div>
+
+<p><strong>Attempt 2:</strong> I went to reprint and ran into my first 3D printer disaster. A glob of yellow PLA formed around the nozzle and ruined the print. I learned the hard way that you really need to stick around and watch the first layer go down before walking away and trusting the printer to do its thing.</p>
+<p><strong>Attempts 3-5-ish:</strong> I went through about three more iterations dialing in measurements.</p>
+
+<figure class="img-block">
+  <img src="wavy-base-printing.jpg" alt="Yellow wavy base printing on the Prusa 3D printer">
+  <figcaption>Wavy base printing on the Prusa</figcaption>
+</figure>
+
+<p>Ultimately, I made it work by making two fixes:</p>
+<ol>
+  <li>Make the base flatter while still keeping the wave pattern, so the rods could glide rather than fight the surface.</li>
+  <li>Secure the vertical alignment of the rods so they could only move up and down.</li>
+</ol>
+
+<figure class="img-block img-small">
+  <img src="fusion-gear-sketch.jpg" alt="Fusion 360 sketch of the gear-like center piece">
+  <figcaption>A Fusion sketch for the center gear that helped transfer the motor's rotation to the platform</figcaption>
+</figure>
+
+<h2>Laser Cutting the Cardboard Cut-Outs</h2>
+<p>To secure the rods in the vertical position, I laser cut a cardboard piece with holes sized for the rods and stacked it above the base. I had to go through several iterations of designing the cardboard cutouts in 2D in Fusion, including adjusting the diameter of the holes that the rods passed through.</p>
+<p>Initially, I chose a smaller hole size because I wanted the cardboard to hold the rods vertically instead of at an angle. This restricted the up-and-down motion of the rods and increased the friction between the wood and the cardboard cutout itself. After about five to six iterations on the cardboard cutouts, I found a design that worked, with a larger hole size of 5 mm for the first top layer and a smaller hole size of 4.8 mm for the second layer that aligned the rods vertically.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="fusion-cardboard-structure-layout.jpg" alt="Fusion 360 layout for the cardboard motor support structure">
+    <figcaption>The Fusion layout for the laser cut cardboard structure and support pieces</figcaption>
+  </figure>
+  <figure>
+    <img src="early-carousel-assembly.jpg" alt="Early cardboard carousel assembly on top of the yellow wavy base">
+    <figcaption>An early assembly of the cardboard layers, center gear, motor support, and wavy base</figcaption>
+  </figure>
+</div>
+
+<h2>Reducing Friction on the Rods</h2>
+<p>Even with the better base, the wooden rods had way too much friction at their bottom edges where they met the PLA. I needed to round those edges so the rods could ride the waves smoothly.</p>
+
+<figure class="video-block video-small">
+  <video controls muted playsinline preload="metadata">
+    <source src="friction-test-merry-go-round.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>An early test where the motor struggled because there was too much friction between the PLA base and the wooden rods</figcaption>
+</figure>
+
+<p>I considered two options:</p>
+<ol>
+  <li>Press-fitting a small 3D printed cap onto the bottom of each rod.</li>
+  <li>Manually sanding the bottoms of the rods round.</li>
+</ol>
+<p>I actually tried both, but I had a hard time getting the supports off the press-fit caps cleanly, so I went with sanding. It worked very well. The first time I got a full rotation working on the benchtop DC power supply, I just stood there in awe with Bobby. TBH, I had lost faith in the middle of this project since the motor could not overcome the friction. I thought it was over, so seeing it finally rotate was so nice.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="non-sanded-flat-rod.jpg" alt="Non-sanded wooden rod with a flat bottom edge">
+    <figcaption>Before sanding</figcaption>
+  </figure>
+  <figure>
+    <img src="sanded-rounded-rod.jpg" alt="Sanded wooden rod with a rounded bottom edge">
+    <figcaption>After sanding</figcaption>
+  </figure>
+</div>
+
+<p>In my final iteration, I also cut a hole at the bottom of the cardboard base to let the motor wires escape. I had not done this in the previous version, and the wooden rods kept crossing paths with the wires as they rotated, which messed with the motion. It made a big difference!</p>
+
+<div class="img-row">
+  <figure>
+    <img src="wire-exit-hole.jpg" alt="Hole cut into the bottom cardboard layer for motor wires">
+    <figcaption>The wire exit hole</figcaption>
+  </figure>
+  <figure>
+    <img src="motor-inside-view.jpg" alt="Inside view of the carousel showing the DC motor mounted in the structure">
+    <figcaption>Inside view of the cardboard structure with the DC motor tucked into the center support</figcaption>
+  </figure>
+</div>
+
+<h2>Choosing the Objects on the Merry-Go-Round</h2>
+<p>For the actual objects on the merry-go-round, I initially found a design for a cute horse on MakerWorld and printed out a few of them. But once I printed and mounted them, they were way too heavy. The weight that they added increased the friction between the rods and the PLA base and the motor did not work as well.</p>
+
+<figure class="img-block img-small">
+  <img src="heavy-horse-test-print.jpg" alt="Heavy black 3D printed horse considered for the merry-go-round">
+  <figcaption>The original horse print was cute, but it was too heavy for the mechanism to move smoothly</figcaption>
+</figure>
+
+<p>I realized I needed something lighter. Looking around the PS70 lab, I noticed some calibration cats Jessica had printed previously and left lying around. They were cute, no one was using them, and they were light, so they became my objects for the merry-go-round!</p>
+<p>To attach them to the rods, I considered:</p>
+<ol>
+  <li>3D printing a little base or connector for each cat.</li>
+  <li>Just super gluing them straight on and hoping for the best.</li>
+</ol>
+<p>Bobby suggested a third option: drill a hole into each cat using a drill bit matching the rod diameter, which was 5 mm. I went with that, and they slid onto the rods perfectly.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="drilling-cat-holes.jpg" alt="Drilling a 5 mm hole into the bottom of a calibration cat">
+    <figcaption>Drilling a 5 mm hole into each cat so it could slide directly onto a wooden rod</figcaption>
+  </figure>
+  <figure>
+    <img src="cat-drilled-on-rod.jpg" alt="Calibration cat mounted upside down on a wooden rod">
+    <figcaption>Previous iteration using the Maker World horses, which ultimately did not pan out</figcaption>
+  </figure>
+</div>
+
+<h2>Final Result</h2>
+<div class="img-row">
+  <figure>
+    <img src="finished-carousel-bobby.jpg" alt="Completed kinetic sculpture with Bobby standing behind it in the lab">
+    <figcaption>The completed sculpture with a special guest in the background</figcaption>
+  </figure>
+</div>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="final-merry-go-round.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>The completed kinetic sculpture with the cats rotating around while moving up and down on the wavy base</figcaption>
+</figure>
+
+<p>This was by far one of the hardest projects I have done so far. Doing two motions at once, rotation and vertical movement, was a much bigger challenge than I expected, and I went through a lot of failed iterations before things clicked. I came out of it with a much better understanding of how DC motors actually work under stress, and I gained confidence in my skills in both 2D and 3D design with the laser cutter and the 3D printer.</p>
+<p>It was really cool to finally see this come together. Merry-go-rounds were something I used to beg my parents to ride at the mall as a kid, and now I have built a prototype of one myself in the lab!</p>
+
+<h2>Files</h2>
+<p><a class="file-link" href="./week-3-fusion-files.zip" download>Download Week 3 Fusion 360 files (.zip)</a></p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>

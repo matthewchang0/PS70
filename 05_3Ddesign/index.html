@@ -11,29 +11,127 @@
 <a class="back" href="../index.html">&larr; back to home</a>
 
 <div class="page-header">
-  <div class="week-label">week 05 &middot; 3D design and printing</div>
+  <div class="week-label">week 05</div>
   <h1>3D Design &amp; Printing</h1>
-  <p class="subtitle">Modeling an object, printing it, and learning from the physical result.</p>
 </div>
 
 <h2>Assignment</h2>
-<p>The assignment was to model and 3D print something. The documentation should show both the design process and the printed result, including what changed between the CAD model and the final part.</p>
+<p>This week's assignment was to 3D print something I couldn't make with subtractive methods, and to scan an object using photogrammetry. I decided to print two things that would actually be useful in my daily life:</p>
+<ol>
+  <li>An iPhone stand for when I'm on FaceTime at my desk and have nowhere to set my phone.</li>
+  <li>An ID card holder that attaches to my keychain, since I always carry a keycard and two keys to enter my dorm but never bought a proper holder.</li>
+</ol>
 
-<figure class="img-block">
-  <img src="week5-placeholder-image.jpg" alt="Week 5 3D print placeholder">
-  <figcaption>placeholder image for the 3D model and printed object</figcaption>
+<div class="img-row">
+  <figure>
+    <img src="iphone-stand-final.jpg" alt="Finished black 3D printed iPhone stand on a lab table">
+    <figcaption>The finished iPhone stand</figcaption>
+  </figure>
+  <figure>
+    <img src="keycard-holder-keychain.jpg" alt="Finished black keycard holder attached to keys and a lanyard">
+    <figcaption>The finished keycard holder on my keychain</figcaption>
+  </figure>
+</div>
+
+<h2>iPhone Stand</h2>
+<p>CAD'ing up an iPhone stand turned out to be a great confidence builder for my 3D printing and Fusion skills. Since this was a very custom-fit piece, I started by sketching out the dimensions and what I wanted each side to look like before touching Fusion.</p>
+<p>The most important part of the sketch was getting the angle right. The angle between the phone holder and the support behind it had to match exactly how I sit at my desk during FaceTime calls, relative to my face and the desk height.</p>
+
+<figure class="img-block img-small">
+  <img src="iphone-stand-sketch.jpg" alt="Notebook sketch of iPhone stand dimensions and side view angle">
+  <figcaption>My sketch of the phone holder before CAD'ing</figcaption>
 </figure>
 
-<h2>Model</h2>
-<p>This section is ready for the CAD screenshots, design constraints, dimensions, and notes on why the object needed to be 3D printed rather than cut from flat material.</p>
+<p>Once the sketch was right, I extruded the design and cut out a few features:</p>
+<ul>
+  <li>A gap in the middle so my charging cable could route through.</li>
+  <li>A pentagon-shaped cutout in the back, partly because I like pentagons, and partly so the charger wire could pass through the body of the stand.</li>
+  <li>Filleted edges to make everything smooth and nicer to look at.</li>
+</ul>
 
-<h2>Print</h2>
-<p>Useful details to add here include printer settings, filament type, orientation, support material, print time, and any cleanup after printing.</p>
+<div class="img-row">
+  <figure>
+    <img src="iphone-stand-fusion-sketch.jpg" alt="Fusion 360 sketch showing the iPhone stand side profile with dimensions">
+    <figcaption>The Fusion side profile with the main 100 mm and 150 mm dimensions</figcaption>
+  </figure>
+  <figure>
+    <img src="iphone-stand-engraving.jpg" alt="Fusion 360 close-up of text engraved on the iPhone stand">
+    <figcaption>Engraving of my name on the bottom of the stand</figcaption>
+  </figure>
+</div>
+
+<p>I also engraved my name on the bottom. To do the engraving, I used <a href="https://text-to-svg.com/">Text to SVG</a> to convert letters into an SVG that I imported into Fusion.</p>
+
+<figure class="img-block">
+  <img src="iphone-stand-fusion-model.jpg" alt="Fusion 360 model of the completed iPhone stand">
+  <figcaption>The completed iPhone stand model in Fusion before printing</figcaption>
+</figure>
+
+<div class="img-row">
+  <figure>
+    <img src="iphone-stand-printing-prusa.jpg" alt="Black iPhone stand printing on a Prusa MK4S">
+    <figcaption>Phone holder printing on the Prusa</figcaption>
+  </figure>
+  <figure>
+    <img src="iphone-stand-final.jpg" alt="Finished iPhone stand with cable opening and pentagon cutout visible">
+    <figcaption>The finished stand with the charger opening on the back</figcaption>
+  </figure>
+</div>
+
+<h2>Keycard Holder</h2>
+<p>This one took many more iterations than the iPhone stand. The dimensions were trickier and I had a couple of mishaps with the supports. I eventually had to switch from organic supports to a normal grid support so I could actually peel them off cleanly.</p>
+<p>Like the first project, I started by sketching the top and side views. Two dimensions mattered most:</p>
+<ol>
+  <li>The keycard pocket itself had to fit my card snugly, so I measured carefully with calipers.</li>
+  <li>I needed to leave space on one end for a keychain hole, which added about 4.5 mm to the overall length of the print.</li>
+</ol>
+
+<div class="img-row">
+  <figure>
+    <img src="keycard-holder-sketch.jpg" alt="Notebook sketch of ID card holder dimensions, opening, and keychain hole">
+    <figcaption>The original ID card holder sketch with the pocket, opening, and keychain hole</figcaption>
+  </figure>
+  <figure>
+    <img src="keycard-holder-fusion.jpg" alt="Fusion 360 model of an ID card holder designed like a credit card">
+    <figcaption>The Fusion model with the credit card style engravings</figcaption>
+  </figure>
+</div>
+
+<p>For fun, I decided to make the holder look like a credit card by adding engravings on the front for my name and a credit card chip design. I used Text to SVG again for the name, and <a href="https://picsvg.com/">picsvg.com</a> to convert a credit card chip image into an SVG I could import into Fusion as an extrusion cut.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="keycard-holder-print-front.jpg" alt="Finished black keycard holder with a chip graphic and engraved text">
+    <figcaption>The credit-card-inspired design with chip graphic and engraved name</figcaption>
+  </figure>
+  <figure>
+    <img src="keycard-holder-fit-test.jpg" alt="Keycard sliding into the finished 3D printed holder">
+    <figcaption>Testing the fit with my keycard inside</figcaption>
+  </figure>
+</div>
+
+<p>Looking at the final print, the Prusa didn't quite have the resolution to do the fine text justice, but it was still cool to try and the overall design came out clean. The keycard fits snugly and the keychain loop works perfectly.</p>
+
+<figure class="img-block img-small">
+  <img src="keycard-holder-keychain.jpg" alt="Finished keycard holder attached to a keychain with keys">
+  <figcaption>The finished holder on my keychain with my keycard inside</figcaption>
+</figure>
+
+<h2>Assignment 2: Photogrammetry</h2>
+<p>I had a lot of fun with the photogrammetry portion of this assignment. I was genuinely shocked at how well RevoScan could reconstruct a 3D model just from a bunch of 2D photos. It still seems to me like it's out of a Mission Impossible movie.</p>
+
+<figure class="img-block">
+  <img src="face-scan-revoscan.jpg" alt="RevoScan photogrammetry scan of my face on a computer monitor">
+  <figcaption>Photogrammetry scan of my face. The black hair did not capture well, but the face and neck came out well.</figcaption>
+</figure>
+
+<p><strong>Scan 1: My face.</strong> This was harder than I expected because I have black hair, and the scanner doesn't pick up dark surfaces well since there is not a lot of light reflecting back. The hair came out rough, but I got a nice clean scan of my face and neck.</p>
+<p><strong>Scan 2: The Greek/Roman bust.</strong> I looked around the PS70 lab for objects that would be hard to recreate in Fusion the normal way, and found a bust of a Greek or Roman man sitting around. I did a trial scan on him and used the mesh isolation and fusion tools in RevoScan to clean up the extraneous parts of the scan I didn't want.</p>
+<p><strong>Scan 3: An SD card holder.</strong> I picked this one because it has a lot of small details that I thought would be tedious to model in CAD. The scan actually did a great job capturing the details, which I thought was impressive given how small the features are.</p>
 
 <h2>Reflection</h2>
-<div class="callout">
-  Add what surprised you about the print: tolerance, surface finish, support removal, strength, or anything you would change in the next iteration.
-</div>
+<p>The useful-object constraint made this assignment much more satisfying. The iPhone stand was a confidence boost because it went from sketch to CAD to a print that actually solves a small daily annoyance. The keycard holder was more stubborn, but it taught me a lot about tolerances, supports, and how much detail a printer can realistically resolve.</p>
+<p>The photogrammetry scans were the biggest surprise. I expected the results to feel rough and gimmicky, but RevoScan was able to preserve much more geometry than I thought it would, especially on the smaller SD card holder.</p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>
