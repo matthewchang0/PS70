@@ -203,6 +203,16 @@ pre code {
   font-size: 0.95rem;
 }
 
+.media-placeholder {
+  border: 1px dashed #ccc;
+  background: #f8f8f8;
+  color: #777;
+  font-family: monospace;
+  font-size: 0.82rem;
+  padding: 18px;
+  margin: 24px 0;
+}
+
 .note {
   color: #666;
   font-style: italic;

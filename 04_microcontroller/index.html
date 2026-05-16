@@ -1,41 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Week 4 - PS70</title>
+  <title>Week 4 - Microcontroller Programming</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../week-style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/arduino-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/arduino.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 
 <a class="back" href="../index.html">&larr; back to home</a>
 
 <div class="page-header">
-  <div class="week-label">week 04 &middot; microcontrollers</div>
+  <div class="week-label">week 04</div>
   <h1>Microcontroller Programming</h1>
-  <p class="subtitle">Using code to make electronics respond in the physical world.</p>
 </div>
 
 <h2>Assignment</h2>
-<p>The goal for this week was to do something with an Arduino-style microcontroller: write firmware, wire a circuit, upload code, and demonstrate a physical output or behavior.</p>
+<p>This week's assignment was to program a microcontroller to do something. I decided to build on my kinetic sculpture from Week 3 and bring it under microcontroller control. I wanted to extend my project in three ways:</p>
+<ol>
+  <li>Run the carousel from the microcontroller instead of the benchtop DC power supply I used in Week 3, and be able to change the speed of motion directly in my Arduino code.</li>
+  <li>Add a potentiometer to the breadboard so I could adjust the carousel's rotation speed live, instead of hard-coding a value every time.</li>
+  <li>Add voice control using the Adafruit I2S microphone, so I could start and stop the carousel by saying "start" or "stop."</li>
+</ol>
+<p>I wanted to take the opportunity through this assignment to specifically learn two things I had never used before, the Adafruit I2S MEMS microphone, and the OpenAI transcription API.</p>
 
 <figure class="img-block">
-  <img src="week4-placeholder-image.jpg" alt="Week 4 microcontroller placeholder">
-  <figcaption>placeholder image for the circuit and firmware documentation</figcaption>
+  <img src="week4-cover-full-system-wiring.png" alt="Complete Week 4 wiring setup with potentiometer, motor driver, I2S microphone, and carousel">
+  <figcaption>The full Week 4 setup with the potentiometer, motor driver, I2S microphone, and kinetic sculpture</figcaption>
 </figure>
 
-<h2>Build</h2>
-<p>This page is now formatted for a clear electronics writeup: circuit diagram, parts list, wiring notes, code, debugging, and a short demo.</p>
+<h2>Part 1: XIAO microcontroller</h2>
+<p>To get the carousel to run continuously from the XIAO microcontroller instead of the DC power supply, in my first sketch, I just turned the motor on and left it on:</p>
 
-<h2>Code</h2>
-<p class="note">Add the final sketch here once the circuit documentation is complete.</p>
+<pre><code class="language-arduino">digitalWrite(IN1, HIGH);   // direction
+digitalWrite(IN2, LOW);
+analogWrite(ENA, speed);   // 0-255, speed</code></pre>
 
-<pre><code>// Week 4 code can go here.</code></pre>
+<p>Because the motor needs a higher voltage than the XIAO's pins can supply, I had to wire the XIAO through a motor driver. I followed this <a href="https://randomnerdtutorials.com/esp32-dc-motor-l298n-motor-driver-control-speed-direction/">Random Nerd Tutorials guide</a> to figure out the wiring:</p>
 
-<h2>Reflection</h2>
-<div class="callout">
-  Good details to add: which pins were used, what the code was supposed to do, what failed during upload or wiring, and how the final behavior changed after debugging.
+<figure class="img-block">
+  <img src="motor-driver-potentiometer-wiring.jpeg" alt="XIAO microcontroller on a breadboard wired to a motor driver and potentiometer for carousel control">
+  <figcaption>The XIAO wired through the motor driver, with the potentiometer added on the breadboard for speed control</figcaption>
+</figure>
+
+<p>I got it working, but at an ENA value of 255 the carousel spun way too fast. The rotation was so strong that the cats couldn't ride up and down the wavy base. There was too much rotational force for the vertical motion to happen. I needed to slow the motor down so the up-and-down motion could still work. After a few runs of trial and error, I found the carousel ran best at an ENA value of around 150.</p>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="carousel-ena-150-continuous-motion.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>The carousel running from the XIAO at ENA 150 in continuous motion</figcaption>
+</figure>
+
+<p>Next I tried pulsing the motor, which involved turning it on and off in short bursts, to see if that produced smoother motion. I ran a series of tests, varying:</p>
+<ul>
+  <li>how long the motor ran during each pulse, in milliseconds</li>
+  <li>how long the motor rested between pulses, in milliseconds</li>
+</ul>
+<p>I started with a single calibration cat and slowly worked up to six. I couldn't start with six right away, because the combined friction of six objects was too much for the motor to overcome from a standstill. In the end, the pulsing worked best with the motor on for 80 ms and resting for 100 ms:</p>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="pulsing-motion-no-objects.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>Pulsing motion test without any objects, with the motor turning on briefly and then resting briefly</figcaption>
+</figure>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="pulsing-motion-one-calibration-cat.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>Pulsing motion test with one calibration cat riding on the carousel</figcaption>
+</figure>
+
+<pre><code class="language-arduino">#define IN1 D0
+#define IN2 D1
+#define ENA D2
+
+const int PULSE_MS = 80;
+const int REST_MS  = 100;
+
+void setup() {
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(ENA, OUTPUT);
+
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+}
+
+void loop() {
+  analogWrite(ENA, 255);   // full-power pulse
+  delay(PULSE_MS);
+
+  analogWrite(ENA, 0);     // coast
+  delay(REST_MS);
+}</code></pre>
+
+<p>In all of the pulsing tests I drove the motor at full power (ENA = 255) during the "on" phase. But across the trials I noticed that pulsing actually made the carousel perform worse than running it continuously.</p>
+<p>My hypothesis is that since static friction is greater than or equal to kinetic friction, every time a pulse rests, the carousel comes to a stop, so on the next pulse the motor has to overcome static friction all over again. For a kinetic system with as much friction as the wooden rods have, continuous is probably a better approach than pulsing.</p>
+
+<h2>Part 2: Potentiometer</h2>
+<p>I also added a potentiometer to the breadboard so I could control the carousel's speed by turning a knob, rather than hard-coding a speed value into the Arduino sketch every time. This makes it so that I can change the speed while the sculpture is running.</p>
+<p>Wiring the potentiometer was relatively easy, since it only has three pins and two of them are just power. The important detail in the code was reading the potentiometer on an analog pin rather than a digital one. As we learned in class, an analog pin can read a continuous range of voltage values, while a digital pin only reads a discrete HIGH or LOW.</p>
+
+<pre><code class="language-arduino">#define IN1 D1
+#define IN2 D2
+#define ENA D3
+#define POT A0
+
+void setup() {
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(ENA, OUTPUT);
+
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+}
+
+void loop() {
+  int raw = analogRead(POT);
+  int speed = map(raw, 0, 4095, 0, 255);
+  analogWrite(ENA, speed);
+}</code></pre>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="potentiometer-speed-control-carousel.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>Adjusting the carousel's speed live with the potentiometer</figcaption>
+</figure>
+
+<h2>Part 3: I2S Microphone</h2>
+<p>Finally, I wanted to take the chance in this assignment to learn the Adafruit I2S MEMS microphone. When it was introduced in class, I thought it was amazing that a component that small could work as a microphone, so I wanted to learn to use it properly.</p>
+<p>My goal was to build a system such that when a user says "start," the carousel turns on, and when a user says "stop," it turns off.</p>
+<p>I started by soldering the header pins onto the Adafruit breakout board, then wiring the board to the XIAO. I followed the <a href="https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/">Adafruit I2S MEMS microphone tutorial</a>:</p>
+
+<div class="img-row">
+  <figure>
+    <img src="full-system-potentiometer-motor-driver-i2s-mic-wiring.png" alt="Breadboard wiring showing the XIAO microcontroller connected to a potentiometer, motor driver, and Adafruit I2S microphone">
+    <figcaption>The full wiring setup with the potentiometer, motor driver, and Adafruit I2S microphone all connected to the XIAO</figcaption>
+  </figure>
+  <figure>
+    <img src="hand-drawn-wiring-schematic-xiao-pot-i2s-mic.png" alt="Hand-drawn wiring schematic of the circuit with the XIAO microcontroller, potentiometer, and Adafruit I2S microphone">
+    <figcaption>Hand-drawn wiring schematic of the circuit, including the XIAO microcontroller, potentiometer, and Adafruit I2S microphone</figcaption>
+  </figure>
 </div>
+
+<p>Before involving any API, I wanted to confirm the microphone was giving me sensible data. So for my first test, I checked to confirm that as I spoke louder, the raw signal value printed to the serial monitor also increased.</p>
+<p><strong>Problem 1.</strong> At first, no matter what I said, the microphone always read 32768. Whether I was speaking loudly or getting close to the mic, it made no difference. The issue turned out to be the power pin. I had wired the mic to 5 V, but it needed only 3.3 V. By moving the power pin to 3.3 V, I finally got values that changed with sound.</p>
+<p><strong>Problem 2.</strong> Even after fixing the voltage, the reading average was stuck flat near 14600. Reading the <a href="https://cdn-learn.adafruit.com/downloads/pdf/adafruit-i2s-mems-microphone-breakout.pdf">Adafruit breakout board datasheet</a>,
+I learned this was a phenomenon called a DC offset, where the microphone outputs a constant bias, and you have to subtract that bias to measure the actual audio, which is the variation around it. Here's the code I wrote to do that:</p>
+
+<pre><code class="language-arduino">long sum = 0;
+for (int i = 0; i &lt; samples; i++) sum += (buf[i] &gt;&gt; 8);
+int32_t dc = sum / samples;          // the bias
+
+// then measure variation AROUND dc (that's the real audio)
+int32_t a = abs((buf[i] &gt;&gt; 8) - dc);</code></pre>
+
+<p>Once I confirmed that speaking near the microphone reliably increased the raw signal values and that the values made sense, I moved on to transcription.</p>
+
+<h2>Sending audio to the OpenAI API</h2>
+<p>I got an API key from OpenAI's developer portal and added it to my Arduino sketch. I had to learn how to send the microphone's recorded audio to OpenAI's transcription model, which converts speech to text. I sent the recordings to the API through an HTTPS POST request. Here's the code:</p>
+
+<pre><code class="language-arduino">client.printf("POST /v1/audio/transcriptions HTTP/1.1\r\n");
+client.printf("Host: api.openai.com\r\n");
+client.printf("Authorization: Bearer %s\r\n", OPENAI_KEY);
+client.printf("Content-Type: multipart/form-data; boundary=%s\r\n", b);
+client.printf("Content-Length: %d\r\n", len);
+client.printf("Connection: close\r\n\r\n");</code></pre>
+
+<p>Although the model could pick out some of my words when I spoke clearly and loudly, it needed the right setup to give consistently usable results. Because I hadn't told the model what language I was speaking, it would sometimes transcribe my speech as completely different languages:</p>
+
+<pre><code class="language-text">rawPeak=1392632 scale=0.02 finalPeak=24999
+&gt;&gt;&gt; uploading
+&gt;&gt;&gt; heard: "കൂടുതലായി."
+motorOn=1  pot speed=194
+&gt;&gt;&gt; recording
+
+rawPeak=1259563 scale=0.02 finalPeak=25000
+&gt;&gt;&gt; uploading
+&gt;&gt;&gt; heard: "पार्टी."
+motorOn=1  pot speed=194
+&gt;&gt;&gt; recording
+
+rawPeak=1474022 scale=0.02 finalPeak=24999
+&gt;&gt;&gt; uploading
+&gt;&gt;&gt; heard: "闪闪。"
+motorOn=1  pot speed=194
+&gt;&gt;&gt; recording
+
+rawPeak=1739681 scale=0.01 finalPeak=25000
+&gt;&gt;&gt; uploading
+&gt;&gt;&gt; heard: "evident."</code></pre>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="whisper-speech-motor-low-accuracy.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>An early speech-to-motor attempt using the Whisper model, with low accuracy and lots of garbage transcription output</figcaption>
+</figure>
+
+<p>I realized I needed to tell the model from the start that I would be speaking English. After I specified the language up front, I was able to filter out most of the garbage results. After some research, I also switched from the Whisper model to OpenAI's newer gpt-4o-transcribe model, which gave noticeably better transcription accuracy and finally got it to work reliably!</p>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="speech-to-motor-high-accuracy-final.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>The final speech-to-text system controlling the motor with much higher accuracy</figcaption>
+</figure>
+
+<h2>Files</h2>
+<p><a class="file-link" href="./xiao-motor-project-week4-code.zip" download>Download Week 4 Arduino code / files (.zip)</a></p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>
