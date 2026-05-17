@@ -1,44 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Week 9 - PS70</title>
+  <title>Week 9 - Networking</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../week-style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/arduino-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/arduino.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 
 <a class="back" href="../index.html">&larr; back to home</a>
 
 <div class="page-header">
-  <div class="week-label">week 09 &middot; radio, WiFi, Bluetooth</div>
-  <h1>Networking and IoT</h1>
-  <p class="subtitle">Connecting a microcontroller to another device or service.</p>
+  <div class="week-label">week 09</div>
+  <h1>Networking</h1>
 </div>
 
 <h2>Assignment</h2>
-<p>The assignment was to program something with IoT, radio, WiFi, or Bluetooth. This page is set up to show the network architecture, the device code, and the final interaction.</p>
+<p>For this week's assignment, I wanted to build a wireless remote control for my radio final project using ESP-NOW. Since I'd already finished an initial version of the radio, a remote felt like a natural next step.</p>
+<p>I knew I wanted the remote to handle a few key functions:</p>
+<ul>
+  <li>play and pause the music</li>
+  <li>turn the volume up and down</li>
+  <li>skip to the next or previous song</li>
+  <li>mute</li>
+  <li>change modes, for example from MP3 to internet radio</li>
+</ul>
+<p>To do all of that, I planned to put about four buttons and a rotary encoder for volume on a breadboard alongside a XIAO microcontroller. I chose the XIAO because it is small but still has enough pins for this use case. It is also small enough that I could eventually turn the remote into a portable, handheld device. I also wanted to add an LED that changed color depending on the radio's current mode.</p>
 
 <figure class="img-block">
-  <img src="week9-placeholder-image.jpg" alt="Week 9 networking placeholder">
-  <figcaption>placeholder image for the networked microcontroller project</figcaption>
+  <img src="wireless-radio-remote-cover.png" alt="Wireless radio remote on a breadboard controlling the radio final project">
+  <figcaption>The wireless remote control for my radio final project</figcaption>
 </figure>
 
-<h2>System</h2>
-<p>The most useful diagram for this week will show what talks to what: microcontroller, browser or phone, server, sensor, output device, and the protocol connecting them.</p>
+<h2>Getting ESP-NOW Working</h2>
+<p>I started by reading the <a href="https://nathanmelenbrink.github.io/ps70/09_networking/index">ESP-NOW tutorial on the PS70 website</a> and the <a href="https://randomnerdtutorials.com/esp-now-esp32-arduino-ide/">Random Nerd Tutorials guide</a> it links to. ESP-NOW lets two ESP devices talk directly to each other, peer-to-peer, without a router. For that to work, each device needs to know the other's MAC address.</p>
+<p>To find the MAC addresses on my system, I called the ESP-IDF function <code>esp_read_mac()</code>, following the <a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/misc_system_api.html">Espressif API documentation</a>. Once I had both addresses, I hard-coded each device's MAC into the other's sketch:</p>
 
-<h2>Code and Demo</h2>
-<p>Add the final code, screenshots of serial output or web interaction, and a short explanation of how messages move through the system.</p>
+<pre><code class="language-arduino">// In the XIAO sketch, I entered the radio's MAC address:
+uint8_t mainRadioMac[] = { 0x34, 0x5F, 0x45, 0x37, 0x17, 0x4C };
+
+// In the radio sketch, I entered the XIAO's MAC address:
+uint8_t xiaoMac[] = { 0xB0, 0xA6, 0x04, 0x06, 0xAF, 0x44 };</code></pre>
+
+<p>With that, the radio and the remote could talk to each other directly.</p>
+
+<h2>Solving WiFi Channel Problems</h2>
+<p>One of the biggest challenges I ran into was that, even though ESP-NOW works without a router, both devices still have to be on the same WiFi channel. My radio has several modes, including internet radio, MP3, Bluetooth, and FM. The radio's ESP32 uses a different WiFi channel for each one, so the remote would work in one mode but not another. For instance, it worked in internet radio mode, but pressing the mode button rebooted the radio into MP3 mode on a different channel, where the remote went dead.</p>
+<p>The Serial Monitor helped me see the problem clearly. The remote was still emitting ESP-NOW packets, but the radio was no longer acknowledging them.</p>
+
+<figure class="img-block img-small">
+  <img src="remote-signal-not-acknowledged-serial-monitor.png" alt="Remote control sending an ESP-NOW signal that was not acknowledged by the radio, shown in the Serial Monitor">
+  <figcaption>The remote was emitting a signal, but the radio was not acknowledging it on the Serial Monitor</figcaption>
+</figure>
+
+<p>To solve this, I explored two possible solutions. The first was connecting the XIAO to the same WiFi network as the radio. This forces both devices onto the same channel by default, but it makes the remote depend on a specific WiFi network, like MAKERSPACE, being present. If I took the radio out of the makerspace, the remote would stop working, which was not what I wanted.</p>
+<p>The second solution was channel scanning, which is the approach I went with. In this approach, the XIAO sends commands on its current channel. If no acknowledgement comes back within a few milliseconds, it scans channels 1 through 13, trying each until it gets an acknowledgement. Once it finds the radio, it stays on that channel until the next failure.</p>
+<p>I ultimately chose channel scanning because it required no changes to the radio at all and was easier for the user. The XIAO automatically finds whatever channel the radio's ESP32 is on.</p>
+
+<h3>Some Limitations</h3>
+<p>While debugging, I realized some radio modes simply cannot coexist with WiFi. For FM radio, WiFi has to be turned off completely. The 2.4 GHz energy that WiFi emits interferes with the nearby analog FM signal and the FM module's circuitry, so every WiFi transmission can garble the FM audio. Here's the code I used to fully shut WiFi down:</p>
+
+<pre><code class="language-arduino">WiFi.disconnect(true);
+WiFi.persistent(false);
+WiFi.mode(WIFI_OFF);
+btStop();
+delay(200);</code></pre>
+
+<p>I found out that Bluetooth has a similar problem. The ESP32 has only one physical 2.4 GHz radio transceiver, and since WiFi and classic Bluetooth both use that band, they have to share the hardware by taking turns. I couldn't reliably run both at once, so I had to shut off WiFi when using Bluetooth, which made it impossible to control Bluetooth with a remote. I realized therefore that my remote would only be able to control two WiFi-based modes: MP3 and internet radio.</p>
+
+<h2>Three Improvements</h2>
+<p>After wiring up the rotary encoder and buttons, much as I had in previous weeks' assignments, I made three additional changes to the system.</p>
+
+<figure class="img-block img-small">
+  <img src="assembled-remote-wiring-before-led.png" alt="Wiring for the assembled remote with a XIAO, buttons, and rotary encoder on a breadboard before adding the LED">
+  <figcaption>Wiring for the assembled remote with the XIAO, buttons, and rotary encoder on the breadboard, before adding the LED</figcaption>
+</figure>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="assembled-remote-buttons-encoder-before-led.mp4" type="video/mp4">
+  </video>
+  <figcaption>The assembled remote working with the rotary encoder and buttons before I added the LED strip</figcaption>
+</figure>
+
+<h3>Improvement 1: Two-Way Communication</h3>
+<p>My first improvement was making the communication bidirectional. Originally the XIAO only sent commands to the radio. To help the remote understand the status of the radio in real time, I wanted the radio to also send its status back to the XIAO. This way, the remote always knows the radio's true state, even if someone changes something on the radio physically.</p>
+<p>Based on my previous code, the XIAO already sends a one-byte remote packet to the radio.</p>
+
+<pre><code class="language-arduino">struct RemotePacket { uint8_t cmd; };
+
+#define CMD_PLAY  1
+#define CMD_VOLUP 2
+#define CMD_VOLDN 3
+#define CMD_NEXT  4
+#define CMD_MODE  5
+#define CMD_PREV  6
+#define CMD_MUTE  7</code></pre>
+
+<p>To send status back, I defined an identical <code>StatePacket</code> struct in both sketches, holding everything the remote needs to know about the radio's condition. One important design rule came out of this: since ESP-NOW just copies raw memory, if the radio's struct and the XIAO's struct disagreed on their layout by even a single byte, the XIAO would copy garbage into the wrong fields.</p>
+<p>To keep the two packet types from ever being confused, I distinguish them by size. The remote packet is 1 byte and the state packet is 44 bytes. Since that is a hard rule, the XIAO's receive callback can simply check the packet length:</p>
+
+<pre><code class="language-arduino">void onDataRecv(const uint8_t* mac, const uint8_t* data, int len) {
+  if (len == sizeof(StatePacket)) {
+    memcpy(&amp;lastState, data, sizeof(StatePacket));
+    // ... use it
+  }
+}</code></pre>
+
+<p>However, since each radio mode stores its state differently, I needed a function to translate any mode's state into the common state packet format before broadcasting it.</p>
+
+<pre><code class="language-arduino">void broadcastState() {
+  StatePacket pkt;
+  pkt.mode = (uint8_t)currentMode;
+
+  if (currentMode == MODE_FM) {
+    pkt.volumePct = (fmVolumeQ7 * 100) / 128;   // FM volume is a Q7 fixed-point value
+    pkt.muted = fmMuted ? 1 : 0;
+    pkt.paused = 0;
+  } else {
+    pkt.volumePct = (uint8_t)(vol * 100);        // other modes use a 0.0-1.0 float
+    pkt.muted = muted ? 1 : 0;
+    pkt.paused = paused ? 1 : 0;
+  }
+
+  // ... name field filled per-mode ...
+  esp_now_send(xiaoMac, (uint8_t*)&amp;pkt, sizeof(pkt));
+  lastStateBroadcast = millis();
+}</code></pre>
+
+<p>With two-way communication in place, the radio became a much more accurate and dynamic device to use.</p>
+
+<h3>Improvement 2: A Web App</h3>
+<p>My second improvement was a web app for controlling the radio, in case I didn't have the physical remote on hand.</p>
+<p>My idea was to have my radio ESP boot up an HTTP server. Then, when my laptop, which has to be on the same WiFi network as the radio, opens the radio's IP address in a browser, the page shows the radio's current state and offers control buttons. Tapping a button sends an HTTP request back to the radio, which acts on it exactly as if a physical button had been pressed.</p>
+<p>To start, I used the <code>WebServer</code> library on the radio's ESP32 to get an HTTP server up and running.</p>
+
+<pre><code class="language-arduino">#include &lt;WebServer.h&gt;
+
+WebServer webServer(80);
+bool webServerRunning = false;
+
+void startWebServer() {
+  if (webServerRunning) return;
+
+  webServer.on("/", handleRoot);        // serves the HTML page
+  webServer.on("/state", handleState);  // serves current state as JSON
+  webServer.on("/cmd", handleCmd);      // executes a command
+  webServer.on("/pick", handlePick);    // jumps to a station/track
+  webServer.begin();
+
+  webServerRunning = true;
+  Serial.print("Web server up at http://");
+  Serial.println(WiFi.localIP());
+}</code></pre>
+
+<p>In addition, just as the radio reports its state to the XIAO over ESP-NOW, I also needed it to report its state to the web app as a JSON snapshot. I wrote a <code>handleState()</code> function to do this.</p>
+
+<pre><code class="language-arduino">void handleState() {
+  String json = "{";
+  const char* modeName = (currentMode == MODE_MP3) ? "MP3" : ...;
+  json += "\"modeName\":\""; json += modeName; json += "\",";
+  // name, volume, paused, muted ...
+
+  if (currentMode == MODE_RADIO) {
+    json += "\"listLabel\":\"Stations\",";
+    json += "\"idx\":"; json += currentStation; json += ",";
+    json += "\"list\":[";
+
+    for (int i = 0; i &lt; NUM_STATIONS; i++) {
+      json += "\""; json += stations[i].name; json += "\"";
+      if (i &lt; NUM_STATIONS - 1) json += ",";
+    }
+
+    json += "]";
+  } else if (currentMode == MODE_MP3) {
+    // same shape, but the track list
+  }
+
+  json += "}";
+  webServer.send(200, "application/json", json);
+}</code></pre>
+
+<p>My first attempt at the web app got the basic page loading and the regular control buttons talking to the radio, but it failed when I tried to switch modes from the browser. The radio stayed stuck instead of moving between MP3 and internet radio, which showed me that mode switching needed more careful handling than the simpler play, pause, and volume commands.</p>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="web-app-mode-switch-failure.mp4" type="video/mp4">
+  </video>
+  <figcaption>This was my first web app attempt. The browser controls were connected, but once I switched to MP3, I couldn't switch out of it</figcaption>
+</figure>
+
+<p>After debugging the mode command, the final web app worked properly on my laptop. The browser could show the radio's current state and make all of the main controls available, including play/pause, volume, mute, previous/next, mode switching, and selecting stations or tracks.</p>
+
+<figure class="img-block img-wide">
+  <img src="web-app-ux-radio-mode.png" alt="HTTP remote control web app showing the radio mode station list and browser controls">
+  <figcaption>The HTTP remote control web app in internet radio mode, showing the live station list and playback controls</figcaption>
+</figure>
+
+<figure class="img-block img-wide">
+  <img src="web-app-ux-mp3-mode.png" alt="HTTP remote control web app showing MP3 mode with track selection and playback controls">
+  <figcaption>The same browser interface but in MP3 mode</figcaption>
+</figure>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata" poster="final-web-app-working.png">
+    <source src="final-web-app-working.mp4" type="video/mp4">
+  </video>
+  <figcaption>The final version of the web app working properly on my laptop, with all of the radio controls successfully available</figcaption>
+</figure>
+
+<p>This worked very well. Like the ESP-NOW remote, though, the web app depends on WiFi. It goes a step further by needing an actual WiFi network, since the radio has to have an IP address. So it carries the same limitation: it only works in MP3 and internet radio modes.</p>
+
+<h3>Improvement 3: A NeoPixel Mode Indicator</h3>
+<p>My third improvement was adding a NeoPixel LED strip to show which mode the radio is in, either internet radio or MP3. I wanted the remote to do something visible with the status it was receiving from the radio, and it was also a good excuse for me to learn how to use an LED strip, which I'd never done before.</p>
+<p>The most important thing I learned was that the strip has to be soldered in the right direction, toward the input end, not the output end. I went through several strips from the bin and even soldered one myself the wrong way, so I learned that lesson the hard way. I followed another <a href="https://randomnerdtutorials.com/guide-for-ws2812b-addressable-rgb-led-strip-with-arduino/">Random Nerd Tutorial</a> to wire the NeoPixel strip to the XIAO, though the wiring was simple since two of the strip's pins are just power and the third is the data pin.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="broken-led-strips-before-soldering-1.png" alt="Broken LED strip segment with taped wiring before soldering a working strip">
+    <figcaption>One of the broken LED strip segments I tested before soldering my own</figcaption>
+  </figure>
+  <figure>
+    <img src="broken-led-strips-before-soldering-2.png" alt="Broken LED strip segment with loose wires before soldering a working strip">
+    <figcaption>Another broken strip with loose wiring</figcaption>
+  </figure>
+</div>
+
+<div class="img-row">
+  <figure>
+    <img src="neopixel-internet-radio-purple.png" alt="NeoPixel LED strip glowing purple when the radio is in internet radio mode">
+    <figcaption>Purple means the radio is in internet radio mode</figcaption>
+  </figure>
+  <figure>
+    <img src="neopixel-mp3-green.png" alt="NeoPixel LED strip glowing green when the radio is in MP3 mode">
+    <figcaption>Green means the radio is in MP3 mode</figcaption>
+  </figure>
+</div>
+
+<p>With all of these changes, I had a working wireless remote for the radio that could change the volume, skip songs, mute, and switch modes, plus an LED that changes color with the radio's mode. Thanks to the two-way communication and channel scanning, the remote worked very smoothly.</p>
+
+<figure class="img-block">
+  <img src="final-remote-wiring-rotary-encoder-buttons-led.png" alt="Final wiring for the wireless remote, including rotary encoder, buttons, and NeoPixel LED">
+  <figcaption>Final wiring for my remote, including the rotary encoder, buttons, and LED</figcaption>
+</figure>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="final-remote-buttons-rotary-led.mp4" type="video/mp4">
+  </video>
+  <figcaption>The finished remote controlling the radio with the buttons, rotary encoder, and NeoPixel mode indicator</figcaption>
+</figure>
 
 <h2>Files</h2>
-<div class="callout">
-  The previous page referenced <code>wk9.zip</code>, but that archive is not currently in this repository. Add it here when the final files are ready.
-</div>
-
-<h2>Reflection</h2>
-<div class="callout">
-  Good details to add: connection reliability, setup steps, IP addresses or pairing flow, and what made the networked part harder than a standalone circuit.
-</div>
+<p><a class="file-link" href="#" download>Add Week 9 files (.zip)</a></p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>

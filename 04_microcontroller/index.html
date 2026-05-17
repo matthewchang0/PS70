@@ -34,7 +34,7 @@
 </figure>
 
 <h2>Part 1: XIAO microcontroller</h2>
-<p>To get the carousel to run continuously from the XIAO microcontroller instead of the DC power supply, in my first sketch, I just turned the motor on and left it on:</p>
+<p>To get the carousel to run continuously from the XIAO microcontroller instead of the DC power supply, in my first sketch, I just turned the motor on and left it on.</p>
 
 <pre><code class="language-arduino">digitalWrite(IN1, HIGH);   // direction
 digitalWrite(IN2, LOW);
@@ -62,7 +62,7 @@ analogWrite(ENA, speed);   // 0-255, speed</code></pre>
   <li>how long the motor ran during each pulse, in milliseconds</li>
   <li>how long the motor rested between pulses, in milliseconds</li>
 </ul>
-<p>I started with a single calibration cat and slowly worked up to six. I couldn't start with six right away, because the combined friction of six objects was too much for the motor to overcome from a standstill. In the end, the pulsing worked best with the motor on for 80 ms and resting for 100 ms:</p>
+<p>I started with a single calibration cat and slowly worked up to six. I couldn't start with six right away, because the combined friction of six objects was too much for the motor to overcome from a standstill. In the end, the pulsing worked best with the motor on for 80 ms and resting for 100 ms.</p>
 
 <figure class="video-block">
   <video controls muted playsinline preload="metadata">
@@ -142,7 +142,7 @@ void loop() {
 <h2>Part 3: I2S Microphone</h2>
 <p>Finally, I wanted to take the chance in this assignment to learn the Adafruit I2S MEMS microphone. When it was introduced in class, I thought it was amazing that a component that small could work as a microphone, so I wanted to learn to use it properly.</p>
 <p>My goal was to build a system such that when a user says "start," the carousel turns on, and when a user says "stop," it turns off.</p>
-<p>I started by soldering the header pins onto the Adafruit breakout board, then wiring the board to the XIAO. I followed the <a href="https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/">Adafruit I2S MEMS microphone tutorial</a>:</p>
+<p>I started by soldering the header pins onto the Adafruit breakout board, then wiring the board to the XIAO. I followed the <a href="https://learn.adafruit.com/adafruit-i2s-mems-microphone-breakout/">Adafruit I2S MEMS microphone tutorial</a></p>
 
 <div class="img-row">
   <figure>
@@ -158,7 +158,7 @@ void loop() {
 <p>Before involving any API, I wanted to confirm the microphone was giving me sensible data. So for my first test, I checked to confirm that as I spoke louder, the raw signal value printed to the serial monitor also increased.</p>
 <p><strong>Problem 1.</strong> At first, no matter what I said, the microphone always read 32768. Whether I was speaking loudly or getting close to the mic, it made no difference. The issue turned out to be the power pin. I had wired the mic to 5 V, but it needed only 3.3 V. By moving the power pin to 3.3 V, I finally got values that changed with sound.</p>
 <p><strong>Problem 2.</strong> Even after fixing the voltage, the reading average was stuck flat near 14600. Reading the <a href="https://cdn-learn.adafruit.com/downloads/pdf/adafruit-i2s-mems-microphone-breakout.pdf">Adafruit breakout board datasheet</a>,
-I learned this was a phenomenon called a DC offset, where the microphone outputs a constant bias, and you have to subtract that bias to measure the actual audio, which is the variation around it. Here's the code I wrote to do that:</p>
+I learned this was a phenomenon called a DC offset, where the microphone outputs a constant bias, and you have to subtract that bias to measure the actual audio, which is the variation around it. Here's the code I wrote to do that.</p>
 
 <pre><code class="language-arduino">long sum = 0;
 for (int i = 0; i &lt; samples; i++) sum += (buf[i] &gt;&gt; 8);
@@ -170,7 +170,7 @@ int32_t a = abs((buf[i] &gt;&gt; 8) - dc);</code></pre>
 <p>Once I confirmed that speaking near the microphone reliably increased the raw signal values and that the values made sense, I moved on to transcription.</p>
 
 <h2>Sending audio to the OpenAI API</h2>
-<p>I got an API key from OpenAI's developer portal and added it to my Arduino sketch. I had to learn how to send the microphone's recorded audio to OpenAI's transcription model, which converts speech to text. I sent the recordings to the API through an HTTPS POST request. Here's the code:</p>
+<p>I got an API key from OpenAI's developer portal and added it to my Arduino sketch. I had to learn how to send the microphone's recorded audio to OpenAI's transcription model, which converts speech to text. I sent the recordings to the API through an HTTPS POST request. Here's the code.</p>
 
 <pre><code class="language-arduino">client.printf("POST /v1/audio/transcriptions HTTP/1.1\r\n");
 client.printf("Host: api.openai.com\r\n");
@@ -179,7 +179,7 @@ client.printf("Content-Type: multipart/form-data; boundary=%s\r\n", b);
 client.printf("Content-Length: %d\r\n", len);
 client.printf("Connection: close\r\n\r\n");</code></pre>
 
-<p>Although the model could pick out some of my words when I spoke clearly and loudly, it needed the right setup to give consistently usable results. Because I hadn't told the model what language I was speaking, it would sometimes transcribe my speech as completely different languages:</p>
+<p>Although the model could pick out some of my words when I spoke clearly and loudly, it needed the right setup to give consistently usable results. Because I hadn't told the model what language I was speaking, it would sometimes transcribe my speech as completely different languages.</p>
 
 <pre><code class="language-text">rawPeak=1392632 scale=0.02 finalPeak=24999
 &gt;&gt;&gt; uploading

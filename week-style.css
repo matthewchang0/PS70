@@ -127,6 +127,12 @@ a { color: #111; }
   font-family: monospace;
 }
 
+.img-extra-wide {
+  width: min(100vw - 48px, 1040px);
+  margin-left: 50%;
+  transform: translateX(-50%);
+}
+
 pre {
   background: #eef7ff;
   border-left: 3px solid #8bc6ff;
@@ -291,4 +297,9 @@ footer a:hover { color: #111; }
 
 @media (max-width: 500px) {
   .img-row { grid-template-columns: 1fr; }
+  .img-extra-wide {
+    width: 100%;
+    margin-left: 0;
+    transform: none;
+  }
 }
