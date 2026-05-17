@@ -28,7 +28,7 @@
 </ol>
 <p>I wanted to take the opportunity through this assignment to specifically learn two things I had never used before, the Adafruit I2S MEMS microphone, and the OpenAI transcription API.</p>
 
-<figure class="img-block">
+<figure class="img-block img-small">
   <img src="week4-cover-full-system-wiring.png" alt="Complete Week 4 wiring setup with potentiometer, motor driver, I2S microphone, and carousel">
   <figcaption>The full Week 4 setup with the potentiometer, motor driver, I2S microphone, and kinetic sculpture</figcaption>
 </figure>
@@ -42,7 +42,7 @@ analogWrite(ENA, speed);   // 0-255, speed</code></pre>
 
 <p>Because the motor needs a higher voltage than the XIAO's pins can supply, I had to wire the XIAO through a motor driver. I followed this <a href="https://randomnerdtutorials.com/esp32-dc-motor-l298n-motor-driver-control-speed-direction/">Random Nerd Tutorials guide</a> to figure out the wiring:</p>
 
-<figure class="img-block">
+<figure class="img-block img-small">
   <img src="motor-driver-potentiometer-wiring.jpeg" alt="XIAO microcontroller on a breadboard wired to a motor driver and potentiometer for carousel control">
   <figcaption>The XIAO wired through the motor driver, with the potentiometer added on the breadboard for speed control</figcaption>
 </figure>

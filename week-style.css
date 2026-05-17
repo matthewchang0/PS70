@@ -94,6 +94,17 @@ a { color: #111; }
   width: 100%;
 }
 
+.img-wide {
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.img-wide img {
+  width: 100%;
+  height: auto;
+}
+
 .img-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -201,6 +212,50 @@ pre code {
   background: #eef7ff;
   margin: 28px 0;
   font-size: 0.95rem;
+}
+
+.equation-card {
+  border-left: 3px solid #8bc6ff;
+  background: #eef7ff;
+  padding: 14px 18px;
+  margin: 24px 0;
+  overflow-x: auto;
+}
+
+.equation-card p {
+  font-family: monospace;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0 28px;
+  font-size: 0.92rem;
+}
+
+.data-table caption {
+  caption-side: bottom;
+  font-family: monospace;
+  font-size: 0.82rem;
+  color: #888;
+  text-align: left;
+  margin-top: 6px;
+}
+
+.data-table th,
+.data-table td {
+  border-bottom: 1px solid #e5e5e5;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.data-table th {
+  font-family: monospace;
+  font-size: 0.82rem;
+  color: #555;
+  background: #f8f8f8;
 }
 
 .media-placeholder {

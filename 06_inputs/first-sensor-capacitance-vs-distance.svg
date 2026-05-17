@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 371" role="img" aria-labelledby="title desc">
+  <title id="title">Sensor 1 raw capacitance value vs. distance</title>
+  <desc id="desc">Line graph showing raw capacitance values decreasing as distance between the plates increases from 0 to 12 inches.</desc>
+  <rect width="600" height="371" fill="#ffffff"/>
+
+  <text x="20" y="38" font-family="Arial, sans-serif" font-size="21" fill="#707070">Sensor 1: Raw capacitance value vs. Distance (in)</text>
+
+  <g stroke="#c9c9c9" stroke-width="1">
+    <line x1="70.0" y1="48" x2="70.0" y2="315"/>
+    <line x1="155.3" y1="48" x2="155.3" y2="315"/>
+    <line x1="240.7" y1="48" x2="240.7" y2="315"/>
+    <line x1="326.0" y1="48" x2="326.0" y2="315"/>
+    <line x1="411.3" y1="48" x2="411.3" y2="315"/>
+    <line x1="496.7" y1="48" x2="496.7" y2="315"/>
+    <line x1="582.0" y1="48" x2="582.0" y2="315"/>
+    <line x1="70" y1="315.0" x2="582" y2="315.0"/>
+    <line x1="70" y1="248.3" x2="582" y2="248.3"/>
+    <line x1="70" y1="181.5" x2="582" y2="181.5"/>
+    <line x1="70" y1="114.8" x2="582" y2="114.8"/>
+    <line x1="70" y1="48.0" x2="582" y2="48.0"/>
+  </g>
+
+  <g stroke="#333333" stroke-width="1">
+    <line x1="70" y1="315" x2="582" y2="315"/>
+    <line x1="70" y1="315" x2="70" y2="48"/>
+  </g>
+
+  <polyline fill="none" stroke="#4285f4" stroke-width="2.2" points="70.0,74.7 112.7,128.1 155.3,154.8 198.0,168.1 240.7,181.5 283.3,181.5 326.0,194.9 368.7,194.9 411.3,194.9 454.0,194.9 496.7,194.9 539.3,194.9 582.0,194.9"/>
+
+  <g font-family="Arial, sans-serif" font-size="12" fill="#111111">
+    <text x="70.0" y="333" text-anchor="middle">0</text>
+    <text x="155.3" y="333" text-anchor="middle">2</text>
+    <text x="240.7" y="333" text-anchor="middle">4</text>
+    <text x="326.0" y="333" text-anchor="middle">6</text>
+    <text x="411.3" y="333" text-anchor="middle">8</text>
+    <text x="496.7" y="333" text-anchor="middle">10</text>
+    <text x="582.0" y="333" text-anchor="middle">12</text>
+    <text x="62" y="319.0" text-anchor="end">0</text>
+    <text x="62" y="252.3" text-anchor="end">25000</text>
+    <text x="62" y="185.5" text-anchor="end">50000</text>
+    <text x="62" y="118.8" text-anchor="end">75000</text>
+    <text x="62" y="52.0" text-anchor="end">100000</text>
+  </g>
+
+  <text x="326" y="350" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#111111">Distance (in)</text>
+  <text x="28" y="182" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#111111" transform="rotate(-90 28 182)">Raw capacitance value</text>
+</svg>

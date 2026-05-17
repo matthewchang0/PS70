@@ -1,39 +1,378 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Week 6 - PS70</title>
+  <title>Week 6 - Inputs &amp; Sensors</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../week-style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/arduino-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/arduino.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 
 <a class="back" href="../index.html">&larr; back to home</a>
 
 <div class="page-header">
-  <div class="week-label">week 06 &middot; inputs</div>
-  <h1>Electronic Inputs</h1>
-  <p class="subtitle">Reading sensors and turning physical changes into data.</p>
+  <div class="week-label">week 06</div>
+  <h1>Inputs &amp; Sensors</h1>
 </div>
 
 <h2>Assignment</h2>
-<p>This week was about electronic inputs: building a capacitive sensor and using or calibrating another sensor so the microcontroller could read something from the environment.</p>
+<p>For my assignment this week, I decided to build a capacitive sensor that measures weight, and to pair it with an ultrasonic sensor for measuring distance. I've always been fascinated by sound-based devices, so I took this week as an opportunity to finally learn how to work with an ultrasonic sensor.</p>
 
 <figure class="img-block">
-  <img src="week6-placeholder-image.jpg" alt="Week 6 sensor placeholder">
-  <figcaption>placeholder image for sensor wiring and calibration</figcaption>
+  <img src="week6-cover-weight-sensor-oled.jpeg" alt="Capacitive weight sensor with OLED display measuring a metal weight">
+  <figcaption>The final capacitive weight sensor with the OLED display showing a live weight measurement</figcaption>
 </figure>
 
-<h2>Capacitive Sensor</h2>
-<p>The capacitive sensor documentation should include the circuit, the material used as the sensing surface, sample serial readings, and the threshold or mapping used to turn readings into behavior.</p>
+<h2>Part 1: Capacitive Sensor</h2>
+<p>During class, my lab group and I built a capacitive sensor whose capacitance depends on the distance between two plates. We cut a piece of cardboard and used a wooden sliding block with a parallel copper plate taped to it. Using a ruler, we set the plates at a range of measured distances and recorded the raw capacitance signal at each one. The cardboard kept the plates parallel and properly aligned as the block slid. We used the <a href="https://nathanmelenbrink.github.io/lab/input/capacitance/txrx.html">Arduino TX-RX code</a> to calculate the capacitance:</p>
 
-<h2>Second Sensor</h2>
-<p>This section is ready for the second sensor calibration: what the sensor measures, how it was wired, how the values changed, and how the data was interpreted.</p>
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="first-capacitance-sensor-wooden-block-distance.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>The first capacitance sensor my lab group and I made, using a wooden block to test the relationship with distance</figcaption>
+</figure>
 
-<h2>Reflection</h2>
-<div class="callout">
-  The strongest version of this writeup will include raw readings, calibrated readings, and a short explanation of how noisy or reliable the sensor felt in practice.
+<figure class="img-block">
+  <img src="first-sensor-capacitance-vs-distance.svg" alt="Graph of raw capacitance value versus distance for the first capacitive sensor">
+  <figcaption>Graph of raw capacitance value vs. distance for the first sensor. As the plates moved farther apart, the raw capacitance value dropped and then began to level off.</figcaption>
+</figure>
+
+<p>The graph clearly shows that as the distance between the plates increases, the capacitance decreases. This makes sense given the parallel-plate capacitance formula, C = &epsilon;A/d, in which capacitance is inversely proportional to distance. As both the graph and the formula show, the relationship is not linear.</p>
+<p>After this first simple sensor, I wanted to build a second capacitive sensor but this time to measure the weight of an object. My goal was to create a system where an object compresses a squishy material between the plates and from the change of the distance between the plates, we can measure the capacitance.</p>
+<p>I started by looking for a suitably squishy material. I dug through the miscellaneous foam bin in the PS70 lab and tried about five different foams, but they were all too rigid. They did not compress well under an object's weight, so they couldn't translate weight into an accurate change in plate distance. In the end, the most responsive option I could find was a sponge from the lab sink (lol), so that became my dielectric.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="foam-candidate-red-sheets.jpeg" alt="Red foam sheets considered for the capacitive weight sensor">
+    <figcaption>One of the foams I considered using for the sensor, which ended up being too hard to squish</figcaption>
+  </figure>
+  <figure>
+    <img src="foam-candidate-gray-pad.jpeg" alt="Gray foam pad considered for the capacitive weight sensor">
+    <figcaption>Another foam candidate</figcaption>
+  </figure>
 </div>
+
+<figure class="img-block img-small">
+  <img src="foam-candidate-black-pad.jpeg" alt="Black foam pad considered for the capacitive weight sensor">
+  <figcaption>Yet another foam candidate that was too unsquishable</figcaption>
+</figure>
+
+<p>I taped two parallel copper plates to the sides of the sponge. From the plywood scraps next to the laser cutter, I also added a square of plywood on the top and bottom so that the extra surface area would distribute an object's weight evenly across the sponge, for a more accurate measurement. I attached alligator clips to the plates and ran a quick test to confirm the serial monitor picked up the change in plate proximity when I squished the sponge versus when it was at rest.</p>
+
+<figure class="img-block img-small">
+  <img src="taping-copper-plates-sponge-sensor.jpeg" alt="Taping parallel copper plates onto both sides of the sponge for the capacitive weight sensor">
+  <figcaption>Taping parallel copper plates onto both sides of the sponge</figcaption>
+</figure>
+
+<div class="img-row">
+  <figure>
+    <img src="assembled-sponge-weight-sensor.jpeg" alt="Assembled sponge capacitive weight sensor with plywood plates ready for measurement">
+    <figcaption>The assembled sensor ready for measurement</figcaption>
+  </figure>
+  <figure>
+    <img src="assembled-sponge-weight-sensor-side-view.jpeg" alt="Side view of the assembled sponge capacitive weight sensor between plywood plates">
+    <figcaption>Side view of the sponge, copper plates, and plywood layers</figcaption>
+  </figure>
+</div>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="capacitive-weight-sensor-values-increase.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>First successful test of input sensor! Capacitance values increase as more weight is put on the sensor</figcaption>
+</figure>
+
+<h3>Calibrating the Weight Sensor</h3>
+<p>To calibrate the sensor, I gathered scrap pieces of metal of varying weights and used a scale to measure each one's actual weight. I wanted as wide a range of weights as possible. At one point I even had to borrow Aurora's water bottle to add extra weight! I placed each known weight on the sponge sensor and recorded the raw capacitance value it produced, and I also recorded the resting value with no weight on the sensor.</p>
+<p>One variable I made sure to control for was the time of compression. This is because after a weight is placed, the sponge keeps slowly compressing, so the capacitance reading drifts upward over time. To keep measurements comparable, I waited 5–10 seconds after placing each weight before recording, so every measurement was taken under equivalent conditions.</p>
+
+<figure class="img-block img-small">
+  <img src="scrap-metal-weight-calibration-scale.jpeg" alt="Scrap metal pieces being measured on a scale for capacitive weight sensor calibration">
+  <figcaption>Measuring weights of scrap metal pieces for calibration</figcaption>
+</figure>
+
+<div class="img-row">
+  <figure>
+    <img src="calibration-metal-pieces-on-sensor-small.jpeg" alt="Scrap metal pieces placed on the capacitive weight sensor for calibration">
+    <figcaption>Measuring a small stack of metal pieces on the sensor</figcaption>
+  </figure>
+  <figure>
+    <img src="calibration-metal-pieces-on-sensor-tall.jpeg" alt="A taller stack of scrap metal pieces placed on the capacitive weight sensor for calibration">
+    <figcaption>Measuring a taller stack of metal pieces for calibration</figcaption>
+  </figure>
+</div>
+
+<figure class="img-block">
+  <img src="aurora-water-bottle-extra-high-weight.jpeg" alt="Water bottle added on top of a tall stack of metal weights for an extra high capacitive sensor calibration measurement">
+  <figcaption>I added Aurora's water bottle onto the top of this lofty stack of weights for my final weight measurement!</figcaption>
+</figure>
+
+<p>Plotting all the capacitance values against their measured weights, I fit a curve to the data in Desmos. Since the parallel-plate relationship is already known to be nonlinear, I looked for a nonlinear fit and found that a quadratic fit the data best, with an R&sup2; of 0.9878. The calibration equation was:</p>
+
+<div class="equation-card">
+  <p>weight (g) = −2486.85477 + 0.0933895x + 1.60704 &times; 10<sup>−7</sup>x<sup>2</sup></p>
+</div>
+
+<p>where x is the raw capacitance value from the sensor. The sensor is really measuring the distance between the copper plates: adding weight compresses the sponge, decreases the plate distance, and increases the capacitance reading. Over the specific range of weights I tested, the quadratic looks almost linear, but the Desmos regression captured the full dataset best.</p>
+
+<table class="data-table">
+  <caption>Calibration points for the capacitive weight sensor</caption>
+  <thead>
+    <tr>
+      <th>Raw capacitance value</th>
+      <th>Measured weight (g)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>26515</td><td>0</td></tr>
+    <tr><td>29273</td><td>416</td></tr>
+    <tr><td>33435</td><td>1014</td></tr>
+    <tr><td>42248</td><td>1536</td></tr>
+    <tr><td>47606</td><td>2394</td></tr>
+    <tr><td>57577</td><td>3434</td></tr>
+  </tbody>
+</table>
+
+<figure class="img-block">
+  <img src="sponge-sensor-weight-vs-raw-calibration.png" alt="Graph of raw capacitance calibration values versus weight for the sponge weight sensor">
+  <figcaption>Graph of raw capacitance values vs. weight for the weight sensor calibration</figcaption>
+</figure>
+
+<figure class="img-block">
+  <img src="desmos-weight-capacitance-quadratic-fit-cropped.png" alt="Desmos graph showing the quadratic fit for the weight sensor relationship with capacitance">
+  <figcaption>Desmos graph and equation for the weight sensor relationship between weight and capacitance</figcaption>
+</figure>
+
+<h3>Displaying the Weight on an OLED Screen</h3>
+<p>Since I want to use an OLED display in my final project, I used this assignment to experiment with one. I connected an OLED display to the sensor so it could show an object's weight in real time as the sponge compressed. I used this <a href="https://randomnerdtutorials.com/esp32-ssd1306-oled-display-arduino-ide/">Random Nerd Tutorial</a> to learn which pins to connect:</p>
+
+<figure class="img-block img-small">
+  <img src="sponge-weight-sensor-wiring-schematic.png" alt="Hand-drawn wiring schematic for the sponge weight input sensor">
+  <figcaption>Wiring schematic for the sponge weight input sensor, including the XIAO, OLED display, resistor, and capacitive plates</figcaption>
+</figure>
+
+<p>While testing, I was surprised to see that when the sponge was relaxed at its baseline, the sensor sometimes returned nonsensical negative readings. To fix this, I added a lower bound of zero in the code so no negative weights could be displayed.</p>
+
+<pre><code class="language-arduino">float toGrams(long raw) {
+  float r = (float)raw;
+  float g = C1 + C2 * r + C3 * r * r;
+  if (g &lt; 0) g = 0;
+  return g;
+}</code></pre>
+
+<p>I also noticed that when I first ran the code, the readings fluctuated wildly and very quickly. The values could jump from 0 g to over 1,000 g instantaneously. There was a lot of noise. To make the OLED easier to read, I added smoothing in two layers by making it so that each raw reading was itself the sum of 100 TX/RX samples taken back-to-back (N_SAMPLES), and on top of that the value shown on the display is a rolling average of the last 5 readings (SMOOTH_N).</p>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="final-weight-sensor-oled-display.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>The final weight sensor with the OLED display working. There is still a good deal of fluctuation with the weight even after implementing the smoothing function, but it is not bad!</figcaption>
+</figure>
+
+<p>Here's the complete capacitive sensor sketch, including the OLED display, the smoothing, and the lower bound.</p>
+
+<pre><code class="language-arduino">#include &lt;Wire.h&gt;
+#include &lt;Adafruit_GFX.h&gt;
+#include &lt;Adafruit_SSD1306.h&gt;
+
+const int RX_PIN = D0;
+const int TX_PIN = D6;
+const int N_SAMPLES = 100;
+
+const float C1 = -2486.85477f;
+const float C2 =  0.0933895f;
+const float C3 =  1.60704e-7f;
+
+#define OLED_WIDTH  128
+#define OLED_HEIGHT 64
+#define OLED_ADDR   0x3C
+Adafruit_SSD1306 display(OLED_WIDTH, OLED_HEIGHT, &amp;Wire);
+
+const int SMOOTH_N = 5;
+long buf[SMOOTH_N] = {0};
+int buf_i = 0;
+
+long readCapacitive() {
+  long sum = 0;
+  for (int i = 0; i &lt; N_SAMPLES; i++) {
+    digitalWrite(TX_PIN, HIGH);
+    int high = analogRead(RX_PIN);
+    delayMicroseconds(100);
+    digitalWrite(TX_PIN, LOW);
+    int low = analogRead(RX_PIN);
+    sum += (high - low);
+  }
+  return sum;
+}
+
+long smooth(long raw) {
+  buf[buf_i] = raw;
+  buf_i = (buf_i + 1) % SMOOTH_N;
+  long total = 0;
+  for (int i = 0; i &lt; SMOOTH_N; i++) total += buf[i];
+  return total / SMOOTH_N;
+}
+
+float toGrams(long raw) {
+  float r = (float)raw;
+  float g = C1 + C2 * r + C3 * r * r;
+  if (g &lt; 0) g = 0;
+  return g;
+}
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(TX_PIN, OUTPUT);
+  Wire.begin();
+
+  if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
+    Serial.println("SSD1306 init failed — check wiring and address");
+    while (true) delay(1000);
+  }
+  display.clearDisplay();
+  display.setTextColor(WHITE);
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+  display.println("Calibrating...");
+  display.display();
+
+  for (int i = 0; i &lt; SMOOTH_N; i++) buf[i] = readCapacitive();
+}
+
+void loop() {
+  long raw = readCapacitive();
+  long avg = smooth(raw);
+  float grams = toGrams(avg);
+
+  Serial.print(avg);
+  Serial.print("\t");
+  Serial.println(grams, 1);
+
+  display.clearDisplay();
+
+  display.setTextSize(3);
+  display.setCursor(0, 12);
+  if (grams &lt; 1000) {
+    display.print((int)grams);
+    display.setTextSize(2);
+    display.print(" g");
+  } else {
+    display.print(grams / 1000.0f, 2);
+    display.setTextSize(2);
+    display.print(" kg");
+  }
+
+  display.setTextSize(1);
+  display.setCursor(0, 54);
+  display.print("raw=");
+  display.print(avg);
+
+  display.display();
+  delay(50);
+}</code></pre>
+
+<h2>Part 2: Ultrasonic Sensor</h2>
+<p>For the second part of the assignment, I decided I wanted to learn how to use an ultrasonic sensor.</p>
+<p>Simply put, the ultrasonic sensor I was using—the HC-SR04—measures distance by timing how long an echo takes to return. When the Trig pin is held high for 10 microseconds, the module emits a burst of ultrasonic sound (which is too high-pitched for humans to hear). The sound travels out, bounces off whatever is in front of it, and returns to the module, which calculates how long the round trip took. Since distance equals speed multiplied by time, that timing can be calibrated into a distance measurement. I learned how to wire the HC-SR04 to the XIAO using another <a href="https://randomnerdtutorials.com/esp32-hc-sr04-ultrasonic-arduino/">Random Nerd Tutorial</a> (I love this site):</p>
+<p>One problem I ran into early and which the tutorial helped me solve was that the ultrasonic module needs 5 V to run. I had initially plugged it into the 3.3 V pin, where it worked poorly. Moving it to the 5 V pin fixed the problem immediately.</p>
+
+<figure class="img-block">
+  <img src="ultrasonic-sensor-distance-wooden-block.jpeg" alt="Completed ultrasonic sensor with OLED display calculating the distance from a wooden block">
+  <figcaption>Ultrasonic sensor was wired to 5V</figcaption>
+</figure>
+
+<figure class="img-block img-small">
+  <img src="ultrasonic-oled-wiring-schematic.png" alt="Hand-drawn wiring schematic for the ultrasonic sensor and OLED display">
+  <figcaption>Wiring schematic for the ultrasonic sensor and OLED display, including the XIAO, HC-SR04 module, and OLED pins</figcaption>
+</figure>
+
+<h3>Calibrating the Sensor</h3>
+<p>To calibrate the sensor, I laid a ruler perpendicular to it on a flat table and used a wooden sliding block (borrowed from the band saw) as the target. Feeling meticulous, I recorded the raw signal at every centimeter from 1 to 17 cm, plus one more measurement at 20 cm (just to be sure!)</p>
+<p>The ultrasonic sensor turned out to be one of the most accurate sensors I've used but only after the object was far enough away from the sensor. The first few data points close to the sensor are clear outliers: at 1–3 cm, the return time is much higher than the linear model would predict. This makes sense because the HC-SR04 has a minimum sensing distance, so very close echoes are not measured as cleanly.</p>
+
+<figure class="img-block">
+  <img src="ultrasonic-raw-time-vs-distance.svg" alt="Graph of raw ultrasonic return time in microseconds versus distance in centimeters">
+  <figcaption>Graph of raw ultrasonic return time vs. distance. The return time generally increases with distance, although the first few close-range values are noisy.</figcaption>
+</figure>
+
+<figure class="img-block">
+  <img src="ultrasonic-return-time-distance-linear-fit.svg" alt="Graph of ultrasonic sensor return time versus distance showing close-range outliers and a linear fit">
+  <figcaption>Graph of ultrasonic sensor return time vs. distance. The red points close to the sensor are outliers, while the rest of the data follows the linear fit closely.</figcaption>
+</figure>
+
+<div class="equation-card">
+  <p>return time = 54.539 &times; distance</p>
+</div>
+
+<p>Plotting the points in Desmos, I found the relationship between the sensor's return time and distance was almost perfectly linear and essentially a straight line through the origin, with an R&sup2; value of 0.953. In the equation above, distance is in centimeters. This makes sense since distance equals speed times time. Since the sensor is really measuring time for the echo to return, the sensor's reading should be linearly related to the distance from the wooden block.</p>
+<table class="data-table">
+  <caption>Desmos calibration points for the ultrasonic sensor</caption>
+  <thead>
+    <tr>
+      <th>Distance (cm)</th>
+      <th>Return time / raw reading</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>1</td><td>224</td></tr>
+    <tr><td>2</td><td>269</td></tr>
+    <tr><td>3</td><td>217</td></tr>
+    <tr><td>4</td><td>224</td></tr>
+    <tr><td>5</td><td>251</td></tr>
+    <tr><td>6</td><td>307</td></tr>
+    <tr><td>7</td><td>345</td></tr>
+    <tr><td>8</td><td>425</td></tr>
+    <tr><td>9</td><td>481</td></tr>
+    <tr><td>10</td><td>516</td></tr>
+    <tr><td>11</td><td>568</td></tr>
+    <tr><td>12</td><td>655</td></tr>
+    <tr><td>13</td><td>693</td></tr>
+    <tr><td>14</td><td>745</td></tr>
+    <tr><td>15</td><td>825</td></tr>
+    <tr><td>16</td><td>888</td></tr>
+    <tr><td>17</td><td>944</td></tr>
+    <tr><td>20</td><td>1114</td></tr>
+  </tbody>
+</table>
+<p>I calibrated the sensor even though, in principle, I could have calculated the theoretical relationship in advance from known physics. I did it anyway because the real speed of sound isn't exactly the textbook 343 m/s. Oftentimes, it varies with temperature, humidity, and air pressure and the module itself can have internal timing delays. I think calibrating against real measurements for a specific setup is always good practice.</p>
+<p>Finally, I connected the OLED display to the ultrasonic sensor so I could watch the distance measurements update in real time. I was really impressed at how small the error was. The mean absolute error between the sensor's predicted distances and the real distances was just 0.433 cm across all the points and that's even including the noisy close-range measurements from 1–5 cm.</p>
+
+<figure class="img-block">
+  <img src="ultrasonic-measured-distance-vs-real-distance.svg" alt="Graph comparing ultrasonic sensor measured distance to real distance">
+  <figcaption>Graph of distance measured by the ultrasonic sensor vs. real distance. It is almost a 1:1 y = x relationship, which shows how accurate the sensor was after calibration.</figcaption>
+</figure>
+
+<figure class="img-block">
+  <img src="ultrasonic-distance-error-table.png" alt="Table of ultrasonic sensor distance measurements compared with real distances and absolute errors">
+  <figcaption>Table of ultrasonic distance measurements vs. real distances, plus their absolute errors, which are remarkably small</figcaption>
+</figure>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="ultrasonic-sensor-oled-display-action.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>The completed ultrasonic sensor with the OLED display in action</figcaption>
+</figure>
+
+<h2>Part 3: Preparing for CNC Week</h2>
+<p>For CNC week, I'm planning to mill a world map out of foam and fill it in with plaster. I found an image of a world map online and converted it into an SVG file to prepare for milling. I wanted a thick outline of the map so the CNC toolpath would be readable. I also looked at <a href="https://vleeharvard.github.io/PS70/08_cnc/index.html">Victor's excellent documentation</a> as a reference for planning the CNC process.</p>
+
+<figure class="img-block img-wide">
+  <img src="world-map-reference.png" alt="Black line-art world map reference image found on Google">
+  <figcaption>Image of a world map I found on Google. The SVG file is attached in the zip file below.</figcaption>
+</figure>
+
+<h2>Files</h2>
+<p><a class="file-link" href="week-6-files.zip" download>Download Week 6 files (.zip)</a></p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>
