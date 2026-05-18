@@ -238,6 +238,12 @@ pre code {
   margin-right: auto;
 }
 
+.video-medium {
+  width: min(100%, 540px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .video-portrait {
   width: min(100%, 360px);
 }
