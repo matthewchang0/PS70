@@ -20,30 +20,14 @@
 </div>
 
 <h2>Overview</h2>
-<p>For my final project, I built a retro wooden radio around an ESP32 that supports four audio modes:</p>
-<ul>
-  <li>Internet radio over WiFi</li>
-  <li>MP3 playback from an SD card</li>
-  <li>Bluetooth</li>
-  <li>FM radio</li>
-</ul>
+<p>For my final project, I built a retro wooden radio around an ESP32 that supports four audio modes: Internet radio over WiFi, MP3 playback from an SD card, Bluetooth, and FM radio.
 
-<p>My motivation came from two places. I'm a huge fan of listening to and DJing music, and I've always been drawn to retro radios from the past, especially the kind that didn't depend on WiFi to play anything. At the same time, I really enjoy using my Bluetooth speaker at home. I wanted to combine all of these into a single enhanced speaker of sorts: something that looks good and is genuinely functional. Here is my journey building it, from the MVP to the finished radio.</p>
+<p>I was motivated to build this project because I'm a huge fan of listening to and DJing music, and I've always been drawn to radios from the past, especially ones that do not depend on WiFi to play music. At the same time, I really enjoy using my Bluetooth speaker at home. I wanted to combine all of these into one "enhanced" speaker of sorts. My hope was to build a device that looks good and is functional. Here is my journey building the RetroRadio, from the MVP to the finished product!</p>
 
-<div class="img-row">
-  <figure>
-    <video controls playsinline preload="metadata">
-      <source src="ps70-extended-demo.mp4" type="video/mp4">
-    </video>
-    <figcaption>Extended demo of the finished radio</figcaption>
-  </figure>
-  <figure>
-    <video controls playsinline preload="metadata">
-      <source src="ps70-short-demo.mp4" type="video/mp4">
-    </video>
-    <figcaption>Shorter demo of the finished radio</figcaption>
-  </figure>
-</div>
+<figure class="img-block">
+  <img src="final-radio-cover.png" alt="Finished retro wooden ESP32 radio">
+  <figcaption>The finished retro wooden ESP32 radio</figcaption>
+</figure>
 
 <h2>Bill of Materials</h2>
 <h3>Electronics</h3>
@@ -88,14 +72,14 @@
 </ul>
 
 <h2>MVP</h2>
-<p>For MVP week, I focused on building a small version of the radio and getting the fundamental input and output components working, including the OLED screen, rotary encoder, potentiometer, speaker, and amplifier. This MVP could connect to internet radio stations like <a href="https://somafm.com/">SomaFM</a> and deliver real-time audio to the user. I also designed a 3D-printed enclosure for the radio: a body, a speaker-mesh front panel, and a knob. I designed and milled a custom PCB based on the MVP wiring.</p>
+<p>For MVP week, I decided to build a small version of the radio and getting the fundamental input and output components working, including the OLED screen, rotary encoder, potentiometer, speaker, and amplifier. I designed the MVP to connect to internet radio stations like <a href="https://somafm.com/">SomaFM</a> and deliver real-time audio to the user. I also designed a 3D-printed enclosure for the radio, including a body, a speaker-mesh front panel, and a knob. Lastly, I milled a custom PCB based on the MVP wiring.</p>
 
-<p>It was a functional product, but there were several improvements I wanted to make, including expanding the functionality and making the enclosure larger to accommodate the additional complexity I was hoping to add. For the full MVP process, see my <a href="../07_outputs/index.html">Week 7 documentation</a>.</p>
+<p>The MVP was functional, but there were several improvements I wanted to make, including expanding its capabilities and making the enclosure larger to accommodate the additional complexity I was hoping to add. For the full MVP process, see my <a href="../07_outputs/index.html">Week 7 documentation</a>.</p>
 
 <!-- Insert photo: the MVP radio -->
 
 <h2>Integrated Project</h2>
-<p>For the integrated project, I wanted to add the remaining components I'd planned for the final radio: an FM radio module, Bluetooth, and MP3 playback. That meant configuring Bluetooth in the ESP32 Arduino code, wiring up the TEA5767 module on the breadboard, and adding the MicroSD card module so everything worked seamlessly. I also wanted to move all the wiring off the breadboard onto something more stable, either a protoboard or a custom milled PCB.</p>
+<p>For the integrated project, I wanted to add the remaining components I'd planned for the final radio, including an FM radio module, Bluetooth, and MP3. In practice, this meant I would need to program Bluetooth in the ESP32 Arduino code, wire up the TEA5767 module on the breadboard, and add the MicroSD card module so everything worked seamlessly. I also wanted to move all the wiring off the breadboard onto something more stable, either a protoboard or a custom milled PCB.</p>
 
 <h3>TEA5767 FM Module</h3>
 <p>First, I needed to hook up the TEA5767 FM module to the rest of the circuit. The wiring was fairly straightforward, except that the module has an audio output meant for an aux cable, and that aux cable needed to connect to both ground and an audio pin.</p>
@@ -118,7 +102,7 @@
   <figcaption>Connecting the AUX cable from old headphones to the circuit board</figcaption>
 </figure>
 
-<p>Configuring the TEA5767 was one of the hardest challenges of the integrated project since there were a lot of software and even hardware issues in getting a consistent radio signal out of it. For many iterations, I heard no signal at all from the FM module. I even tried a different FM chip, the SI4703, but I didn't end up using it: not only did it not work for me, it also had no module spot for an antenna, so it couldn't pick up signals as effectively as the TEA5767.</p>
+<p>Configuring the TEA5767 was one of the hardest challenges of the integrated project since there were a lot of software and even hardware issues in getting a consistent radio signal out of it. For many iterations, I heard no signal at all from the FM module. I even tried a different FM chip, the SI4703, but I didn't end up using it. Not only did it not work for me, it also had no module spot for an antenna, so it couldn't pick up signals as effectively as the TEA5767.</p>
 
 <figure class="img-block">
   <img src="tea5767-arduino-troubleshooting.png" alt="Troubleshooting the TEA5767 with an Arduino board">
@@ -138,7 +122,7 @@
   </figure>
 </div>
 
-<p>The core software conflict was between two I<sup>2</sup>S drivers. The FM audio path relies on the legacy I<sup>2</sup>S driver, while AudioTools uses the newer I<sup>2</sup>S driver, and the two can't both be active at once. What I eventually did was force AudioTools onto the legacy driver and control the TEA5767 directly over I<sup>2</sup>C through a <code>tea5767Write()</code> function:</p>
+<p>The core software conflict was between two I<sup>2</sup>S drivers. The FM audio path relies on the legacy I<sup>2</sup>S driver, while AudioTools uses the newer I<sup>2</sup>S driver, and the two can't both be active at once. The method that eventually worked was when I forced AudioTools to map onto the legacy driver and control the TEA5767 directly over I<sup>2</sup>C through a <code>tea5767Write()</code> function:</p>
 
 <pre><code class="language-cpp">bool tea5767Write(float freqMHz) {
   unsigned long freqHz = (unsigned long)(freqMHz * 1000000.0f);
@@ -164,9 +148,9 @@
   <li>Speaker</li>
 </ul>
 
-<p>Because of the ADC sampling, the FM audio quality is a bit rough at times, but it plays through the main speaker without needing any headphones.</p>
+<p>Due to the ADC sampling, the FM audio quality is a bit rough at times, but it plays through the main speaker without needing any headphones.</p>
 
-<p>An ongoing problem was that the FM module often crashed the ESP32 and made it reboot after working for about 30 seconds. Fixing this took six difficult iterations. First, I added heap monitoring with <code>ESP.getFreeHeap()</code>, printing the free heap right after FM setup and then every 5 seconds. I also lowered the sample rate from 32 kHz to 16 kHz, which halved the CPU load in the audio task. Then I made sure to shut off WiFi and Bluetooth, with a 20 ms delay, before turning on FM radio, so there was no interference from the other wireless components:</p>
+<p>Another ongoing problem was that the FM module often crashed the ESP32 and made it reboot after working for about 30 seconds. To fix this issue, I went through six different changes. First, I added heap monitoring with <code>ESP.getFreeHeap()</code>, printing the free heap right after FM setup and then every 5 seconds. I also lowered the sample rate from 32 kHz to 16 kHz, which halved the CPU load in the audio task. Then I made sure to shut off WiFi and Bluetooth, with a 200 ms delay, before turning on FM radio, so there was no interference from the other wireless components.</p>
 
 <pre><code class="language-cpp">WiFi.disconnect(true);
 WiFi.persistent(false);
@@ -179,12 +163,12 @@ btStop();</code></pre>
 
 <p>I then increased the audio task's stack from 8 KB to 16 KB, which eliminated stack overflow as one of the causes of the crashes, and I monitored the stack with <code>uxTaskGetStackHighWaterMark()</code>, printing it every five seconds.</p>
 
-<p>There was also an issue where the radio button seemed to get pressed when I wasn't pressing it, a phantom phenomenon of sorts that triggered reboot after reboot. I learned this was because GPIO 35 has no internal pull-up, so it picks up electrical noise and reads random highs and lows. To fix it, I moved the radio button to GPIO 17, which does have an internal pull-up. The lesson: you really need to study the pinout carefully. On the ESP32 I was using, GPIO 34, 35, 36, and 39 are input-only pins with no internal pull-ups, and it took me a long time to figure that out.</p>
+<p>There was also an issue where the radio button seemed to get pressed when I wasn't pressing it, a "phantom" phenomenon of sorts that triggered reboot after reboot. I learned this was because GPIO 35 has no internal pull-up, so it picks up electrical noise and reads random highs and lows. To fix it, I moved the radio button to GPIO 17, which does have an internal pull-up. For me the lesson of this ordeal was that you really need to study the pinout carefully. It turns out on the ESP32 I was using, GPIO 34, 35, 36, and 39 are input-only pins with no internal pull-ups, and it took me a long time to figure that out.</p>
 
-<p>I ultimately got to a place where FM still needed to reboot after a while, but I made sure it rebooted automatically and saved which station you were on, so it stayed functional for the user. I suspect the remaining FM instability comes from memory pressure: it's all one firmware, linking together AudioTools, MP3, Bluetooth, WiFi, U8G2, the raw I<sup>2</sup>S, and the ADC. Even when those tools aren't in use during FM playback, they're all still allocated in the same firmware. Moving to a more computationally powerful chip or board might solve this, but for now I was happy with the FM progress and moved on.</p>
+<p>I ultimately got to a place where FM still needed to reboot after a while, but I made sure it rebooted automatically and saved which station you were on, so it stayed functional for the user. I suspect the remaining FM instability comes from memory pressure. Since all of this is running on just one microcontroller, including AudioTools, MP3, Bluetooth, WiFi, U8G2, the raw I<sup>2</sup>S, and the ADC, even when those tools aren't in use during FM playback, they're all still allocated in this same firmware. In the future, I might want to move to a more computationally powerful chip or board might solve this, but for now I was happy with the FM progress and moved on.</p>
 
 <h3>MP3 Playback</h3>
-<p>Next I moved on to MP3, using a microSD card module and a 16 GB microSD card. The wiring of the module was fairly straightforward, but the software was an interesting problem. I had a few globals to declare at the start:</p>
+<p>Next I worked on MP3, using a microSD card module and a 32 GB microSD card. The wiring of the module was fairly straightforward, but the software was an interesting problem. I had a few globals to declare at the start.</p>
 
 <pre><code class="language-cpp">File audioFile;
 StreamCopy copier(decoder, audioFile, 4096);
@@ -196,27 +180,7 @@ bool paused = false;</code></pre>
 
 <p>I learned how to scan the SD card for MP3 files specifically without being bothered by the other, non-MP3 files on the card, from this <a href="https://randomnerdtutorials.com/esp32-microsd-card-arduino/">ESP32 microSD card tutorial</a>.</p>
 
-<p>The <code>scanSD()</code> function below walks the card, keeps only <code>.mp3</code> files, and also skips macOS <code>._</code> metadata files:</p>
-
-<pre><code class="language-cpp">void scanSD() {
-  trackCount = 0;
-  File root = SD.open("/");
-  while (trackCount &lt; 32) {
-    File entry = root.openNextFile();
-    if (!entry) break;
-    String name = entry.name();
-    if (!entry.isDirectory() &amp;&amp; (name.endsWith(".mp3") || name.endsWith(".MP3"))) {
-      int slash = name.lastIndexOf('/');
-      String basename = (slash &gt;= 0) ? name.substring(slash + 1) : name;
-      if (basename.startsWith("._")) { entry.close(); continue; }  // skip macOS metadata
-      tracks[trackCount++] = name.startsWith("/") ? name : ("/" + name);
-    }
-    entry.close();
-  }
-  root.close();
-}</code></pre>
-
-<p>I then wrote a function to load and play a track:</p>
+<p>Then I wrote a function to load and play a track.</p>
 
 <pre><code class="language-cpp">void playTrack(int idx, bool startPaused = false) {
   if (idx &lt; 0 || idx &gt;= trackCount) return;
@@ -233,7 +197,7 @@ bool paused = false;</code></pre>
 void nextTrack() { if (trackCount) playTrack((currentTrack + 1) % trackCount); }
 void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % trackCount); }</code></pre>
 
-<p>It was fun to see how the audio worked and to build the control logic so it advances to the next song once the current one finishes. It gave me more appreciation for my Spotify!</p>
+<p>It was fun to see how the audio worked and to build the control logic so it advances to the next song once the current one finishes. It gave me more appreciation for my Spotify app!</p>
 
 <pre><code class="language-cpp">void loopMP3Mode() {
   if (!paused &amp;&amp; audioFile &amp;&amp; audioFile.available()) {
@@ -251,7 +215,7 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 </figure>
 
 <h3>Bluetooth</h3>
-<p>I also wanted to include Bluetooth. Initially I used an ESP32-S3 board, which I learned doesn't support Classic Bluetooth. As a result, I had to switch to a normal ESP32, which does. I needed Classic Bluetooth rather than Bluetooth Low Energy (BLE) because A2DP requires Classic Bluetooth. Note that the XIAO couldn't have done any of this at all.</p>
+<p>I also wanted to include Bluetooth. Initially I used an ESP32-S3 board, which I learned doesn't support Classic Bluetooth. As a result, I had to switch to a normal ESP32, which does have that feature. I needed Classic Bluetooth rather than Bluetooth Low Energy (BLE) because A2DP requires Classic Bluetooth. Note that the XIAO couldn't have done any of this at all!!</p>
 
 <figure class="img-block">
   <img src="esp32-s3-wroom-board.png" alt="ESP32-S3 WROOM board used before switching to a normal ESP32">
@@ -262,25 +226,25 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 
 <pre><code class="language-cpp">BluetoothA2DPSink a2dp_sink(i2s);</code></pre>
 
-<p>I then made the radio discoverable, but only when the pair button is pressed:</p>
+<p>I then made the radio discoverable, but only when the user presses the pair button.</p>
 
 <pre><code class="language-cpp">a2dp_sink.set_discoverability(ESP_BT_GENERAL_DISCOVERABLE);</code></pre>
 
-<p>To make the pairing feel like a polished final product, I added sound cues. While the radio is discoverable and waiting for a phone, it plays an 880 Hz beep every two seconds. When a phone connects, I added a connect chime. I thought an arpeggio from C up to G up to a higher C would be cute, and I added a disconnect chime of those same three notes descending when a phone disconnects or loses Bluetooth.</p>
+<p>To make the pairing feel like a polished final product, I added sound cues. While the radio is discoverable and waiting for a phone, it plays an 880 Hz beep every two seconds. When a phone connects, I added a connect chime. I thought an arpeggio from C up to G up to a higher C would sound nice, and I added a disconnect chime of those same three notes descending when a phone disconnects or loses Bluetooth.</p>
 
-<p>Because of Bluetooth, I had to make the ESP reboot every time you change modes. The ESP32-A2DP library doesn't like being started and stopped repeatedly: when <code>a2dp_sink.start()</code> runs, it brings up the entire Bluetooth stack, including the controller, the host stack, memory buffers, background tasks, and event handlers. All of this allocates a lot of memory. It's easier to just let the ESP shut off and reboot so it can free all of that.</p>
+<p>However, because of Bluetooth, I had to make the ESP reboot every time you change modes. The ESP32-A2DP library doesn't like being started and stopped repeatedly: when <code>a2dp_sink.start()</code> runs, it brings up the entire Bluetooth stack, including the controller, the host stack, memory buffers, background tasks, and event handlers. All of this allocates a lot of memory. It's easier to just let the ESP shut off and reboot so it can free all of that.</p>
 
 <p>On top of that, Bluetooth and WiFi conflict because the ESP32 has a single radio and antenna shared between them, both at 2.4 GHz. They can run at the same time, but they have to take turns, and since I want continuous audio streaming, it's cleaner to reboot so Bluetooth starts fresh and never has to share with WiFi, and vice versa. So <code>ESP.restart()</code> is called before every mode switch.</p>
 
 <h3>Moving to a Protoboard</h3>
-<p>With all the modes working together synchronously thanks to the mode-switch reboot, I wanted to move everything off the breadboard onto a more solid surface. Since I was still thinking about future changes, I decided against a custom milled PCB and went with a protoboard instead, which I'd never used before.</p>
+<p>With all the modes working together synchronously thanks to the mode-switch reboot, I wanted to move everything off the breadboard onto a more solid surface. Since I was still thinking about future changes, I decided against a custom milled PCB and went with a protoboard instead. I'd never used a protoboard before so I was excited.</p>
 
 <figure class="img-block">
   <img src="complete-circuit-wiring-before-protoboard.jpeg" alt="Complete circuit wiring on a breadboard before moving to a protoboard">
   <figcaption>Wiring of the complete circuit board before putting it on the protoboard</figcaption>
 </figure>
 
-<p>I realized that to reach both sides of the ESP32's pins, I needed two protoboards rather than one, so I soldered two protoboards together. That made for a larger but more functional product. It took an entire day's work, because there were so many pins to solder, though I think I hit a flow state while doing it. The protoboard gave me great soldering practice, and I think I got much better at it. It also forced me to write down and confirm every wiring connection and pin number I was using, which made me appreciate that each pin has its own function and that it's important to track which pins you use, since some of them, as I saw with the GPIO 35 mishap, don't have the mechanisms you need.</p>
+<p>I realized that to reach both sides of the ESP32's pins, I needed two protoboards rather than one, so I soldered the pins together across two protoboards. That made for a larger product but that was what needed to happen (I wonder if there are larger single protoboards where you can access both sides of ESP pins?). It took several hours to finish this, because there were so many pins to solder but at least I think I achieved flow state while doing it. The protoboard gave me great soldering practice, and I think I got much better at it. It also forced me to write down and confirm every wiring connection and pin number I was using, which made me appreciate that each pin has its own function and that it's important to track which pins you use, since some of them, as I saw with the GPIO 35 mishap, don't have the mechanisms you need.</p>
 
 <div class="img-row">
   <figure>
@@ -407,7 +371,7 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
   <figcaption>I tried using the 300 mAh battery that the ESP32 LiPo module came with, but it did not provide sufficient voltage</figcaption>
 </figure>
 
-<p>When I tried the MT3608 boost converter, I soldered it onto a TP4056 charging module. But when I tested it on the actual circuit, I started getting smoke from something on my breadboard. I pulled the power, but apparently not quickly enough. My SD card and my 2.4" OLED display were fried and unusable. This was a big lesson in being careful with high voltages: I think I hadn't dialed the booster's voltage down enough, and it overpowered the rest of the circuit. From then on, I always used a multimeter to confirm the voltage before connecting anything to the circuit. I became a beast on the multimeter. I also tried another booster that needed a USB-A-to-bare-wire connector, but it only gave me about 3.7 V when I needed 5 V.</p>
+<p>When I tried the MT3608 boost converter, I soldered it onto a TP4056 charging module. But when I tested it on the actual circuit, I started getting smoke from something on my breadboard. I pulled the power, but apparently not quickly enough. My SD card and my 2.4" OLED display became fried and unusable. This was a big lesson for me in being careful with high voltages. I think I hadn't dialed the booster's voltage down enough, and it overpowered the rest of the circuit. From then on, I always used a multimeter to confirm the voltage before connecting anything to the circuit. I became a beast on the multimeter. I also tried another booster that needed a USB-A to bare wire connector, but it only gave me about 3.7 V when I needed 5 V.</p>
 
 <div class="img-row">
   <figure>
@@ -416,7 +380,7 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
   </figure>
   <figure>
     <img src="second-boost-converter.png" alt="Second booster with USB-A to raw wire converter">
-    <figcaption>The second booster I used needed a USB-A-to-raw-wire converter, but it only provided 3.7 V, which was not enough for the radio</figcaption>
+    <figcaption>The second booster I used needed a USB-A to raw-wire converter, but it only provided 3.7 V, which was not enough for the radio</figcaption>
   </figure>
 </div>
 
@@ -425,7 +389,7 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 <div class="img-row">
   <figure>
     <img src="usbc-port-ground-power-esp32.png" alt="USB-C port connected to the ESP32 ground and power pins">
-    <figcaption>USB-C port that is connected to ground and power of the ESP32!</figcaption>
+    <figcaption>USB-C port to power the radio (soldered onto power and ground wires!)</figcaption>
   </figure>
   <figure>
     <img src="fried-oled-display.png" alt="Fried OLED display after the boost converter power issue">
@@ -434,7 +398,7 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 </div>
 
 <h2>Enclosure</h2>
-<p>For the final project, I wanted a better enclosure than the MVP's, something that felt more retro, which I planned to achieve with a wood cover. I created a wood design in CAD and sketched out a diagram of exactly what I wanted. After measuring every dimension with calipers, I 3D-printed the corresponding parts: the body, the back panel, and the knob.</p>
+<p>For the final project, I wanted to have a better enclosure than the MVP with something more retro, so I planned to build a wood cover. I created a 2D design in CAD and sketched out a diagram of exactly what I wanted. After measuring every dimension with calipers, I 3D-printed the corresponding parts, including the body, the back panel, and the knob.</p>
 
 <div class="img-row">
   <figure>
@@ -447,7 +411,7 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
   </figure>
 </div>
 
-<p>Through several iterations, I realized I had to add tolerances for the rotary encoder to fit into the knob. Specifically, 0.2 mm turned out to be the perfect tolerance for press-fitting a knob onto a rotary encoder. I'd initially used zero tolerance, which made it impossible to fit the encoder into the knob at all. I found it empowering to take something I'd sketched on paper and turn it into a real physical product, especially the knob, which I custom-designed myself. I also made the change I'd wanted since the MVP: I switched the volume control from a potentiometer to a rotary encoder, which worked much better. It was more precise and didn't fluctuate once I set the volume.</p>
+<p>Through several iterations, I realized I had to add tolerances for the rotary encoder to fit into the knob. Specifically, 0.2 mm turned out to be the perfect tolerance for press-fitting a knob onto a rotary encoder. I'd initially used zero tolerance, which made it impossible to fit the encoder into the knob at all. I found it empowering to take something I'd sketched on paper and turn it into a real physical product, especially the knob, which I custom-designed myself. I also switched the volume control from a potentiometer to a rotary encoder, which worked much better. It was more precise and didn't fluctate once I set the volume like it did in the MVP.</p>
 
 <div class="img-row">
   <figure>
@@ -462,9 +426,9 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 
 <p>I then laser-cut the wooden front panel, going through several iterations to get the dimensions right for the speaker hole and the button holes. I'd initially made circular holes for the buttons, thinking only the yellow part of each button would poke through. That didn't work because the button cap was larger than the hole, at least for these buttons, so instead I switched to square laser-cut holes, pushed the whole square button through, and glued them in place.</p>
 
-<p>I went around the lab looking for speaker mesh. I found one candidate, a metal grille, but it didn't give off the retro vibe I wanted, so instead I used a piece of dark denim from the fabrics bin as my speaker mesh.</p>
+<p>I went around the lab looking for speaker mesh. I found one candidate for the mesh which was a metal grille, but it didn't give off the retro vibe I wanted, so instead I used a piece of dark denim from the fabrics bin as my speaker mesh.</p>
 
-<p>I was conflicted about how to hold the USB-C and microSD card adapters in place at the back. I ended up hot-gluing a cardboard structure to the back panel so it held the modules right next to the openings.</p>
+<p>I also didn't know how to hold the USB-C and microSD card adapters in place at the back but I ended up hot gluing a cardboard structure to the back panel so it held the modules right next to the openings.</p>
 
 <div class="img-row">
   <figure>
@@ -503,10 +467,31 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 
 <h2>Software Fixes and Final Touches</h2>
 <h3>Filtering Out macOS Metadata Files</h3>
-<p>There were a lot of bogus files showing up from the SD card on the radio from macOS metadata files, including a phantom track <code>/._song.mp3</code> that appeared in the playlist. This makes sense: macOS sometimes writes hidden files that start with a period and leaves them on the card. The <code>._</code> check inside <code>scanSD()</code>, shown earlier, skips any file whose name starts with <code>._</code>, so only real music shows up.</p>
+<p>There were a lot of bogus files showing up from the SD card on the radio from macOS metadata files, including a phantom track <code>/._song.mp3</code> that appeared in the playlist. This makes sense because macOS sometimes writes hidden files that start with a . and leaves them on the card. The <code>._</code> check inside <code>scanSD()</code>, shown earlier, skips any file whose name starts with <code>._</code>, so only real music shows up.</p>
+
+<pre><code class="language-cpp">void scanSD() {
+  trackCount = 0;
+  File root = SD.open("/");
+  while (trackCount &lt; 32) {
+    File entry = root.openNextFile();
+    if (!entry) break;
+    String name = entry.name();
+    if (!entry.isDirectory() &amp;&amp; (name.endsWith(".mp3") || name.endsWith(".MP3"))) {
+      int slash = name.lastIndexOf('/');
+      String basename = (slash &gt;= 0) ? name.substring(slash + 1) : name;
+      if (basename.startsWith("._")) {       // &lt;-- macOS metadata filter
+        entry.close();
+        continue;
+      }
+      tracks[trackCount++] = name.startsWith("/") ? name : ("/" + name);
+    }
+    entry.close();
+  }
+  root.close();
+}</code></pre>
 
 <h3>Reversing the Volume Encoder Direction</h3>
-<p>After adding the rotary encoder for volume, I needed to reverse its direction by swapping the <code>++</code> and <code>--</code> in the interrupt handler. I also learned that the KY-040 rotary encoder has internal resistors, so I didn't need to add resistors as I had in earlier weeks:</p>
+<p>After adding the rotary encoder for volume, I needed to reverse its direction by swapping the <code>++</code> and <code>--</code> in the interrupt handler. I also learned that the KY-040 rotary encoder has internal resistors, so I didn't need to add resistors as I had in earlier weeks.</p>
 
 <pre><code class="language-cpp">void IRAM_ATTR onEncoderTurn() {
   unsigned long now = millis();
@@ -520,16 +505,11 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 <p>When I was adding more internet radio stations, I realized some stream URLs returned HTTP 301/302 redirects. This is because many commercial stations lock their streams behind their apps, so no public URL exists. iHeartRadio in LA and Boston, for example, doesn't have public streams. Only public radio, like NPR Classical or college radio, reliably offers open MP3 streams. I also added some AAC stations, but they didn't play as smoothly as the MP3-only streams, since they're higher quality and a heavier memory load.</p>
 
 <h2>Reflection</h2>
-<p>After making all these fixes and assembling the whole radio with some hot glue and a few screws, I ended up with a radio I'm genuinely proud of. I learned so much through this process, including what it really means to take an idea from beginning to completion, and it was deeply satisfying to see it all come together at the end.</p>
+<p>After making all these fixes and assembling the whole radio with some hot glue and a few screws, I ended up with a radio I'm really proud of. I learned so much through this process, including what it really means to take an idea from beginning to completion, and it was deeply satisfying to see it all come together at the end.</p>
 
-<p>Moving forward, a few changes I'd like to make: I'd look into a chemical solvent transfer onto wood, so I could print images from a toner-based printer directly onto the wood, things like button labels and maybe a logo. I'd also consider designing a custom milled PCB, and looking into a more computationally powerful microcontroller to handle the memory load of all four audio modes.</p>
+<p>Moving forward, I would like to look into a few changes, including a chemical solvent transfer onto wood, so I could print images from a toner-based printer directly onto the wood, things like button labels and maybe a logo. I'd also consider designing a custom milled PCB, and swapping the ESP32 with a more computationally powerful microcontroller to handle the memory load of all four audio modes.</p>
 
-<p>Reflecting on this project, I'm so happy I was able to take this class. As someone who started out totally inexperienced, seeing all of this come to fruition means a lot to me. I'm so grateful to the teaching staff. Thank you so much to Nathan, Bobby, Kassia, and Jessica for their support and constant guidance throughout. I couldn't have done it without your help! Thank you PS70!</p>
-
-<figure class="img-block">
-  <img src="final-radio-cover.png" alt="Finished retro wooden ESP32 radio">
-  <figcaption>The finished retro wooden ESP32 radio</figcaption>
-</figure>
+<p>Reflecting on this project, I'm so grateful I was able to take this class. As someone who started out with no experience in fabrication, seeing all of my work over the past semester come to fruition is very gratifying. I'm so thankful to the teaching staff. Thank you to Nathan, Bobby, Kassia, and Jessica for their support and constant guidance throughout the course! I couldn't have done anything without your help (like, literally). Thank you PS70. I will miss all of seniors in this class!</p>
 
 <h2>Files</h2>
 <p><a class="file-link" href="retro_radio_code.zip">Download retro radio code</a></p>
