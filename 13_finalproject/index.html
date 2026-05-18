@@ -20,7 +20,7 @@
 </div>
 
 <h2>Overview</h2>
-<p>For my final project, I built a retro wooden radio around an ESP32 that supports four audio modes: Internet radio over WiFi, MP3 playback from an SD card, Bluetooth, and FM radio.
+<p>For my final project, I built a retro wooden radio around an ESP32 that supports four audio modes, including Internet radio over WiFi, MP3 playback from an SD card, Bluetooth, and FM radio.</p>
 
 <p>I was motivated to build this project because I'm a huge fan of listening to and DJing music, and I've always been drawn to radios from the past, especially ones that do not depend on WiFi to play music. At the same time, I really enjoy using my Bluetooth speaker at home. I wanted to combine all of these into one "enhanced" speaker of sorts. My hope was to build a device that looks good and is functional. Here is my journey building the RetroRadio, from the MVP to the finished product!</p>
 
@@ -30,13 +30,13 @@
 </figure>
 
 <figure class="video-embed">
-  <iframe src="https://www.youtube.com/embed/cjsHHNFzwpY" title="RetroRadio extended demo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-  <figcaption>Extended demo of the finished radio</figcaption>
+  <iframe src="https://www.youtube.com/embed/9aBZcWkDJBI" title="RetroRadio extended demo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  <figcaption>Demo video and walkthrough of the finished radio</figcaption>
 </figure>
 
 <figure class="video-embed">
-  <iframe src="https://www.youtube.com/embed/9BZgi1k3oc8" title="RetroRadio demo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-  <figcaption>Video demonstrating capabilities of the radio</figcaption>
+  <iframe src="https://www.youtube.com/embed/JPO3PMqq4M4" title="RetroRadio demo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  <figcaption>Close up video demonstrating all capabilities of radio</figcaption>
 </figure>
 
 <h2>Bill of Materials</h2>
@@ -374,14 +374,14 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 </table>
 
 <h2>Powering the Radio</h2>
-<p>I was interested in making the radio rechargeable, using either a LiPo battery or one that attaches directly to an ESP32 LiPo board, so I tested a few options. I was getting about 3.3 V, but I needed a way to step that up to 5 V, since some of my components run on 5 V. I went around the lab trying different voltage boosters and converters on the 18650 rechargeable battery module.</p>
+<p>I was interested in making the radio rechargeable, using either a LiPo battery or one that attaches directly to an ESP32 LiPo board, so I tested a few options. From most of the batteries I had on hand, I was getting about 3.3 V on the multimeter, but I needed a way to step that up to 5 V, since some of my components run on 5 V. I went around the lab trying different voltage boosters and converters on the 18650 rechargeable battery module.</p>
 
 <figure class="img-block">
   <img src="esp32-lipo-300mah-battery-test.png" alt="Testing the 300 mAh battery from the ESP32 LiPo module">
   <figcaption>I tried using the 300 mAh battery that the ESP32 LiPo module came with, but it did not provide sufficient voltage</figcaption>
 </figure>
 
-<p>When I tried the MT3608 boost converter, I soldered it onto a TP4056 charging module. But when I tested it on the actual circuit, I started getting smoke from something on my breadboard. I pulled the power, but apparently not quickly enough. My SD card and my 2.4" OLED display became fried and unusable. This was a big lesson for me in being careful with high voltages. I think I hadn't dialed the booster's voltage down enough, and it overpowered the rest of the circuit. From then on, I always used a multimeter to confirm the voltage before connecting anything to the circuit. I became a beast on the multimeter. I also tried another booster that needed a USB-A to bare wire connector, but it only gave me about 3.7 V when I needed 5 V.</p>
+<p>When I tried the HW-432 boost converter, I soldered it onto a TP4056 charging module. But when I tested it on the actual circuit, I started getting smoke from something on my breadboard. I pulled the power, but apparently not quickly enough. My SD card and my 2.4" OLED display became fried and unusable. This was a big lesson for me in being careful with high voltages. I think I hadn't dialed the booster's voltage down enough, and it overpowered the rest of the circuit. From then on, I always used a multimeter to confirm the voltage before connecting anything to the circuit. I became a beast on the multimeter. I also tried another booster that needed a USB-A to bare wire connector, but it only gave me about 3.7 V when I needed 5 V.</p>
 
 <div class="img-row">
   <figure>
@@ -394,7 +394,7 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
   </figure>
 </div>
 
-<p>I eventually realized it might just be easier to power the whole system through a USB-C plug-in, rather than going through a rechargeable battery. People usually use a radio plugged in anyway and don't always need it to be portable. So I soldered a USB-C port to the ESP32's ground and power, and found it much easier to just plug in this way.</p>
+<p>I eventually realized it might just be easier to power the whole system through a USB-C plug-in, rather than going through a rechargeable battery. So I soldered a USB-C port to the ESP32's ground and power, and found it much easier to just plug in this way.</p>
 
 <div class="img-row">
   <figure>
@@ -428,6 +428,21 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 </div>
 
 <p>Through several iterations, I realized I had to add tolerances for the rotary encoder to fit into the knob. Specifically, 0.2 mm turned out to be the perfect tolerance for press-fitting a knob onto a rotary encoder. I'd initially used zero tolerance, which made it impossible to fit the encoder into the knob at all. I found it empowering to take something I'd sketched on paper and turn it into a real physical product, especially the knob, which I custom-designed myself. I also switched the volume control from a potentiometer to a rotary encoder, which worked much better. It was more precise and didn't fluctate once I set the volume like it did in the MVP.</p>
+
+<div class="stl-grid">
+  <figure class="stl-embed">
+    <iframe src="https://www.viewstl.com/?embedded&url=https%3A%2F%2Fmatthewchang0.github.io%2FPS70%2F13_finalproject%2Ffinal-radio-knobs.stl" title="Radio knob STL viewer"></iframe>
+    <figcaption>Radio knob STL</figcaption>
+  </figure>
+  <figure class="stl-embed">
+    <iframe src="https://www.viewstl.com/?embedded&url=https%3A%2F%2Fmatthewchang0.github.io%2FPS70%2F13_finalproject%2Fradio-back-cover.stl" title="Radio back cover STL viewer"></iframe>
+    <figcaption>Radio back cover STL</figcaption>
+  </figure>
+  <figure class="stl-embed">
+    <iframe src="https://www.viewstl.com/?embedded&url=https%3A%2F%2Fmatthewchang0.github.io%2FPS70%2F13_finalproject%2Fradio-body.stl" title="Radio body STL viewer"></iframe>
+    <figcaption>Radio body STL</figcaption>
+  </figure>
+</div>
 
 <div class="img-row">
   <figure>
