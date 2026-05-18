@@ -28,7 +28,7 @@
 </figure>
 
 <h2>Part 1: Distance Capacitive Sensor</h2>
-<p>During class, my lab group and I built a capacitive sensor whose capacitance depends on the distance between two plates. We cut a piece of cardboard and used a wooden sliding block with a parallel copper plate taped to it. Using a ruler, we set the plates at a range of measured distances and recorded the raw capacitance signal at each one. The cardboard kept the plates parallel and properly aligned as the block slid. We used the <a href="https://nathanmelenbrink.github.io/lab/input/capacitance/txrx.html">Arduino TX-RX code</a> to calculate the capacitance:</p>
+<p>During class, my lab group and I built a capacitive sensor whose capacitance depends on the distance between two plates. We cut a piece of cardboard and used a wooden sliding block with a parallel copper plate taped to it. Using a ruler, we set the plates at a range of measured distances and recorded the raw capacitance signal at each one. The cardboard kept the plates parallel and properly aligned as the block slid. We used the <a href="https://nathanmelenbrink.github.io/lab/input/capacitance/txrx.html">Arduino TX-RX code</a> to calculate the capacitance.</p>
 
 <figure class="video-block">
   <video controls muted playsinline preload="metadata">
@@ -120,13 +120,13 @@
   <figcaption>I added Aurora's water bottle onto the top of this lofty stack of weights for my final weight measurement!</figcaption>
 </figure>
 
-<p>Plotting all the capacitance values against their measured weights, I fit a curve to the data in Desmos. Since the parallel-plate relationship is already known to be nonlinear, I looked for a nonlinear fit and found that a quadratic fit the data best, with an R&sup2; of 0.9878. The calibration equation was:</p>
+<p>Plotting all the capacitance values against their measured weights, I fit a curve to the data in Desmos. Since the parallel-plate relationship is already known to be nonlinear, I looked for a nonlinear fit and found that a quadratic fit the data best, with an R&sup2; of 0.9878. The calibration equation was</p>
 
 <div class="equation-card">
   <p>weight (g) = −2486.85477 + 0.0933895x + 1.60704 &times; 10<sup>−7</sup>x<sup>2</sup></p>
 </div>
 
-<p>where x is the raw capacitance value from the sensor. The sensor is really measuring the distance between the copper plates: adding weight compresses the sponge, decreases the plate distance, and increases the capacitance reading. Over the specific range of weights I tested, the quadratic looks almost linear, but the Desmos regression captured the full dataset best.</p>
+<p>where x is the raw capacitance value from the sensor. The sensor is really measuring the distance between the copper plates. Adding weight compresses the sponge, decreases the plate distance, and increases the capacitance reading. Over the specific range of weights I tested, the quadratic looks almost linear, but the Desmos regression captured the full dataset best.</p>
 
 <table class="data-table">
   <caption>Calibration points for the capacitive weight sensor</caption>
@@ -343,7 +343,7 @@ void loop() {
 
 <h2>Part 3: Ultrasonic Sensor</h2>
 <p>For the second part of the assignment, I decided I wanted to learn how to use an ultrasonic sensor.</p>
-<p>Simply put, the ultrasonic sensor I was using—the HC-SR04—measures distance by timing how long an echo takes to return. When the Trig pin is held high for 10 microseconds, the module emits a burst of ultrasonic sound (which is too high-pitched for humans to hear). The sound travels out, bounces off whatever is in front of it, and returns to the module, which calculates how long the round trip took. Since distance equals speed multiplied by time, that timing can be calibrated into a distance measurement. I learned how to wire the HC-SR04 to the XIAO using another <a href="https://randomnerdtutorials.com/esp32-hc-sr04-ultrasonic-arduino/">Random Nerd Tutorial</a> (I love this site):</p>
+<p>Simply put, the ultrasonic sensor I was using—the HC-SR04—measures distance by timing how long an echo takes to return. When the Trig pin is held high for 10 microseconds, the module emits a burst of ultrasonic sound (which is too high-pitched for humans to hear). The sound travels out, bounces off whatever is in front of it, and returns to the module, which calculates how long the round trip took. Since distance equals speed multiplied by time, that timing can be calibrated into a distance measurement. I learned how to wire the HC-SR04 to the XIAO using another <a href="https://randomnerdtutorials.com/esp32-hc-sr04-ultrasonic-arduino/">Random Nerd Tutorial</a> (I love this site).</p>
 <p>One problem I ran into early and which the tutorial helped me solve was that the ultrasonic module needs 5 V to run. I had initially plugged it into the 3.3 V pin, where it worked poorly. Moving it to the 5 V pin fixed the problem immediately.</p>
 
 <figure class="img-block">
@@ -358,7 +358,7 @@ void loop() {
 
 <h3>Calibrating the Sensor</h3>
 <p>To calibrate the sensor, I laid a ruler perpendicular to it on a flat table and used a wooden sliding block (borrowed from the band saw) as the target. Feeling meticulous, I recorded the raw signal at every centimeter from 1 to 17 cm, plus one more measurement at 20 cm (just to be sure!)</p>
-<p>The ultrasonic sensor turned out to be one of the most accurate sensors I've used but only after the object was far enough away from the sensor. The first few data points close to the sensor are clear outliers: at 1–3 cm, the return time is much higher than the linear model would predict. This makes sense because the HC-SR04 has a minimum sensing distance, so very close echoes are not measured as cleanly.</p>
+<p>The ultrasonic sensor turned out to be one of the most accurate sensors I've used but only after the object was far enough away from the sensor. The first few data points close to the sensor are clear outliers. At 1–3 cm, the return time is much higher than the linear model would predict. This makes sense because the HC-SR04 has a minimum sensing distance, so very close echoes are not measured as accurately.</p>
 
 <figure class="img-block">
   <img src="ultrasonic-raw-time-vs-distance.svg" alt="Graph of raw ultrasonic return time in microseconds versus distance in centimeters">
