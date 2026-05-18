@@ -29,6 +29,16 @@
   <figcaption>The finished retro wooden ESP32 radio</figcaption>
 </figure>
 
+<figure class="video-embed">
+  <iframe src="https://www.youtube.com/embed/cjsHHNFzwpY" title="RetroRadio extended demo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  <figcaption>Extended demo of the finished radio</figcaption>
+</figure>
+
+<figure class="video-embed">
+  <iframe src="https://www.youtube.com/embed/9BZgi1k3oc8" title="RetroRadio demo video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+  <figcaption>Video demonstrating capabilities of the radio</figcaption>
+</figure>
+
 <h2>Bill of Materials</h2>
 <h3>Electronics</h3>
 <ul>
@@ -398,13 +408,19 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 </div>
 
 <h2>Enclosure</h2>
-<p>For the final project, I wanted to have a better enclosure than the MVP with something more retro, so I planned to build a wood cover. I created a 2D design in CAD and sketched out a diagram of exactly what I wanted. After measuring every dimension with calipers, I 3D-printed the corresponding parts, including the body, the back panel, and the knob.</p>
+<p>For the final project, I wanted to have a better enclosure than the MVP with something more retro, so I planned to build a wood cover. I created a 2D design in CAD and sketched out a diagram of exactly what I wanted. After measuring every dimension with calipers, I 3D-printed the corresponding parts, including the body, the back panel, and the knob. I also added a few extrusions from each corner so that the wooden cover could easily be glued to the body as well as the back panel.</p>
 
 <div class="img-row">
-  <figure>
-    <img src="radio-enclosure-sketch.png" alt="Sketch for the radio enclosure">
-    <figcaption>My sketch for the radio enclosure prior to building it</figcaption>
-  </figure>
+  <div class="media-stack">
+    <figure>
+      <img src="radio-enclosure-sketch.png" alt="Sketch for the radio enclosure">
+      <figcaption>My sketch for the radio enclosure prior to building it</figcaption>
+    </figure>
+    <figure>
+      <img src="radio-body-corner-extrusions.png" alt="Fusion 360 model of the radio body with corner extrusions">
+      <figcaption>Radio body CAD model with corner extrusions for attaching the wooden cover and back panel</figcaption>
+    </figure>
+  </div>
   <figure>
     <img src="radio-body-prusa-mk4-printing.png" alt="Radio body printing on the PRUSA MK4">
     <figcaption>The body of the radio printing on the PRUSA MK4. It took 12 hours!</figcaption>
@@ -425,6 +441,11 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 </div>
 
 <p>I then laser-cut the wooden front panel, going through several iterations to get the dimensions right for the speaker hole and the button holes. I'd initially made circular holes for the buttons, thinking only the yellow part of each button would poke through. That didn't work because the button cap was larger than the hole, at least for these buttons, so instead I switched to square laser-cut holes, pushed the whole square button through, and glued them in place.</p>
+
+<figure class="img-block">
+  <img src="radio-front-cover-fusion-sketch.png" alt="Fusion 360 sketch for the laser-cut radio front cover">
+  <figcaption>Fusion 360 sketch for the laser-cut radio front cover</figcaption>
+</figure>
 
 <p>I went around the lab looking for speaker mesh. I found one candidate for the mesh which was a metal grille, but it didn't give off the retro vibe I wanted, so instead I used a piece of dark denim from the fabrics bin as my speaker mesh.</p>
 
@@ -511,8 +532,13 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 
 <p>Reflecting on this project, I'm so grateful I was able to take this class. As someone who started out with no experience in fabrication, seeing all of my work over the past semester come to fruition is very gratifying. I'm so thankful to the teaching staff. Thank you to Nathan, Bobby, Kassia, and Jessica for their support and constant guidance throughout the course! I couldn't have done anything without your help (like, literally). Thank you PS70. I will miss all of seniors in this class!</p>
 
+<figure class="img-block">
+  <img src="final-radio-cover.png" alt="Finished retro wooden ESP32 radio">
+  <figcaption>The finished retro wooden ESP32 radio</figcaption>
+</figure>
+
 <h2>Files</h2>
-<p><a class="file-link" href="retro_radio_code.zip">Download retro radio code</a></p>
+<p><a class="file-link" href="final-project-files.zip">Download Final Project files (.zip)</a></p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>

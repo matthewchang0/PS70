@@ -117,6 +117,15 @@ a { color: #111; }
 
 .img-row figure { margin: 0; }
 
+.img-row .media-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.img-row .media-stack figure {
+  margin: 0;
+}
+
 .img-row img {
   width: 100%;
   display: block;
