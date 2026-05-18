@@ -5,6 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../week-style.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/arduino-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/arduino.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 
@@ -12,27 +16,317 @@
 
 <div class="page-header">
   <div class="week-label">final project &middot; PS70</div>
-  <h1>Final Project</h1>
-  <p class="subtitle">The finished project documentation will live here.</p>
+  <h1>Retro Wooden ESP32 Radio</h1>
+  <p class="subtitle">A four-mode speaker/radio that plays internet radio, MP3 files, Bluetooth audio, and FM radio.</p>
 </div>
 
-<figure class="img-block">
-  <img src="final-project-placeholder-image.jpg" alt="Final project placeholder">
-  <figcaption>placeholder image for the completed final project</figcaption>
-</figure>
-
 <h2>Project Overview</h2>
-<p>This page is now formatted to match the rest of the site. Add the final project name, motivation, system overview, and a short explanation of what the finished build does.</p>
+<p>For my final project, I created a retro wooden radio built around an ESP32. The radio supports four audio modes: internet radio over Wi-Fi, MP3 playback from an SD card, Bluetooth, and FM radio.</p>
 
-<h2>Build Documentation</h2>
-<p>Use this section for the fabrication process: CAD, parts, electronics, assembly, code, testing, and iteration. The strongest version will show both the finished result and the path that got there.</p>
+<p>My motivation for this project was that I am a huge fan of listening to music and DJing music, and I was inspired by retro radios from the past. I liked the idea of a radio that felt physical and self-contained, like something you could use without needing a phone screen or a web app. At the same time, I also really enjoy using my Bluetooth speaker at home, and I wanted to build something that combined all of these functions into an enhanced speaker that looks good and is functional.</p>
 
-<h2>Files</h2>
-<p class="note">Add design files, firmware, diagrams, and any supporting downloads here.</p>
+<h2>Bill of Materials</h2>
+<h3>Electronics</h3>
+<ul>
+  <li>ESP32 DOIT DevKit V1</li>
+  <li>MAX98357A I<sup>2</sup>S amplifier</li>
+  <li>TEA5767 FM radio module</li>
+  <li>MicroSD card module</li>
+  <li>MicroSD card</li>
+  <li>OLED display 2.42" SSD1309</li>
+  <li>KY-040 rotary encoder x2</li>
+  <li>Knobs</li>
+  <li>Push buttons x4</li>
+  <li>3W 4&Omega; full-range speaker</li>
+  <li>NeoPixel RGB LED</li>
+  <li>1000 &micro;F electrolytic capacitors</li>
+  <li>1 k&Omega; resistors x2</li>
+</ul>
+
+<h3>Power</h3>
+<ul>
+  <li>300 mAh ESP LiPo battery</li>
+  <li>Rechargeable 18650 battery</li>
+  <li>Boost converter</li>
+  <li>Dual-slot 18650 desktop charger</li>
+  <li>Rocker switch</li>
+  <li>USB-C charging and file transfer</li>
+  <li>USB-C panel-mount port</li>
+  <li>TP4056 charger module</li>
+  <li>10 k&Omega; resistors x2</li>
+</ul>
+
+<h3>Enclosure and Finishing</h3>
+<ul>
+  <li>3D-printed main body</li>
+  <li>3D-printed back panel</li>
+  <li>3D-printed knob</li>
+  <li>Hardwood board</li>
+  <li>Black denim grille cloth</li>
+  <li>Wood stain and polyurethane</li>
+  <li>Hot glue gun</li>
+</ul>
+
+<h2>My Journey</h2>
+<p>Here is my journey in creating this final project.</p>
+
+<h3>MVP</h3>
+<p>For MVP Week, I focused on creating a small version of the radio and getting the fundamental input and output components working, including the OLED screen, rotary encoder potentiometer, speaker, and amplifier. This MVP could connect to internet radio stations such as SomaFM and deliver real-time audio to the user.</p>
+
+<p>I also designed a 3D-printed enclosure for the radio, including a body, speaker mesh front panel, and knob. I designed and milled a custom PCB for the radio based on the MVP wiring. This was a functional product, but there were several improvements I wanted to make, including expanding the functionality and making the enclosure larger to accommodate the additional complexity I wanted to add. To see the full process for the MVP, please see my documentation in <a href="../07_outputs/index.html">week 7</a>.</p>
+
+<h3>Integrated Project</h3>
+<p>For the integrated project, I wanted to add the other components I was hoping to bring into my final project: an FM radio module, Bluetooth, and MP3 playback. This meant I needed to configure Bluetooth in the ESP32 Arduino code, wire up the TEA5767 module on the breadboard, and add the MicroSD card module so that everything worked together. I also wanted to solidify all the wiring for my radio and put it on something more stable than a breadboard, such as a protoboard or custom-milled PCB.</p>
+
+<p>First, I hooked up the TEA5767 FM radio module to the rest of the circuit. The wiring was pretty straightforward, except for the fact that the audio output needed an aux cable. The aux cable needed to be connected to ground as well as an audio pin.</p>
+
+<p>I did not anticipate needing additional equipment for the FM module, and since the PS70 lab did not have an aux-to-raw-wire cable, I needed to become scrappy. I looked around the lab salvage bin, found a pair of headphones with a 3.5 mm aux cable, and snipped the wires to get access to the internals. I found the ground wire and the audio output wire, then attached them to my breadboard to send audio information from the TEA5767 FM module to my ESP32.</p>
+
+<p>Configuring the TEA5767 FM radio module was one of the hardest challenges of the integrated project because there were many software issues and hardware challenges involved in outputting a consistent radio signal. For many iterations, I did not hear any signal coming out of the FM module. I even tried another FM chip, the SI4703, but I ultimately did not use it because the chip did not work for my setup and did not have a module spot for the antenna, so it was not able to pick up signals as effectively as the TEA5767 module.</p>
+
+<p>The FM audio module uses the legacy I<sup>2</sup>S driver, while AudioTools uses the new I<sup>2</sup>S driver, and they were conflicting because they could not use them at the same time. What I eventually did was force AudioTools onto the legacy driver and control I<sup>2</sup>C directly through the <code>tea5767Write()</code> function.</p>
+
+<pre><code class="language-cpp">bool tea5767Write(float freqMHz) {
+  unsigned long freqHz = (unsigned long)(freqMHz * 1000000.0f);
+  unsigned long pll = (4UL * (freqHz + 225000UL)) / 32768UL;
+  uint8_t b[5];
+  b[0] = (pll &gt;&gt; 8) &amp; 0x3F;
+  b[1] =  pll &amp; 0xFF;
+  b[2] = 0x90;
+  b[3] = 0x10;
+  b[4] = 0x00;
+  Wire.beginTransmission(TEA5767_ADDR);   // 0x60
+  Wire.write(b, 5);
+  return Wire.endTransmission() == 0;
+}</code></pre>
+
+<p>Therefore, the audio path for FM was:</p>
+<ul>
+  <li>From the TEA5767 analog audio</li>
+  <li>To the ESP32 ADC on GPIO35</li>
+  <li>Resampled in a FreeRTOS task</li>
+  <li>To I<sup>2</sup>S</li>
+  <li>To the MAX98357A</li>
+  <li>To the speaker</li>
+</ul>
+
+<p>Due to the ADC sampling, the audio quality is a bit rough at times, but it plays through the main speaker without needing any additional headphones. An ongoing problem was that the FM radio module often crashed the ESP32 and made it reboot after working for about 30 seconds. To fix this, I went through six different iterations that were very difficult to patch.</p>
+
+<p>First, I used heap monitoring with <code>ESP.getFreeHeap()</code>, which printed when the ESP was booted after the FM was set up and every five seconds after that. I also lowered the sample rate from 32 kHz to 16 kHz, which halved the CPU load in the audio task. Then I made sure that Wi-Fi and Bluetooth shut off before turning on FM radio, with a 20 ms delay so there was less interference between modes.</p>
+
+<pre><code class="language-cpp">WiFi.disconnect(true);
+WiFi.persistent(false);
+WiFi.mode(WIFI_OFF);
+btStop();</code></pre>
+
+<p>I also used a function to uninstall the I<sup>2</sup>S driver before installing the legacy driver, which cleared any leftover state from the previous mode, whether that was Bluetooth or Wi-Fi.</p>
+
+<pre><code class="language-cpp">i2s_driver_uninstall(I2S_NUM_0);</code></pre>
+
+<p>I increased the audio task stack from 8 KB to 16 KB, which eliminated stack overflow as one of the causes of shutoff. I also monitored the stack using <code>uxTaskGetStackHighWaterMark()</code>, which printed every five seconds.</p>
+
+<p>There was also an issue where the radio button would get pressed even though I was not pressing the radio button. It was a phantom phenomenon where it generated a reboot over and over again. What I learned was that GPIO35 does not have an internal pull-up, so it picks up electrical noise and randomly reads high and low values. To fix this, I moved the radio button to GPIO17, which does have an internal pull-up. I learned from this that you really need to study the pinout carefully. In particular, the ESP32 that I was using had GPIO34, GPIO35, GPIO36, and GPIO39 as input-only pins with no internal pull-ups, and it took me a long time to figure that out.</p>
+
+<p>I ultimately got to a place where FM did need to reboot after a certain period of time, but I made sure that it automatically rebooted and saved the memory of what station it was on so that it was still functional for the user. I suspect that the cause of the remaining FM instability comes from memory pressure, since this is one firmware that links together AudioTools, MP3, Bluetooth, Wi-Fi, U8G2, raw I<sup>2</sup>S, and the ADC. Even if these tools are unused at the exact moment of FM radio usage, they are all allocated into the same firmware. Perhaps moving to a more computationally powerful chip, board, or Arduino would solve this problem. But for now, I was happy with the progress I made with FM and moved on to the other components.</p>
+
+<h3>MP3 Playback</h3>
+<p>I then moved on to MP3 playback, where I used a MicroSD card module and a MicroSD card with about 16 GB of storage. The wiring of the MicroSD card module was pretty straightforward, but the software was another interesting problem to tackle. There were some globals that I had to call at the beginning.</p>
+
+<pre><code class="language-cpp">File audioFile;
+StreamCopy copier(decoder, audioFile, 4096);
+
+String tracks[32];
+int trackCount = 0;
+int currentTrack = -1;
+bool paused = false;</code></pre>
+
+<p>I had to learn through this <a href="https://randomnerdtutorials.com/esp32-microsd-card-arduino/">ESP32 MicroSD card tutorial</a> how to scan the SD card for MP3 files specifically and not get bothered by the other non-MP3 files that were on the card.</p>
+
+<pre><code class="language-cpp">void scanSD() {
+  trackCount = 0;
+  File root = SD.open("/");
+  while (trackCount &lt; 32) {
+    File entry = root.openNextFile();
+    if (!entry) break;
+    String name = entry.name();
+    if (!entry.isDirectory() &amp;&amp; (name.endsWith(".mp3") || name.endsWith(".MP3"))) {
+      int slash = name.lastIndexOf('/');
+      String basename = (slash &gt;= 0) ? name.substring(slash + 1) : name;
+      if (basename.startsWith("._")) {
+        entry.close();
+        continue;
+      }
+      tracks[trackCount++] = name.startsWith("/") ? name : ("/" + name);
+    }
+    entry.close();
+  }
+  root.close();
+}</code></pre>
+
+<p>I wrote code to load and play a track.</p>
+
+<pre><code class="language-cpp">void playTrack(int idx, bool startPaused = false) {
+  if (idx &lt; 0 || idx &gt;= trackCount) return;
+  if (audioFile) audioFile.close();
+  audioFile = SD.open(tracks[idx]);
+  if (!audioFile) return;
+  currentTrack = idx;
+  paused = startPaused;
+  Serial.print(startPaused ? "Loaded [" : "Playing [");
+  Serial.print(idx);
+  Serial.print("] ");
+  Serial.println(tracks[idx]);
+}
+
+void nextTrack() {
+  if (trackCount) playTrack((currentTrack + 1) % trackCount);
+}
+
+void prevTrack() {
+  if (trackCount) playTrack((currentTrack - 1 + trackCount) % trackCount);
+}</code></pre>
+
+<p>It was fun to see how the audio worked and how to build control so that the radio moves on to the next song after it finishes the first. It gave me more appreciation for Spotify.</p>
+
+<pre><code class="language-cpp">void loopMP3Mode() {
+  if (!paused &amp;&amp; audioFile &amp;&amp; audioFile.available()) {
+    copier.copy();                                  // push next chunk of audio
+  } else if (audioFile &amp;&amp; !audioFile.available() &amp;&amp; !paused) {
+    nextTrack();                                    // track ended -&gt; advance
+  }
+}</code></pre>
+
+<h3>Bluetooth</h3>
+<p>I also wanted to include Bluetooth. Initially, I had used an ESP32-S3, which I learned did not support classic Bluetooth. As a result, I had to switch to a normal ESP32, which could do classic Bluetooth.</p>
+
+<p>I needed classic Bluetooth instead of Bluetooth Low Energy because A2DP requires classic Bluetooth. The Xiao could not have done any of this. I used the ESP32 A2DP library, which paired naturally with the AudioTools library that was already working for MP3. I got tripped up in the beginning because examples from older ESP32 A2DP code used a <code>set_pin_config()</code> call to tell the library which I<sup>2</sup>S pins to use. However, that method no longer exists in the current library version. Instead, I looked through the documentation and used a <code>BluetoothA2DPSink</code> while referencing my I<sup>2</sup>S stream.</p>
+
+<pre><code class="language-cpp">BluetoothA2DPSink a2dp_sink(i2s);</code></pre>
+
+<p>Then I made the radio discoverable, but only when the pair button was pressed.</p>
+
+<pre><code class="language-cpp">a2dp_sink.set_discoverability(ESP_BT_GENERAL_DISCOVERABLE);</code></pre>
+
+<p>Another challenge was making the pairing feel like a polished final product. I added sound cues, including an 880 Hz beep every two seconds while the radio is discoverable and waiting for a phone to connect. When a phone connects, I added a connect chime. I thought that an arpeggio from C to G to a higher C would be cute. Then I added a disconnect chime with the same three notes descending when the phone disconnects or loses Bluetooth.</p>
+
+<p>Because of Bluetooth, I had to implement a feature where the ESP reboots every time the mode changes. This is because the ESP32-A2DP library does not like being started and stopped repeatedly. When <code>a2dp_sink.start()</code> runs, it brings up the entire Bluetooth stack, including the controller, host stack, memory buffers, background tasks, and event handlers. This is a lot of memory to allocate. It became easier for the ESP to shut off and reboot so that it could free everything, including tasks, callbacks, and buffers.</p>
+
+<p>In addition, Bluetooth and Wi-Fi conflict because the ESP32 has one radio and one antenna shared between Wi-Fi and Bluetooth, which are both at 2.4 GHz. Even though they can run at the same time, they have to take turns. Since I wanted continuous audio streaming, it was easier to reboot so that Bluetooth starts fresh and never touches Wi-Fi, and vice versa. Thus, <code>ESP.restart()</code> was called before every mode switch.</p>
+
+<h3>Moving to Protoboard</h3>
+<p>Finally, I ran all of the functions and components together, and they ended up working together synchronously thanks to the mode-switch reboot. I then wanted to move all of the components and the ESP32 onto a more solid surface. Given that I was thinking about making future changes, instead of using a custom-milled PCB board, which would be a very permanent way to wire everything together, I opted for a protoboard, which I had also never done before.</p>
+
+<p>It took me an entire day's work to finish the protoboard because there were so many soldering pins. But I think I achieved flow state while soldering them. Doing the protoboard gave me great practice with soldering, and I think I got much better because of it. It also made me write down and confirm all of the different wiring connections and pin numbers I was using throughout the process. It made me appreciate that each pin on the board has a different function, and it is important to keep track of which pins you use because some of them, as I saw with the GPIO35 mishap, do not have the necessary mechanisms to do what you want them to do.</p>
+
+<h2>Final Wiring on Protoboard</h2>
+<h3>MicroSD Card Module (VSPI)</h3>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Pin</th>
+      <th>ESP32 GPIO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>VCC</td><td>+3.3V</td></tr>
+    <tr><td>GND</td><td>GND</td></tr>
+    <tr><td>CS</td><td>GPIO5</td></tr>
+    <tr><td>SCK</td><td>GPIO18</td></tr>
+    <tr><td>MISO</td><td>GPIO19</td></tr>
+    <tr><td>MOSI</td><td>GPIO23</td></tr>
+  </tbody>
+</table>
+
+<h3>MAX98357A I<sup>2</sup>S Amplifier</h3>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Pin</th>
+      <th>ESP32 GPIO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>VIN</td><td>+5V</td></tr>
+    <tr><td>GND</td><td>GND</td></tr>
+    <tr><td>DIN</td><td>GPIO12</td></tr>
+    <tr><td>BCLK</td><td>GPIO13</td></tr>
+    <tr><td>LRC</td><td>GPIO14</td></tr>
+    <tr><td>Speaker +/-</td><td>Speaker terminals</td></tr>
+  </tbody>
+</table>
+
+<h3>KY-040 Rotary Encoder (Volume)</h3>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Pin</th>
+      <th>ESP32 GPIO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>+</td><td>+3.3V</td></tr>
+    <tr><td>GND</td><td>GND</td></tr>
+    <tr><td>CLK</td><td>GPIO27</td></tr>
+    <tr><td>DT</td><td>GPIO26</td></tr>
+    <tr><td>SW</td><td>GPIO25</td></tr>
+  </tbody>
+</table>
+
+<h3>Push Buttons</h3>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Button</th>
+      <th>GPIO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>MP3 mode</td><td>GPIO32</td></tr>
+    <tr><td>BT mode</td><td>GPIO33</td></tr>
+    <tr><td>Radio mode</td><td>GPIO17</td></tr>
+    <tr><td>Pair</td><td>GPIO15</td></tr>
+    <tr><td>Mute</td><td>GPIO4</td></tr>
+    <tr><td>Previous</td><td>GPIO16</td></tr>
+    <tr><td>Next</td><td>GPIO2</td></tr>
+  </tbody>
+</table>
+
+<h3>OLED 0.96" SSD1306 (I<sup>2</sup>C)</h3>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Pin</th>
+      <th>ESP32 GPIO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>VCC</td><td>+3.3V</td></tr>
+    <tr><td>GND</td><td>GND</td></tr>
+    <tr><td>SDA</td><td>GPIO21</td></tr>
+    <tr><td>SCL</td><td>GPIO22</td></tr>
+  </tbody>
+</table>
+
+<h3>TEA5767 FM Module (I<sup>2</sup>C, Shared with OLED)</h3>
+<table class="data-table">
+  <thead>
+    <tr>
+      <th>Pin</th>
+      <th>ESP32 GPIO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>VCC</td><td>+3.3V or +5V, module-dependent</td></tr>
+    <tr><td>GND</td><td>GND</td></tr>
+    <tr><td>SDA</td><td>GPIO21, shared with OLED</td></tr>
+    <tr><td>SCL</td><td>GPIO22, shared with OLED</td></tr>
+    <tr><td>Audio out</td><td>GPIO35, ADC1_CHANNEL_7</td></tr>
+  </tbody>
+</table>
 
 <h2>Reflection</h2>
 <div class="callout">
-  Add what worked, what changed, what failed, and what you would improve with more time.
+  This project taught me how much audio projects depend on careful hardware choices, memory management, and pin planning. The final radio works across four modes, but the path there included a lot of debugging around ESP32 Bluetooth, Wi-Fi, FM instability, I<sup>2</sup>S driver conflicts, and noisy input pins. I am proud that the final version combines real electronics, soldering, embedded software, enclosure design, and a physical retro aesthetic into one working object.
 </div>
 
 <footer>
