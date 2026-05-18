@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Final Project - PS70</title>
+  <title>weeks 11-15 - PS70</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../week-style.css" rel="stylesheet">
@@ -15,16 +15,11 @@
 <a class="back" href="../index.html">&larr; back to home</a>
 
 <div class="page-header">
-  <div class="week-label">final project </div>
+  <div class="week-label">weeks 11-15</div>
   <h1>Final Project</h1>
 </div>
 
 <h2>Overview</h2>
-<figure class="img-block">
-  <img src="final-radio-cover.png" alt="Finished retro wooden ESP32 radio">
-  <figcaption>The finished retro wooden ESP32 radio.</figcaption>
-</figure>
-
 <p>For my final project, I built a retro wooden radio around an ESP32 that supports four audio modes:</p>
 <ul>
   <li>Internet radio over WiFi</li>
@@ -34,6 +29,11 @@
 </ul>
 
 <p>My motivation came from two places. I'm a huge fan of listening to and DJing music, and I've always been drawn to retro radios from the past, especially the kind that didn't depend on WiFi to play anything. At the same time, I really enjoy using my Bluetooth speaker at home. I wanted to combine all of these into a single enhanced speaker of sorts: something that looks good and is genuinely functional. Here is my journey building it, from the MVP to the finished radio.</p>
+
+<figure class="img-block">
+  <img src="final-radio-cover.png" alt="Finished retro wooden ESP32 radio">
+  <figcaption>The finished retro wooden ESP32 radio.</figcaption>
+</figure>
 
 <h2>Bill of Materials</h2>
 <h3>Electronics</h3>
@@ -102,6 +102,11 @@
     <figcaption>The second AUX cable I used for the TEA5767 audio path.</figcaption>
   </figure>
 </div>
+
+<figure class="img-block">
+  <img src="aux-headphones-cable-circuit-board.png" alt="Connecting an AUX cable from old headphones to the circuit board">
+  <figcaption>Connecting the AUX cable from old headphones to the circuit board.</figcaption>
+</figure>
 
 <p>Configuring the TEA5767 was one of the hardest challenges of the integrated project since there were a lot of software and even hardware issues in getting a consistent radio signal out of it. For many iterations, I heard no signal at all from the FM module. I even tried a different FM chip, the SI4703, but I didn't end up using it: not only did it not work for me, it also had no module spot for an antenna, so it couldn't pick up signals as effectively as the TEA5767.</p>
 
@@ -258,6 +263,11 @@ void prevTrack() { if (trackCount) playTrack((currentTrack - 1 + trackCount) % t
 
 <h3>Moving to a Protoboard</h3>
 <p>With all the modes working together synchronously thanks to the mode-switch reboot, I wanted to move everything off the breadboard onto a more solid surface. Since I was still thinking about future changes, I decided against a custom milled PCB and went with a protoboard instead, which I'd never used before.</p>
+
+<figure class="img-block">
+  <img src="complete-circuit-wiring-before-protoboard.jpeg" alt="Complete circuit wiring on a breadboard before moving to a protoboard">
+  <figcaption>Wiring of the complete circuit board before putting it on the protoboard.</figcaption>
+</figure>
 
 <p>I realized that to reach both sides of the ESP32's pins, I needed two protoboards rather than one, so I soldered two protoboards together. That made for a larger but more functional product. It took an entire day's work, because there were so many pins to solder, though I think I hit a flow state while doing it. The protoboard gave me great soldering practice, and I think I got much better at it. It also forced me to write down and confirm every wiring connection and pin number I was using, which made me appreciate that each pin has its own function and that it's important to track which pins you use, since some of them, as I saw with the GPIO 35 mishap, don't have the mechanisms you need.</p>
 
