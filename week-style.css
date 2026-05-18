@@ -123,6 +123,12 @@ a { color: #111; }
   background: #f5f5f5;
 }
 
+.img-row video {
+  width: 100%;
+  display: block;
+  background: #f5f5f5;
+}
+
 .img-row figcaption {
   font-size: 0.8rem;
   color: #888;
@@ -134,6 +140,27 @@ a { color: #111; }
   width: min(100vw - 48px, 1040px);
   margin-left: 50%;
   transform: translateX(-50%);
+}
+
+body.final-project .img-block {
+  width: min(100%, 420px);
+}
+
+body.final-project .img-row {
+  align-items: start;
+}
+
+body.final-project .data-table {
+  table-layout: fixed;
+}
+
+body.final-project .data-table th:first-child,
+body.final-project .data-table td:first-child {
+  width: 36%;
+}
+
+@media (max-width: 640px) {
+  body.final-project .img-row { grid-template-columns: 1fr; }
 }
 
 pre {
