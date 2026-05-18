@@ -31,7 +31,7 @@
 </ul>
 <p>To do all of that, I planned to put about four buttons and a rotary encoder for volume on a breadboard alongside a XIAO microcontroller. I chose the XIAO because it is small but still has enough pins for this use case. It is also small enough that I could eventually turn the remote into a portable, handheld device. I also wanted to add an LED that changed color depending on the radio's current mode.</p>
 
-<figure class="img-block">
+<figure class="img-block img-wide">
   <img src="wireless-radio-remote-cover.png" alt="Wireless radio remote on a breadboard controlling the radio final project">
   <figcaption>The wireless remote control for my radio final project</figcaption>
 </figure>
@@ -102,6 +102,17 @@ delay(200);</code></pre>
 #define CMD_MUTE  7</code></pre>
 
 <p>To send status back, I defined an identical <code>StatePacket</code> struct in both sketches, holding everything the remote needs to know about the radio's condition. One important design rule came out of this: since ESP-NOW just copies raw memory, if the radio's struct and the XIAO's struct disagreed on their layout by even a single byte, the XIAO would copy garbage into the wrong fields.</p>
+
+<pre><code class="language-arduino">struct StatePacket {
+  uint8_t mode;       // 0=MP3, 1=BT, 2=RADIO, 3=FM
+  uint8_t volumePct;  // 0-100
+  uint8_t paused;     // 0/1
+  uint8_t muted;      // 0/1
+  char    name[40];   // track name or station name
+};
+StatePacket lastState;
+bool haveState = false;</code></pre>
+
 <p>To keep the two packet types from ever being confused, I distinguish them by size. The remote packet is 1 byte and the state packet is 44 bytes. Since that is a hard rule, the XIAO's receive callback can simply check the packet length:</p>
 
 <pre><code class="language-arduino">void onDataRecv(const uint8_t* mac, const uint8_t* data, int len) {
@@ -216,7 +227,34 @@ void startWebServer() {
 <p>This worked very well. Like the ESP-NOW remote, though, the web app depends on WiFi. It goes a step further by needing an actual WiFi network, since the radio has to have an IP address. So it carries the same limitation: it only works in MP3 and internet radio modes.</p>
 
 <h3>Improvement 3: A NeoPixel Mode Indicator</h3>
-<p>My third improvement was adding a NeoPixel LED strip to show which mode the radio is in, either internet radio or MP3. I wanted the remote to do something visible with the status it was receiving from the radio, and it was also a good excuse for me to learn how to use an LED strip, which I'd never done before.</p>
+<p>My third improvement was adding a NeoPixel LED strip to show which mode the radio is in, either internet radio or MP3. I wanted the remote to do something visible with the status it was receiving from the radio, and it was also a good excuse for me to learn how to use an LED strip, which I'd never done before. The key piece of code that allowed for the NeoPixel color change was <code>updateLedForMode()</code>, which mapped a color onto a music mode and turned on the corresponding pixels.</p>
+
+<pre><code class="language-arduino">// Mode colors:
+// MP3   = purple (128, 0, 200)
+// BT    = blue   (0, 60, 255)
+// RADIO = green  (0, 200, 80)
+// FM    = amber  (255, 140, 0)
+void updateLedForMode(uint8_t mode) {
+  uint8_t r = 0, g = 0, b = 0;
+  switch (mode) {
+    case 0: r = 128; g =   0; b = 200; break;
+    case 1: r =   0; g =  60; b = 255; break;
+    case 2: r =   0; g = 200; b =  80; break;
+    case 3: r = 255; g = 140; b =   0; break;
+    default: r = 30; g = 30; b = 30; break;
+  }
+  for (int i = 0; i &lt; NUM_PIXELS; i++) pixels.setPixelColor(i, pixels.Color(r, g, b));
+  pixels.show();
+  displayedMode = mode;
+}</code></pre>
+
+<p>Then, to turn on the NeoPixel, I implemented this code, which turned the strip on to a brightness of only 60 out of a max of 255. I didn't want the strip to be too bright so this was a good brightness.</p>
+
+<pre><code class="language-arduino">pixels.begin();
+pixels.setBrightness(60);
+pixels.clear();
+pixels.show();</code></pre>
+
 <p>The most important thing I learned was that the strip has to be soldered in the right direction, toward the input end, not the output end. I went through several strips from the bin and even soldered one myself the wrong way, so I learned that lesson the hard way. I followed another <a href="https://randomnerdtutorials.com/guide-for-ws2812b-addressable-rgb-led-strip-with-arduino/">Random Nerd Tutorial</a> to wire the NeoPixel strip to the XIAO, though the wiring was simple since two of the strip's pins are just power and the third is the data pin.</p>
 
 <div class="img-row">
@@ -256,7 +294,7 @@ void startWebServer() {
 </figure>
 
 <h2>Files</h2>
-<p><a class="file-link" href="#" download>Add Week 9 files (.zip)</a></p>
+<p><a class="file-link" href="week9_PS70_zip.zip" download>Download Week 9 files (.zip)</a></p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>

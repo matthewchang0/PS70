@@ -27,7 +27,7 @@
   <figcaption>The final capacitive weight sensor with the OLED display showing a live weight measurement</figcaption>
 </figure>
 
-<h2>Part 1: Capacitive Sensor</h2>
+<h2>Part 1: Distance Capacitive Sensor</h2>
 <p>During class, my lab group and I built a capacitive sensor whose capacitance depends on the distance between two plates. We cut a piece of cardboard and used a wooden sliding block with a parallel copper plate taped to it. Using a ruler, we set the plates at a range of measured distances and recorded the raw capacitance signal at each one. The cardboard kept the plates parallel and properly aligned as the block slid. We used the <a href="https://nathanmelenbrink.github.io/lab/input/capacitance/txrx.html">Arduino TX-RX code</a> to calculate the capacitance:</p>
 
 <figure class="video-block">
@@ -39,11 +39,17 @@
 </figure>
 
 <figure class="img-block">
+  <img src="distance-capacitive-sensor-class-test.jpeg" alt="Distance capacitive sensor setup being tested in class">
+  <figcaption>Testing the first distance-based capacitive sensor in class</figcaption>
+</figure>
+
+<figure class="img-block">
   <img src="first-sensor-capacitance-vs-distance.svg" alt="Graph of raw capacitance value versus distance for the first capacitive sensor">
   <figcaption>Graph of raw capacitance value vs. distance for the first sensor. As the plates moved farther apart, the raw capacitance value dropped and then began to level off.</figcaption>
 </figure>
 
 <p>The graph clearly shows that as the distance between the plates increases, the capacitance decreases. This makes sense given the parallel-plate capacitance formula, C = &epsilon;A/d, in which capacitance is inversely proportional to distance. As both the graph and the formula show, the relationship is not linear.</p>
+<h2>Part 2: Weight Capacitive Sensor</h2>
 <p>After this first simple sensor, I wanted to build a second capacitive sensor but this time to measure the weight of an object. My goal was to create a system where an object compresses a squishy material between the plates and from the change of the distance between the plates, we can measure the capacitance.</p>
 <p>I started by looking for a suitably squishy material. I dug through the miscellaneous foam bin in the PS70 lab and tried about five different foams, but they were all too rigid. They did not compress well under an object's weight, so they couldn't translate weight into an accurate change in plate distance. In the end, the most responsive option I could find was a sponge from the lab sink (lol), so that became my dielectric.</p>
 
@@ -183,9 +189,11 @@
 #include &lt;Adafruit_GFX.h&gt;
 #include &lt;Adafruit_SSD1306.h&gt;
 
-const int RX_PIN = D0;
-const int TX_PIN = D6;
+const int RX_PIN    = D0;
+const int TX_PIN    = D6;
 const int N_SAMPLES = 100;
+const int SETTLE_US = 100;  
+const int SMOOTH_N  = 5;     
 
 const float C1 = -2486.85477f;
 const float C2 =  0.0933895f;
@@ -194,73 +202,128 @@ const float C3 =  1.60704e-7f;
 #define OLED_WIDTH  128
 #define OLED_HEIGHT 64
 #define OLED_ADDR   0x3C
+
+const unsigned long UPDATE_INTERVAL_MS = 50; 
+
+class MovingAverage {
+  public:
+    static const int MAX_SIZE = 16;
+
+    MovingAverage(int size) {
+      _size  = (size &gt; MAX_SIZE) ? MAX_SIZE : size;
+      _index = 0;
+      for (int i = 0; i &lt; _size; i++) _buf[i] = 0;
+    }
+
+    long add(long value) {
+      _buf[_index] = value;
+      _index = (_index + 1) % _size;
+      long total = 0;
+      for (int i = 0; i &lt; _size; i++) total += _buf[i];
+      return total / _size;
+    }
+
+  private:
+    long _buf[MAX_SIZE];
+    int  _size;
+    int  _index;
+};
+
+class CapacitiveScale {
+  public:
+    CapacitiveScale(int rxPin, int txPin, int nSamples, int smoothN)
+      : _filter(smoothN) {
+      _rxPin    = rxPin;
+      _txPin    = txPin;
+      _nSamples = nSamples;
+      _smoothN  = smoothN;
+      _smoothed = 0;
+    }
+
+    void begin() {
+      pinMode(_txPin, OUTPUT);
+      for (int i = 0; i &lt; _smoothN; i++) _filter.add(readRaw());
+    }
+
+    long readRaw() {
+      long sum = 0;
+      for (int i = 0; i &lt; _nSamples; i++) {
+        digitalWrite(_txPin, HIGH);
+        int high = analogRead(_rxPin);
+        delayMicroseconds(SETTLE_US);   
+        digitalWrite(_txPin, LOW);
+        int low = analogRead(_rxPin);
+        sum += (high - low);
+      }
+      return sum;
+    }
+
+    void update() {
+      _smoothed = _filter.add(readRaw());
+    }
+
+    long rawSmoothed() const { return _smoothed; }
+
+    float grams() const {
+      float r = (float)_smoothed;
+      float g = C1 + C2 * r + C3 * r * r;
+      return (g &lt; 0.0f) ? 0.0f : g;
+    }
+
+  private:
+    MovingAverage _filter;
+    int  _rxPin, _txPin, _nSamples, _smoothN;
+    long _smoothed;
+};
+
 Adafruit_SSD1306 display(OLED_WIDTH, OLED_HEIGHT, &amp;Wire);
+CapacitiveScale  scale(RX_PIN, TX_PIN, N_SAMPLES, SMOOTH_N);
 
-const int SMOOTH_N = 5;
-long buf[SMOOTH_N] = {0};
-int buf_i = 0;
-
-long readCapacitive() {
-  long sum = 0;
-  for (int i = 0; i &lt; N_SAMPLES; i++) {
-    digitalWrite(TX_PIN, HIGH);
-    int high = analogRead(RX_PIN);
-    delayMicroseconds(100);
-    digitalWrite(TX_PIN, LOW);
-    int low = analogRead(RX_PIN);
-    sum += (high - low);
-  }
-  return sum;
-}
-
-long smooth(long raw) {
-  buf[buf_i] = raw;
-  buf_i = (buf_i + 1) % SMOOTH_N;
-  long total = 0;
-  for (int i = 0; i &lt; SMOOTH_N; i++) total += buf[i];
-  return total / SMOOTH_N;
-}
-
-float toGrams(long raw) {
-  float r = (float)raw;
-  float g = C1 + C2 * r + C3 * r * r;
-  if (g &lt; 0) g = 0;
-  return g;
-}
+bool          displayOK  = false;
+unsigned long lastUpdate = 0;
 
 void setup() {
   Serial.begin(115200);
-  pinMode(TX_PIN, OUTPUT);
   Wire.begin();
 
-  if (!display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
-    Serial.println("SSD1306 init failed — check wiring and address");
-    while (true) delay(1000);
+  displayOK = display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
+  if (!displayOK) {
+    Serial.println("SSD1306 init failed -- check wiring and address");
+  } else {
+    display.clearDisplay();
+    display.setTextColor(WHITE);
+    display.setTextSize(1);
+    display.setCursor(0, 0);
+    display.println("Calibrating...");
+    display.display();
   }
-  display.clearDisplay();
-  display.setTextColor(WHITE);
-  display.setTextSize(1);
-  display.setCursor(0, 0);
-  display.println("Calibrating...");
-  display.display();
 
-  for (int i = 0; i &lt; SMOOTH_N; i++) buf[i] = readCapacitive();
+  scale.begin();   
 }
 
+// ====================================================
 void loop() {
-  long raw = readCapacitive();
-  long avg = smooth(raw);
-  float grams = toGrams(avg);
+  if (millis() - lastUpdate &lt; UPDATE_INTERVAL_MS) return;
+  lastUpdate = millis();
+
+  if (!displayOK) {
+    Serial.println("display unavailable");
+    return;
+  }
+
+  scale.update();
+  long  avg   = scale.rawSmoothed();
+  float grams = scale.grams();
 
   Serial.print(avg);
-  Serial.print("\t");
+  Serial.print('\t');
   Serial.println(grams, 1);
 
   display.clearDisplay();
 
   display.setTextSize(3);
   display.setCursor(0, 12);
-  if (grams &lt; 1000) {
+  if (grams &lt; 1000.0f) {
     display.print((int)grams);
     display.setTextSize(2);
     display.print(" g");
@@ -276,10 +339,9 @@ void loop() {
   display.print(avg);
 
   display.display();
-  delay(50);
 }</code></pre>
 
-<h2>Part 2: Ultrasonic Sensor</h2>
+<h2>Part 3: Ultrasonic Sensor</h2>
 <p>For the second part of the assignment, I decided I wanted to learn how to use an ultrasonic sensor.</p>
 <p>Simply put, the ultrasonic sensor I was using—the HC-SR04—measures distance by timing how long an echo takes to return. When the Trig pin is held high for 10 microseconds, the module emits a burst of ultrasonic sound (which is too high-pitched for humans to hear). The sound travels out, bounces off whatever is in front of it, and returns to the module, which calculates how long the round trip took. Since distance equals speed multiplied by time, that timing can be calibrated into a distance measurement. I learned how to wire the HC-SR04 to the XIAO using another <a href="https://randomnerdtutorials.com/esp32-hc-sr04-ultrasonic-arduino/">Random Nerd Tutorial</a> (I love this site):</p>
 <p>One problem I ran into early and which the tutorial helped me solve was that the ultrasonic module needs 5 V to run. I had initially plugged it into the 3.3 V pin, where it worked poorly. Moving it to the 5 V pin fixed the problem immediately.</p>
@@ -363,7 +425,7 @@ void loop() {
   <figcaption>The completed ultrasonic sensor with the OLED display in action</figcaption>
 </figure>
 
-<h2>Part 3: Preparing for CNC Week</h2>
+<h2>Part 4: Preparing for CNC Week</h2>
 <p>For CNC week, I'm planning to mill a world map out of foam and fill it in with plaster. I found an image of a world map online and converted it into an SVG file to prepare for milling.</p>
 
 <figure class="img-block img-wide">

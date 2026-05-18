@@ -2,7 +2,7 @@ body {
   font-family: Georgia, serif;
   max-width: 740px;
   margin: 0 auto;
-  padding: 40px 24px 16px;
+  padding: 40px 24px 0;
   background: #fff;
   color: #111;
   line-height: 1.7;
@@ -69,7 +69,10 @@ li { margin-bottom: 8px; }
 
 a { color: #111; }
 
-.img-block { margin: 28px 0; }
+.img-block {
+  width: min(100%, 540px);
+  margin: 28px auto;
+}
 
 .img-block img {
   width: 100%;
@@ -85,7 +88,7 @@ a { color: #111; }
 }
 
 .img-small {
-  max-width: 420px;
+  width: min(100%, 360px);
   margin-left: auto;
   margin-right: auto;
 }
@@ -95,7 +98,7 @@ a { color: #111; }
 }
 
 .img-wide {
-  max-width: 640px;
+  width: min(100%, 620px);
   margin-left: auto;
   margin-right: auto;
 }
@@ -156,7 +159,10 @@ pre code {
   padding: 0;
 }
 
-.video-block { margin: 28px 0; }
+.video-block {
+  width: min(100%, 540px);
+  margin: 28px auto;
+}
 
 .video-block video {
   width: 100%;
@@ -164,9 +170,20 @@ pre code {
 }
 
 .video-small {
-  max-width: 360px;
+  width: min(100%, 360px);
   margin-left: auto;
   margin-right: auto;
+}
+
+.video-portrait {
+  width: min(100%, 360px);
+}
+
+.video-portrait video {
+  width: 100%;
+  max-height: none;
+  margin: 0 auto;
+  object-fit: contain;
 }
 
 .video-embed {
@@ -281,8 +298,10 @@ pre code {
 
 footer {
   margin-top: 32px;
+  margin-bottom: 0;
   border-top: 1px solid #eee;
   padding-top: 24px;
+  padding-bottom: 0;
   font-family: monospace;
   font-size: 0.82rem;
   color: #aaa;

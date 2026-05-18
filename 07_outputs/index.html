@@ -1,44 +1,517 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Week 7 - PS70</title>
+  <title>Week 7 - Outputs</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../week-style.css" rel="stylesheet">
+  <style>
+    html,
+    body {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    footer {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/arduino-light.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/arduino.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
 
 <a class="back" href="../index.html">&larr; back to home</a>
 
 <div class="page-header">
-  <div class="week-label">week 07 &middot; outputs</div>
-  <h1>Electronic Outputs</h1>
-  <p class="subtitle">Driving actuators and making a minimum viable version of the final project.</p>
+  <div class="week-label">week 07</div>
+  <h1>Outputs &amp; MVP</h1>
 </div>
 
-<h2>Assignment</h2>
-<p>The assignment was to work with electronic outputs and create a minimum viable product for the final project. The page is structured to document the output device, circuit, code, and demo.</p>
+<h2><strong>Assignment</strong></h2>
 
-<figure class="img-block">
-  <img src="week7-placeholder-image.jpg" alt="Week 7 output device placeholder">
-  <figcaption>placeholder image for the output circuit or final-project MVP</figcaption>
+<p>This week's assignment was to build an MVP and make a serious attempt at the hardest part of my final project. I decided to build a radio for my final project, and the part I was most concerned about was wiring all the components together, including the microcontroller, an OLED display, an audio amplifier, and the input controls. So this week I built a smaller version of the radio.</p>
+
+<figure class="img-block img-small">
+  <img src="week7-cover-radio-mvp.jpeg" alt="Completed radio MVP in a 3D-printed enclosure with OLED display, speaker grille, and control knobs">
+  <figcaption>The completed radio MVP with the OLED display, speaker grille, and controls</figcaption>
 </figure>
 
-<h2>Output Device</h2>
-<p>This section should explain what output was controlled, what driver or power circuit it needed, and how the microcontroller generated the signal.</p>
+<h2>Part 1: Inputs, Outputs, Enclosure</h2>
+<p>To begin, I put together a list of materials with the microcontroller and the input and output devices I'd need for the MVP.</p>
 
-<h2>Minimum Viable Product</h2>
-<p>The MVP documentation should connect this week's electronics work to the final project: what functionality was proven, what still needed to be built, and what the next technical risk was.</p>
+<h3>Microcontroller</h3>
+<ul>
+  <li>ESP32 DevKit V1 (ESP32-WROOM-32)</li>
+  <li>Big breadboard (both rows of pins are needed)</li>
+</ul>
 
-<h2>Reflection</h2>
-<div class="callout">
-  Add notes on power, reliability, and whether the output behaved consistently under real use.
+<h3>Input Devices</h3>
+<ul>
+  <li>10 k&Omega; linear potentiometer &mdash; volume control (analog pin)</li>
+  <li>KY-040 rotary encoder &mdash; station selection and play/pause (digital pins)</li>
+</ul>
+
+<h3>Output Devices</h3>
+<ul>
+  <li>0.96" SSD1306 OLED display &mdash; shows the radio's status</li>
+  <li>MAX98357A Class-D I<sup>2</sup>S amplifier &mdash; audio output</li>
+  <li>2W mono enclosed speaker (4&ndash;8 &Omega;) &mdash; audio output</li>
+</ul>
+
+<p>It helped a lot that, from previous weeks, I already knew how to hook up a potentiometer (<a href="../04_microcontroller/index.html">week 4</a>) and an OLED display (<a href="../06_inputs/index.html">week 6</a>). That made wiring those parts much faster. The two new components were the audio amplifier and the rotary encoder. I learned to wire the amplifier from this <a href="https://www.atomic14.com/videos/posts/At8PDQ3g7FQ">audio amplifier tutorial</a>, and the rotary encoder from this <a href="https://esp32io.com/tutorials/esp32-rotary-encoder">rotary encoder tutorial</a>.</p>
+
+<p>For my first attempt, I used a XIAO ESP32-C3 and it didn't work well. The audio output was extremely crackly and intermittent no matter how many times I tried. Bobby eventually informed me that audio doesn't run well on the XIAO and that I should switch to a larger dev board. The reason, I later learned, is that the XIAO ESP32-C3 is single-core. WiFi, audio, and the OLED are all competing for one CPU, which kept the audio buffer from staying smooth. After switching to the ESP32 DevKit V1, the audio worked properly. So a note to anyone planning to do audio: avoid the XIAO!</p>
+
+<figure class="img-block img-small">
+  <img src="radio-components-wired-breadboard.png" alt="Radio components wired up on the breadboard">
+  <figcaption>The radio components wired up on the breadboard</figcaption>
+</figure>
+
+<p>For the enclosure, I 3D printed the CAD design I'd already made back in <a href="../05_3Ddesign/index.html">week 5</a> for the 3D printing assignment, which included a radio enclosure, a radio knob, and a radio cover, all sized around the space needed for an OLED and a potentiometer.</p>
+
+<p>After printing, I realized the box was probably too small to fit the whole breadboard. I was using two breadboards combined for the layout so that I could use both sides of pins, and I hadn't accounted for that when I designed the enclosure in week 5. When I talked to Bobby about the size conflict, he suggested I think about milling a custom PCB for the project instead of relying on a breadboard.</p>
+
+<figure class="img-block img-small">
+  <img src="3d-printed-radio-enclosure.jpeg" alt="3D-printed radio enclosure with speaker grille, OLED cutout, and control holes">
+  <figcaption>3D printed radio enclosure</figcaption>
+</figure>
+
+<h3>Milling a Custom PCB for My Radio</h3>
+I decided to mill a custom PCB for my radio MVP. This was my first time milling my own board so it wasn't easy but it was very exciting.</p>
+
+<figure class="img-block img-small">
+  <img src="../08_cnc/srm-20-pcb-milling-machine.png" alt="SRM-20 bot for PCB milling">
+  <figcaption>SRM-20 bot for PCB milling</figcaption>
+</figure>
+
+<p>I started by looking back at how I'd wired up the radio, then recreated that wiring in KiCad's schematic editor. I traced each connection from the OLED, the amplifier, and the ESP32 to where it belonged. I put ground to ground, power to power, and each ESP32 pin to its corresponding component. I was told the exact placement of the wires in the schematic editor doesn't matter much, since KiCad's PCB editor is where you actually position the traces.</p>
+<p>Since the board would be milled on the lab's PCB milling machine, I had to configure KiCad to match the machine's capabilities. In KiCad, under File &rarr; Board Setup, I set:</p>
+
+<ul>
+  <li>minimum track width: 0.2 mm</li>
+  <li>minimum via diameter: 0.5 mm</li>
+  <li>copper-to-hole clearance: 0.25 mm</li>
+  <li>copper-to-edge clearance: 0.5 mm</li>
+  <li>minimum drill size: 0.25 mm</li>
+  <li>hole-to-hole clearance: 0.25 mm</li>
+</ul>
+
+<p>These clearances matter because traces that run too close together can let the electrical signals in them interfere with each other. Spacing the holes a bit farther apart also makes the pins easier to solder.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="../08_cnc/kicad-schematic-editor-wiring-diagram.png" alt="Wiring diagram in KiCad Schematic Editor where I connected wires together before exporting to PCB Editor">
+    <figcaption>Wiring diagram in KiCad Schematic Editor, where I connected wires together before exporting to PCB Editor</figcaption>
+  </figure>
+  <figure>
+    <img src="../08_cnc/kicad-pcb-editor-routing-clearances-vias.png" alt="PCB Editor in KiCad where I established the wiring for the custom PCB mill and made clearances and vias">
+    <figcaption>PCB Editor in KiCad where I established the wiring for the custom PCB mill and made clearances and vias</figcaption>
+  </figure>
 </div>
+
+<p>To mill the PCB, I started with a piece of copper and several pieces of double-sided tape, making sure the copper was as flat as possible on the milling machine's bed. This matters because the machine mills essentially only in X and Y and you don't want the Z height varying across the board.</p>
+
+<figure class="img-block img-small">
+  <img src="../08_cnc/double-sided-tape-copper-board-flat.png" alt="Adding lots and lots of double sided tape onto the board to make it as flat as possible for the CNC">
+  <figcaption>Adding lots and lots of double sided tape onto the board to make it as flat as possible for the CNC</figcaption>
+</figure>
+
+<p>I then followed <a href="https://vleeharvard.github.io/PS70/08_cnc/index.html">Victor's excellent documentation</a> on milling a PCB in the shop. In short, I used <a href="https://quentinbolsee.pages.cba.mit.edu/gerber2img/">Gerber2Img</a> and selected black and white before exporting my design as two PNGs, one for the cut path and one for the edge-cut outline. I swapped the bit in the machine for a V-bit using an Allen key, tightening it well so it couldn't fall out. Then, much like setting the origin on the ShopBot, I set the SRM-20's origin to the bottom-left corner and brought the bit down until it was just touching the material. Finally, I started the cut and made sure not to refresh the page while it was milling.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="../08_cnc/bit-runner-png-toolpaths.png" alt="Using Leo McElroy's BitRunner website to convert my PNGs into toolpaths for the CNC">
+    <figcaption>Using Leo McElroy's BitRunner website to convert my PNGs into toolpaths for the CNC</figcaption>
+  </figure>
+  <figure>
+    <img src="../08_cnc/pcb-mill-xy-origin-copper-board.png" alt="Adjusting x and y coordinates so that the PCB CNC milling machine aligns with the bottom left of the copper board">
+    <figcaption>Adjusting x and y coordinates so that the PCB CNC milling machine aligns with the bottom left of the copper board</figcaption>
+  </figure>
+</div>
+
+<div class="img-row">
+  <figure class="video-block">
+    <video controls muted playsinline preload="metadata">
+      <source src="../08_cnc/srm-20-first-pcb-traces.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <figcaption>Video of the SRM-20 milling machine making its first traces along the PCB</figcaption>
+  </figure>
+  <figure>
+    <img src="../08_cnc/accidental-solder-bridge-pcb.png" alt="A soldering bridge I accidentally made on the PCB board">
+    <figcaption>A soldering bridge I accidentally made. Soldering PCB boards is truly difficult (at least for me!) You need steady hands lol</figcaption>
+  </figure>
+</div>
+
+<p>I ended up with a custom-milled PCB that I was really proud of. Honestly, though, the harder challenge was soldering the pins onto the board without any of them touching. After every solder joint, I had to check with a multimeter to make sure I hadn't created a solder bridge between pins, and I used a solder remover several times to separate pins that had bridged. I even had to re-mill the board after messing up my first attempt.</p>
+
+<figure class="img-block img-small">
+  <img src="../08_cnc/finished-pcb-board-beautiful.png" alt="Finished PCB board">
+  <figcaption>Finished PCB board! Isn't it so beautiful</figcaption>
+</figure>
+
+<p>Milling your own PCB is a good proof of concept before ordering a custom board from a manufacturer but it's definitely not the easiest job. I really enjoyed learning how to use the PCB mill, and a big thank you to Victor for walking me through the entire process.</p>
+
+<p>I also realized that I forgot to add a hole in the back of the 3D-printed enclosure for the USB power cable from my computer. For this MVP, I had to drill a rough hole in the back so the ESP32 could still plug in. This is another thing I need to fix in the final project by designing a proper cable opening into the enclosure from the start.</p>
+
+<figure class="img-block img-small">
+  <img src="drilled-usb-power-hole.jpeg" alt="Rough drilled USB power cable hole in the back of the 3D-printed radio enclosure">
+  <figcaption>The rough USB power cable hole I had to drill into the back of the enclosure after realizing I forgot to include one in the CAD model</figcaption>
+</figure>
+
+<p>Finally, to hold the display, potentiometer, and rotary encoder in place inside the 3D print, I used tape, which is a very temporary solution. I asked Kassia for other ideas, and she suggested hot glue (more permanent) or screws. Since this is just an MVP that I'll likely replace, I went with tape for now and plan to switch to glue or screws for the final project.</p>
+
+<figure class="img-block img-small">
+  <img src="taped-radio-internals.jpeg" alt="Messy taped-up radio internals with the OLED display, rotary encoder, potentiometer, and breadboard inside the enclosure">
+  <figcaption>The taped-up internals, including the display, rotary encoder, potentiometer, and breadboard all fit, but this is definitely something I need to clean up for the final project</figcaption>
+</figure>
+
+<h2>Part 2: Microcontroller Code</h2>
+<p>With the wiring done and the enclosure printed, I moved on to the Arduino code. I ran into three main challenges along the way.</p>
+
+<h3>Challenge 1: Fixing the Volume Potentiometer</h3>
+<p>When I first wired up the potentiometer, it worked backwards and only used a limited slice of its range instead of the full sweep. I fixed both problems with the <code>map()</code> function, which remaps the potentiometer's raw values onto the volume range I wanted:</p>
+
+<pre><code class="language-cpp">int v = map(constrain(raw, 150, 3900), 150, 3900, 21, 0);</code></pre>
+
+<p>Working through this, I came to think the potentiometer isn't actually the best choice for volume. Because it's read on an analog pin, the signal is continuous and that often means less stable. Even when I wasn't touching the knob, the volume would sometimes flicker or drift on its own. For the final project I plan to use a rotary encoder instead, for more precise volume control.</p>
+
+<h3>Challenge 2: Making the OLED Update Instantly</h3>
+<p>I had an issue where the OLED wouldn't refresh right away when I changed the station or pressed play/pause. Watching the serial monitor, I figured out why. The display only refreshed when <code>loop()</code> came around to check it, but <code>loop()</code> was blocked inside the station-change routine for the entire duration of <code>connecttohost()</code>, which is 300+ ms. By the time <code>loop()</code> was free again, the refresh was already very late.</p>
+
+<p>The fix was to call the display's <code>draw()</code> directly the instant anything changes the radio's state. That way the OLED gets first priority whenever the state changes and updates immediately as the user interacts with it.</p>
+
+<h3>Challenge 3: WiFi Signal</h3>
+<p>Third, I sometimes couldn't tell whether the ESP32 was actually connected to the internet. When there was no audio, I needed to know whether it was an amplifier or speaker problem versus a WiFi connection problem. To make this visible, I added the WiFi signal strength to the OLED using <code>WiFi.RSSI()</code>, which reports the signal in dBm (decibels relative to one milliwatt) where higher (less negative) values mean a better signal. Mine hovered around &minus;50 dBm, which is a strong connection to the makerspace router.</p>
+
+<figure class="video-block video-portrait">
+  <video controls muted playsinline preload="metadata">
+    <source src="oled-wifi-signal-minus-50db.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>The OLED display showing the radio status and WiFi signal strength hovering around &minus;50 dBm</figcaption>
+</figure>
+
+<h3>Final Sketch</h3>
+<p>Here's the complete Arduino sketch that got the WiFi radio working:</p>
+
+<pre><code class="language-cpp">#include &lt;WiFi.h&gt;
+#include &lt;Wire.h&gt;
+#include &lt;Audio.h&gt;
+#include &lt;Adafruit_GFX.h&gt;
+#include &lt;Adafruit_SSD1306.h&gt;
+
+const char* WIFI_SSID = "";
+const char* WIFI_PASS = "";
+
+#define POT_PIN    34
+#define ENC_A      32
+#define ENC_B      33
+#define ENC_BTN    23
+#define I2C_SDA    21
+#define I2C_SCL    22
+#define I2S_BCLK   27
+#define I2S_LRC    26
+#define I2S_DOUT   25
+
+#define SCREEN_W 128
+#define SCREEN_H 64
+
+struct Station { const char* name; const char* url; };
+const Station STATIONS[] = {
+  { "SomaFM Groove Salad", "http://ice1.somafm.com/groovesalad-128-mp3" },
+  { "SomaFM Indie Pop",    "http://ice1.somafm.com/indiepop-128-mp3"    },
+  { "Radio Paradise Main", "http://stream.radioparadise.com/mp3-128"    },
+  { "KEXP Seattle",        "http://live-mp3-128.kexp.org/kexp128.mp3"   },
+  { "BBC World Service",   "http://stream.live.vc.bbcmedia.co.uk/bbc_world_service" }
+};
+const int NUM_STATIONS = sizeof(STATIONS) / sizeof(STATIONS[0]);
+
+// polled, debounced rotary encoder
+class RotaryEncoder {
+ public:
+  RotaryEncoder(int pinA, int pinB, unsigned long debounceMs)
+    : _pinA(pinA), _pinB(pinB), _debounceMs(debounceMs),
+      _lastA(HIGH), _lastEdgeMs(0), _count(0), _reported(0) {}
+
+  void begin() {
+    pinMode(_pinA, INPUT_PULLUP);
+    pinMode(_pinB, INPUT_PULLUP);
+    _lastA = digitalRead(_pinA);
+  }
+
+  // call every loop
+  void poll() {
+    int a = digitalRead(_pinA);
+    if (_lastA == HIGH &amp;&amp; a == LOW) {
+      unsigned long now = millis();
+      if (now - _lastEdgeMs &gt; _debounceMs) {
+        _lastEdgeMs = now;
+        if (digitalRead(_pinB) == LOW) _count--;
+        else                          _count++;
+      }
+    }
+    _lastA = a;
+  }
+
+  // net detents since the previous call
+  long delta() {
+    long d = _count - _reported;
+    _reported = _count;
+    return d;
+  }
+
+ private:
+  int _pinA, _pinB;
+  unsigned long _debounceMs;
+  int _lastA;
+  unsigned long _lastEdgeMs;
+  long _count, _reported;
+};
+
+// audio, display, encoder and all radio state
+class Radio {
+ public:
+  Radio()
+    : _display(SCREEN_W, SCREEN_H, &amp;Wire, -1),
+      _encoder(ENC_A, ENC_B, 30),
+      _state(CONNECTING), _station(0), _volume(10), _playing(true),
+      _lastPotMs(0), _lastBtnMs(0), _lastDrawMs(0) {
+    _title[0] = '\0';
+  }
+
+  void begin() {
+    pinMode(ENC_BTN, INPUT_PULLUP);
+    _encoder.begin();
+
+    Wire.begin(I2C_SDA, I2C_SCL);
+    Wire.setClock(400000);
+    _display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
+    showMessage("Connecting WiFi...");
+
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(WIFI_SSID, WIFI_PASS);   // returns immediately
+  }
+
+  // call every loop
+  void update() {
+    if (_state == CONNECTING) {
+      if (WiFi.status() == WL_CONNECTED) {
+        _audio.setPinout(I2S_BCLK, I2S_LRC, I2S_DOUT);
+        _audio.setVolume(_volume);
+        startStation(_station);
+        _state = RUNNING;
+      }
+      return;
+    }
+
+    _audio.loop();
+    _encoder.poll();
+    serviceVolume();
+
+    long d = _encoder.delta();
+    if (d != 0) changeStation(d);
+
+    serviceButton();
+
+    if (millis() - _lastDrawMs &gt; 500) draw();
+  }
+
+  void onStreamTitle(const char* info) {
+    strncpy(_title, info, sizeof(_title) - 1);
+    _title[sizeof(_title) - 1] = '\0';
+    draw();
+  }
+
+ private:
+  enum State { CONNECTING, RUNNING };
+
+  void changeStation(int steps) {
+    int n = NUM_STATIONS;
+    startStation(((_station + steps) % n + n) % n);
+  }
+
+  void startStation(int idx) {
+    _station = idx;
+    _audio.stopSong();
+    _title[0] = '\0';
+    _playing = true;
+    draw();                              // redo before the slow connect
+    _audio.connecttohost(STATIONS[idx].url);
+  }
+
+  void togglePlay() {
+    _playing = !_playing;
+    draw();
+    if (_playing) _audio.connecttohost(STATIONS[_station].url);
+    else          _audio.stopSong();
+  }
+
+  // volume potentiometer, sampled every 80ms
+  void serviceVolume() {
+    if (millis() - _lastPotMs &lt; 80) return;
+    _lastPotMs = millis();
+    int raw = analogRead(POT_PIN);
+    int v = map(constrain(raw, 150, 3900), 150, 3900, 21, 0);
+    if (v != _volume) {
+      _volume = v;
+      _audio.setVolume(_volume);
+      draw();
+    }
+  }
+
+  // play/pause button
+  void serviceButton() {
+    if (digitalRead(ENC_BTN) == LOW &amp;&amp; millis() - _lastBtnMs &gt; 300) {
+      _lastBtnMs = millis();
+      togglePlay();
+    }
+  }
+
+  void showMessage(const char* msg) {
+    _display.clearDisplay();
+    _display.setTextColor(SSD1306_WHITE);
+    _display.setTextSize(1);
+    _display.setCursor(0, 0);
+    _display.println("WiFi Radio");
+    _display.setCursor(0, 20);
+    _display.println(msg);
+    _display.display();
+  }
+
+  void draw() {
+    _lastDrawMs = millis();
+    _display.clearDisplay();
+    _display.setTextSize(1);
+    _display.setTextColor(SSD1306_WHITE);
+
+    // top bar: play state, station index, WiFi signal
+    _display.setCursor(0, 0);
+    _display.print(_playing ? "&gt; " : "|| ");
+    _display.print(_station + 1);
+    _display.print("/");
+    _display.print(NUM_STATIONS);
+    _display.setCursor(86, 0);
+    _display.print(WiFi.RSSI());
+    _display.print("dB");
+    _display.drawLine(0, 10, 128, 10, SSD1306_WHITE);
+
+    // station name
+    _display.setCursor(0, 14);
+    _display.print(clip(STATIONS[_station].name));
+
+    // now-playing track
+    if (_title[0]) {
+      _display.setCursor(0, 28);
+      _display.print(clip(_title));
+    }
+
+    // volume bar
+    _display.setCursor(0, 52);
+    _display.print("Vol");
+    _display.drawRect(24, 52, 100, 8, SSD1306_WHITE);
+    _display.fillRect(24, 52, (_volume * 100) / 21, 8, SSD1306_WHITE);
+
+    _display.display();
+  }
+
+  // truncate to one display line
+  const char* clip(const char* s) {
+    static char buf[22];
+    strncpy(buf, s, 21);
+    buf[21] = '\0';
+    return buf;
+  }
+
+  Adafruit_SSD1306 _display;
+  Audio            _audio;
+  RotaryEncoder    _encoder;
+
+  State _state;
+  int   _station;
+  int   _volume;
+  bool  _playing;
+  char  _title[64];
+  unsigned long _lastPotMs, _lastBtnMs, _lastDrawMs;
+};
+
+Radio radio;
+
+// Audio library callbacks
+void audio_showstreamtitle(const char* info) { radio.onStreamTitle(info); }
+void audio_info(const char* info) { Serial.print("info: "); Serial.println(info); }
+
+void setup() {
+  Serial.begin(115200);
+  radio.begin();
+}
+
+void loop() {
+  radio.update();
+}</code></pre>
+
+<p>To use the radio, a user can fill in their WiFi network's SSID and password at the top of the sketch and upload it to the ESP32. They can also edit the <code>STATIONS</code> list in the code to add whatever stations they want.</p>
+
+<h2>Part 3: Oscilloscope</h2>
+<p>I already had some experience with the oscilloscope from my Physics 19 lab last semester, where I got comfortable analyzing analog and digital signals. Here, I wanted to look at the three I<sup>2</sup>S signals the radio uses to send audio from the ESP32 to the MAX98357A amplifier.</p>
+
+<p>I started with the LRCLK, GPIO 26 pin, which is a word clock that tells the amplifier when a left channel sample ends and a right channel one begins. This keeps the two stereo channels aligned. By probing the GPIO 26 pin, I measured a frequency of about 44 kHz with a period of roughly 22 &micro;s. It was a fixed and regular signal that just alternated between high and low (no fluctuations or irregular behavior).</p>
+
+<figure class="img-block img-small">
+  <img src="oscilloscope-lrclk-gpio26.png" alt="Oscilloscope reading of the LRCLK signal on GPIO 26">
+  <figcaption>Oscilloscope reading of the LRCLK signal on GPIO 26</figcaption>
+</figure>
+
+<p>Next I measured the BCLK, GPIO 27 bit clock, which shifts the individual audio bits into the amplifier. On GPIO 27 I measured a frequency of about 1.5 MHz and a period of roughly 0.7 &micro;s. This was a similar-looking wave to the word clock.</p>
+
+<figure class="img-block img-small">
+  <img src="oscilloscope-bclk-gpio27.png" alt="Oscilloscope reading of the BCLK signal on GPIO 27">
+  <figcaption>Oscilloscope reading of the BCLK signal on GPIO 27</figcaption>
+</figure>
+
+<p>I forgot to measure a speaker pin, but I would have probed GPIO 25, which carries the actual audio sample bits. I'd expect this one not to be a fixed wave, but something more irregular, since an audio waveform is itself irregular.</p>
+
+<p>So the first two lines run on fixed clocks, while the data line probably doesn't. One thing I found interesting was that the bit clock on GPIO 27 didn't change when I switched stations or adjusted the volume, but the word clock on GPIO 26 did change with a different audio stream. I'm not sure why, but I hope to figure out eventually.</p>
+
+<h2>Next Steps</h2>
+<p>Overall, I'm really proud that I got a fully functioning internet radio working for my MVP. Eventually, for the final project, I want a version of the radio that doesn't depend on a WiFi connection at all. I'm currently considering Bluetooth and FM radio (using a dedicated FM module) as ways to do that.</p>
+
+<p>A few improvements I'd like to make for the final project:</p>
+<ul>
+  <li>a more retro-looking enclosure, perhaps made of wood</li>
+  <li>a larger enclosure, since this one is a bit too squished for the breadboard</li>
+  <li>switching from a potentiometer to a rotary encoder for volume</li>
+  <li>more functionality, maybe MP3 playback, Bluetooth, and FM</li>
+  <li>learning how to use a TEA5767 FM radio module</li>
+  <li>maybe trying out a protoboard</li>
+</ul>
+
+<figure class="video-block">
+  <video controls muted playsinline preload="metadata">
+    <source src="completed-radio-wiring-code-demo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>The completed MVP wiring running the successful Arduino radio code</figcaption>
+</figure>
+
+<figure class="video-block video-portrait">
+  <video controls muted playsinline preload="metadata">
+    <source src="final-mvp-radio-in-enclosure-internet.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <figcaption>The final MVP with all the components inside the enclosure and the radio successfully connecting to the internet</figcaption>
+</figure>
+
+<h2>Files</h2>
+<p><a class="file-link" href="./week-7-files.zip" download>Download Week 7 files (.zip)</a></p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>
   <span>PS70 &middot; Spring 2026</span>
 </footer>
-
 </body>
 </html>

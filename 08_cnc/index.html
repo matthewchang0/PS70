@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Week 8 - PS70</title>
+  <title>Week 8 - CNC Machining</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="../week-style.css" rel="stylesheet">
@@ -16,14 +16,44 @@
 </div>
 
 <h2>Assignment</h2>
-<p>This week for CNC milling, I wanted to mill an image of a world map out of foam and mold it into plaster. In addition, building upon my radio MVP last week, I wanted to mill a custom PCB for my final project.</p>
+<p>This week for CNC milling, I wanted to make something related to geography. I decided to mill a map of the world out of foam and turn it into plaster!</p>
 
 <figure class="img-block">
   <img src="finished-plaster-world-map.png" alt="Finished product of the world map in plaster">
   <figcaption>Finished product of the world map in plaster</figcaption>
 </figure>
 
-<h2>Part 1: CNC Milling a World Map</h2>
+<h2>Part 1: Simple Goldfish CNC</h2>
+<p>Before tackling my own CNC project, I wanted to get some practice in with something simpler. My lab group and I worked together on a small goldfish design to CNC out of foam, which we created in Fusion 360. Working on it, I learned which file types Aspire allows to generate toolpaths for the CNC bit and I was surprised by how simple those files had to be. The software really just needs a vectorized image, like a DXF or SVG, rather than a full 3D CAD model. Bobby helped us cut the goldfish out of foam, and we finished it with a mixture of plaster and red and yellow paint, leaving us with an orange goldfish we named Bob.</p>
+
+<div class="img-row">
+  <figure>
+    <img src="goldfish-shopbot-cutting-foam.jpeg" alt="ShopBot cutting the goldfish outline into pink foam">
+    <figcaption>Cutting the goldfish shape out of foam on the ShopBot</figcaption>
+  </figure>
+  <figure>
+    <img src="goldfish-vacuum-forming.jpeg" alt="Vacuum former forming plastic over the pink foam goldfish">
+    <figcaption>Vacuum forming the goldfish to make a mold</figcaption>
+  </figure>
+</div>
+
+<div class="img-row">
+  <figure>
+    <img src="goldfish-pink-foam-and-vacuum-mold.jpeg" alt="Pink foam goldfish next to the clear vacuum-formed mold">
+    <figcaption>The foam goldfish next to the clear plastic mold</figcaption>
+  </figure>
+  <figure>
+    <img src="goldfish-orange-plaster-in-mold.jpeg" alt="Orange plaster goldfish setting in the clear mold">
+    <figcaption>Orange plaster setting inside the goldfish mold</figcaption>
+  </figure>
+</div>
+
+<figure class="img-block img-small">
+  <img src="goldfish-finished-orange.jpeg" alt="Finished orange plaster goldfish named Bob">
+  <figcaption>Bob, the finished orange plaster goldfish</figcaption>
+</figure>
+
+<h2>Part 2: CNC Milling a World Map</h2>
 <p>I enjoy looking at maps so I thought making a physical version of the world map with the CNC sounded cool. I started by finding an image of a world map on Google. I'd heard from a classmate that a CNC toolpath needs a thick outline so that the 1/16" bit on the ShopBot can trace it cleanly, so I processed the image in ChatGPT to thicken the lines beyond the original. I then converted the PNG into an SVG using <a href="https://www.freeconvert.com/png-to-svg">FreeConvert</a>.</p>
 <p>In hindsight, I don't think I needed to thicken the lines at all, since I ended up using a 0.25" bit (which is a pretty large drill bit). I used this bit because I learned that the bit should be at least as long as the material is thick. Because the foam board I was using was thicker than a typical MDF board, Victor told me it was important to use a longer bit so it could cut all the way through.</p>
 <p>I then secured the foam board with double-sided tape and started my first cut. The first mistake I made was measuring the board thickness by eyeballing it with a ruler instead of using calipers. As a result, I overestimated how thick it was. Because the cut depth was set for that overestimate, the bit went a bit too deep and started cutting into the MDF sacrificial layer underneath, so I had to stop the CNC.</p>
@@ -74,7 +104,7 @@
 
 <p>Still, I ended up with a nice CNC'd world map in the foam, and I was pleased with the result. Foam is one of my favorite materials to cut because it machines easily and, because it's so light, there's not much danger involved. With the map cut, I moved on to vacuum forming.</p>
 
-<h2>Part 2: Vacuum Forming and Casting the World Map</h2>
+<h2>Part 3: Vacuum Forming and Casting the World Map</h2>
 <p>The first thing I noticed when I put my CNC'd board on the vacuum former was that the vacuum former couldn't accommodate the whole board. It has a max dimension it can handle. I trimmed a few extraneous edges off my world map with a box knife to make it fit.</p>
 
 <figure class="img-block img-small">
@@ -125,85 +155,13 @@
 </div>
 
 <p>The next day, I came back, removed the plaster from the mold, and was left with a fully set plaster world map that I was really happy with. Some of the foam bits that had stuck in the mold ended up embedded in the plaster too, but that was just part of the process. Next time I might use MDF or another material that leaves less residue behind.</p>
-
-<h2>Part 3: Milling a Custom PCB for My Radio</h2>
-<p>To improve on my radio MVP from last week, I decided to mill a custom PCB for it. This was my first time milling my own board.</p>
-
-<figure class="img-block img-small">
-  <img src="srm-20-pcb-milling-machine.png" alt="SRM-20 bot for PCB milling">
-  <figcaption>SRM-20 bot for PCB milling</figcaption>
+<figure class="img-block">
+  <img src="finished-plaster-world-map.png" alt="Finished product of the world map in plaster">
+  <figcaption>It came out super well! Ignore the bits of foam stuck to it lol</figcaption>
 </figure>
-
-<p>I started by looking back at how I'd wired up the radio, then recreated that wiring in KiCad's schematic editor. I traced each connection from the OLED, the amplifier, and the ESP32 to where it belonged &mdash; ground to ground, power to power, and each ESP32 pin to its corresponding component. I was told the exact placement of the wires in the schematic editor doesn't matter much, since KiCad's PCB editor is where you actually position the traces.</p>
-<p>Since the board would be milled on the lab's PCB milling machine, I had to configure KiCad to match the machine's capabilities. In KiCad, under File &rarr; Board Setup, I set:</p>
-
-<ul>
-  <li>minimum track width: 0.2 mm</li>
-  <li>minimum via diameter: 0.5 mm</li>
-  <li>copper-to-hole clearance: 0.25 mm</li>
-  <li>copper-to-edge clearance: 0.5 mm</li>
-  <li>minimum drill size: 0.25 mm</li>
-  <li>hole-to-hole clearance: 0.25 mm</li>
-</ul>
-
-<p>These clearances matter because traces that run too close together can let the electrical signals in them interfere with each other. Spacing the holes a bit farther apart also makes the pins easier to solder.</p>
-
-<div class="img-row">
-  <figure>
-    <img src="kicad-schematic-editor-wiring-diagram.png" alt="Wiring diagram in KiCad Schematic Editor where I connected wires together before exporting to PCB Editor">
-    <figcaption>Wiring diagram in KiCad Schematic Editor, where I connected wires together before exporting to PCB Editor</figcaption>
-  </figure>
-  <figure>
-    <img src="kicad-pcb-editor-routing-clearances-vias.png" alt="PCB Editor in KiCad where I established the wiring for the custom PCB mill and made clearances and vias">
-    <figcaption>PCB Editor in KiCad where I established the wiring for the custom PCB mill and made clearances and vias</figcaption>
-  </figure>
-</div>
-
-<p>To mill the PCB, I started with a piece of copper and several pieces of double-sided tape, making sure the copper was as flat as possible on the milling machine's bed. This matters because the machine mills essentially only in X and Y and you don't want the Z height varying across the board.</p>
-
-<figure class="img-block img-small">
-  <img src="double-sided-tape-copper-board-flat.png" alt="Adding lots and lots of double sided tape onto the board to make it as flat as possible for the CNC">
-  <figcaption>Adding lots and lots of double sided tape onto the board to make it as flat as possible for the CNC</figcaption>
-</figure>
-
-<p>I then followed <a href="https://vleeharvard.github.io/PS70/08_cnc/index.html">Victor's excellent documentation</a> on milling a PCB in the shop. In short, I used <a href="https://quentinbolsee.pages.cba.mit.edu/gerber2img/">Gerber2Img</a> and selected black and white before exporting my design as two PNGs, one for the cut path and one for the edge-cut outline. I swapped the bit in the machine for a V-bit using an Allen key, tightening it well so it couldn't fall out. Then, much like setting the origin on the ShopBot, I set the SRM-20's origin to the bottom-left corner and brought the bit down until it was just touching the material. Finally, I started the cut and made sure not to refresh the page while it was milling.</p>
-
-<div class="img-row">
-  <figure>
-    <img src="bit-runner-png-toolpaths.png" alt="Using Leo McElroy's BitRunner website to convert my PNGs into toolpaths for the CNC">
-    <figcaption>Using Leo McElroy's BitRunner website to convert my PNGs into toolpaths for the CNC</figcaption>
-  </figure>
-  <figure>
-    <img src="pcb-mill-xy-origin-copper-board.png" alt="Adjusting x and y coordinates so that the PCB CNC milling machine aligns with the bottom left of the copper board">
-    <figcaption>Adjusting x and y coordinates so that the PCB CNC milling machine aligns with the bottom left of the copper board</figcaption>
-  </figure>
-</div>
-
-<div class="img-row">
-  <figure class="video-block">
-    <video controls muted playsinline preload="metadata">
-      <source src="srm-20-first-pcb-traces.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <figcaption>Video of the SRM-20 milling machine making its first traces along the PCB</figcaption>
-  </figure>
-  <figure>
-    <img src="accidental-solder-bridge-pcb.png" alt="A soldering bridge I accidentally made on the PCB board">
-    <figcaption>A soldering bridge I accidentally made. Soldering PCB boards is truly difficult (at least for me!) You need steady hands lol</figcaption>
-  </figure>
-</div>
-
-<p>I ended up with a custom-milled PCB that I was really proud of. Honestly, though, the harder challenge was soldering the pins onto the board without any of them touching. After every solder joint, I had to check with a multimeter to make sure I hadn't created a solder bridge between pins, and I used a solder remover several times to separate pins that had bridged. I even had to re-mill the board after messing up my first attempt.</p>
-
-<figure class="img-block img-small">
-  <img src="finished-pcb-board-beautiful.png" alt="Finished PCB board">
-  <figcaption>Finished PCB board! It is so beautiful</figcaption>
-</figure>
-
-<p>Milling your own PCB is a good proof of concept before ordering a custom board from a manufacturer but it's definitely not the easiest job. I really enjoyed learning how to use the PCB mill, and a big thank you to Victor for walking me through the entire process.</p>
 
 <h2>Files</h2>
-<p><a class="file-link" href="./week-8-cnc-pcb-files.zip" download>Download Week 8 CNC and PCB files (.zip)</a></p>
+<p><a class="file-link" href="./week-8-cnc-files.zip" download>Download Week 8 CNC files (.zip)</a></p>
 
 <footer>
   <a href="../index.html">&larr; matthew's ps70</a>
