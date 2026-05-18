@@ -38,7 +38,7 @@
 
 <h2>Getting ESP-NOW Working</h2>
 <p>I started by reading the <a href="https://nathanmelenbrink.github.io/ps70/09_networking/index">ESP-NOW tutorial on the PS70 website</a> and the <a href="https://randomnerdtutorials.com/esp-now-esp32-arduino-ide/">Random Nerd Tutorials guide</a> it links to. ESP-NOW lets two ESP devices talk directly to each other, peer-to-peer, without a router. For that to work, each device needs to know the other's MAC address.</p>
-<p>To find the MAC addresses on my system, I called the ESP-IDF function <code>esp_read_mac()</code>, following the <a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/misc_system_api.html">Espressif API documentation</a>. Once I had both addresses, I hard-coded each device's MAC into the other's sketch:</p>
+<p>To find the MAC addresses on my system, I called the ESP-IDF function <code>esp_read_mac()</code>, following the <a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/misc_system_api.html">Espressif API documentation</a>. Once I had both addresses, I hard-coded each device's MAC into the other's sketch.</p>
 
 <pre><code class="language-arduino">// In the XIAO sketch, I entered the radio's MAC address:
 uint8_t mainRadioMac[] = { 0x34, 0x5F, 0x45, 0x37, 0x17, 0x4C };
@@ -62,7 +62,7 @@ uint8_t xiaoMac[] = { 0xB0, 0xA6, 0x04, 0x06, 0xAF, 0x44 };</code></pre>
 <p>I ultimately chose channel scanning because it required no changes to the radio at all and was easier for the user. The XIAO automatically finds whatever channel the radio's ESP32 is on.</p>
 
 <h3>Some Limitations</h3>
-<p>While debugging, I realized some radio modes simply cannot coexist with WiFi. For FM radio, WiFi has to be turned off completely. The 2.4 GHz energy that WiFi emits interferes with the nearby analog FM signal and the FM module's circuitry, so every WiFi transmission can garble the FM audio. Here's the code I used to fully shut WiFi down:</p>
+<p>While debugging, I realized some radio modes simply cannot coexist with WiFi. For FM radio, WiFi has to be turned off completely. The 2.4 GHz energy that WiFi emits interferes with the nearby analog FM signal and the FM module's circuitry, so every WiFi transmission can garble the FM audio. Here's the code I used to fully shut WiFi down.</p>
 
 <pre><code class="language-arduino">WiFi.disconnect(true);
 WiFi.persistent(false);
@@ -70,7 +70,7 @@ WiFi.mode(WIFI_OFF);
 btStop();
 delay(200);</code></pre>
 
-<p>I found out that Bluetooth has a similar problem. The ESP32 has only one physical 2.4 GHz radio transceiver, and since WiFi and classic Bluetooth both use that band, they have to share the hardware by taking turns. I couldn't reliably run both at once, so I had to shut off WiFi when using Bluetooth, which made it impossible to control Bluetooth with a remote. I realized therefore that my remote would only be able to control two WiFi-based modes: MP3 and internet radio.</p>
+<p>I found out that Bluetooth has a similar problem. The ESP32 has only one physical 2.4 GHz radio transceiver, and since WiFi and classic Bluetooth both use that band, they have to share the hardware by taking turns. I couldn't reliably run both at once, so I had to shut off WiFi when using Bluetooth, which made it impossible to control Bluetooth with a remote. I realized therefore that my remote would only be able to control two WiFi-based modes, namely MP3 and internet radio.</p>
 
 <h2>Three Improvements</h2>
 <p>After wiring up the rotary encoder and buttons, much as I had in previous weeks' assignments, I made three additional changes to the system.</p>
@@ -101,7 +101,7 @@ delay(200);</code></pre>
 #define CMD_PREV  6
 #define CMD_MUTE  7</code></pre>
 
-<p>To send status back, I defined an identical <code>StatePacket</code> struct in both sketches, holding everything the remote needs to know about the radio's condition. One important design rule came out of this: since ESP-NOW just copies raw memory, if the radio's struct and the XIAO's struct disagreed on their layout by even a single byte, the XIAO would copy garbage into the wrong fields.</p>
+<p>To send status back, I defined an identical <code>StatePacket</code> struct in both sketches, holding everything the remote needs to know about the radio's condition. One important design rule came out of this. Since ESP-NOW just copies raw memory, if the radio's struct and the XIAO's struct disagreed on their layout by even a single byte, the XIAO would copy garbage into the wrong fields.</p>
 
 <pre><code class="language-arduino">struct StatePacket {
   uint8_t mode;       // 0=MP3, 1=BT, 2=RADIO, 3=FM
@@ -113,7 +113,7 @@ delay(200);</code></pre>
 StatePacket lastState;
 bool haveState = false;</code></pre>
 
-<p>To keep the two packet types from ever being confused, I distinguish them by size. The remote packet is 1 byte and the state packet is 44 bytes. Since that is a hard rule, the XIAO's receive callback can simply check the packet length:</p>
+<p>To keep the two packet types from ever being confused, I distinguish them by size. The remote packet is 1 byte and the state packet is 44 bytes. Since that is a hard rule, the XIAO's receive callback can simply check the packet length.</p>
 
 <pre><code class="language-arduino">void onDataRecv(const uint8_t* mac, const uint8_t* data, int len) {
   if (len == sizeof(StatePacket)) {
@@ -224,7 +224,7 @@ void startWebServer() {
   <figcaption>The final version of the web app working properly on my laptop, with all of the radio controls successfully available</figcaption>
 </figure>
 
-<p>This worked very well. Like the ESP-NOW remote, though, the web app depends on WiFi. It goes a step further by needing an actual WiFi network, since the radio has to have an IP address. So it carries the same limitation: it only works in MP3 and internet radio modes.</p>
+<p>This worked very well. Like the ESP-NOW remote, though, the web app depends on WiFi. It goes a step further by needing an actual WiFi network, since the radio has to have an IP address. So it carries the same limitation in that it only works in MP3 and internet radio modes.</p>
 
 <h3>Improvement 3: A NeoPixel Mode Indicator</h3>
 <p>My third improvement was adding a NeoPixel LED strip to show which mode the radio is in, either internet radio or MP3. I wanted the remote to do something visible with the status it was receiving from the radio, and it was also a good excuse for me to learn how to use an LED strip, which I'd never done before. The key piece of code that allowed for the NeoPixel color change was <code>updateLedForMode()</code>, which mapped a color onto a music mode and turned on the corresponding pixels.</p>
